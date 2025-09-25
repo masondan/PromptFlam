@@ -7,8 +7,27 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>Welcome to PromptFlam!</h1>
-
+    <div class="app-container">
+        <header class="app-header">
+            <h1>PromptFlam</h1>
+        </header>
+ 
+        <main class="app-main">
+            <section class="controls-panel">
+                <input type="search" id="search-input" placeholder="Search prompts...">
+                <select id="category-filter">
+                    <option value="all">All Categories</option>
+                </select>
+                <select id="subcategory-filter" class="hidden">
+                    <option value="all">All Sub-categories</option>
+                </select>
+            </section>
+ 
+            <section id="prompt-list" class="prompt-list-container">
+                <!-- Prompts will be dynamically inserted here by JavaScript -->
+            </section>
+        </main>
+    </div>
     <script src="script.js"></script>
 </body>
 </html>

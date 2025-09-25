@@ -1,14 +1,135 @@
-body {
-    font-family: sans-serif;
-    background-color: #f4f4f9;
-    color: #333;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    margin: 0;
+/* --- 1. FONT IMPORT & GLOBAL STYLES --- */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
+
+:root {
+    --bg-light: #eeeeee;
+    --bg-medium: #cccccc;
+    --text-dark: #333333;
+    --text-medium: #555555;
+    --text-light: #9a9a9a;
+    --font-primary: 'Inter', sans-serif;
 }
 
-h1 {
-    color: #4a4a4a;
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: var(--font-primary);
+    background-color: var(--bg-light);
+    color: var(--text-dark);
+    line-height: 1.6;
+}
+
+/* --- 2. LAYOUT & CONTAINER STYLES --- */
+.app-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem; /* 1rem = 16px padding on left/right for mobile */
+}
+
+.app-header {
+    padding: 1.5rem 0;
+    border-bottom: 1px solid var(--bg-medium);
+    margin-bottom: 1.5rem;
+}
+
+.app-header h1 {
+    text-align: center;
+    font-size: 1.5rem;
+    color: var(--text-dark);
+}
+
+/* --- 3. CONTROLS PANEL --- */
+.controls-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+#search-input, #category-filter {
+    width: 100%;
+    padding: 0.75rem;
+    font-size: 1rem;
+    border: 1px solid var(--bg-medium);
+    border-radius: 6px;
+    background-color: #fff;
+}
+
+.hidden {
+    display: none;
+}
+
+/* --- 4. PROMPT LIST & CARDS --- */
+.prompt-list-container {
+    display: grid;
+    gap: 1.5rem;
+}
+
+/* --- 4. PROMPT LIST & CARDS (NEW STRUCTURE) --- */
+.category-group + .category-group {
+    margin-top: 3rem; /* Space between major category groups */
+}
+
+.category-title {
+    font-size: 1.8rem;
+    color: var(--text-dark);
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--bg-medium);
+}
+
+.subcategory-card {
+    background-color: #ffffff;
+    border: 1px solid var(--bg-medium);
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    margin-bottom: 1.5rem; /* Space between cards in the same category */
+}
+
+.subcategory-title {
+    font-size: 1.3rem;
+    margin-bottom: 0.5rem;
+    color: var(--text-dark);
+    padding-bottom: 1rem;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid var(--bg-light);
+}
+
+.task-item + .task-item {
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--bg-light);
+}
+
+.task-item h4 {
+    color: var(--text-dark);
+    margin-bottom: 0.25rem;
+}
+
+.task-item p {
+    color: var(--text-medium);
+    margin-bottom: 1rem;
+}
+
+.copy-btn {
+    padding: 0.5rem 1rem;
+    font-family: var(--font-primary);
+    font-weight: 700;
+    color: var(--text-dark);
+    background-color: var(--bg-light);
+    border: 1px solid var(--bg-medium);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.copy-btn.copied {
+    background-color: var(--text-dark);
+    color: var(--bg-light);
+    border-color: var(--text-dark);
 }
