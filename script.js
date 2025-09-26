@@ -55,7 +55,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 tasks.forEach(task => {
                     html += `
                         <div class="task-item">
-                            <h4>${task.task}</h4>
+                            ${task.task ? `<h4>${task.task}</h4>` : ''}
                             <p>${task.prompt}</p>
                             <button class="copy-btn" data-prompt-id="${task.id}">Copy</button>
                         </div>
@@ -155,8 +155,13 @@ document.addEventListener('DOMContentLoaded', () => {
             const promptToCopy = allPrompts.find(p => p.id === promptId);
 
             if (promptToCopy) {
-                // Use the Clipboard API to copy the text
-                navigator.clipboard.writeText(promptToCopy.prompt).then(() => {
+                // Create a temporary element to convert HTML to plain text
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = promptToCopy.prompt;
+                const plainText = tempDiv.textContent || tempDiv.innerText || "";
+
+                // Use the Clipboard API to copy the plain text version
+                navigator.clipboard.writeText(plainText).then(() => {
                     // Provide visual feedback
                     const originalText = button.textContent;
                     button.textContent = 'Copied!';
