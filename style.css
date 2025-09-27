@@ -216,8 +216,13 @@ body {
 
 /* --- 6. MEDIA QUERIES --- */
 @media (max-width: 768px) {
+    .app-container {
+        /* Increase side padding for more breathing room on mobile */
+        padding: 2rem 1.5rem;
+    }
+
     .header-container {
-        padding: 1rem 1rem;
+        padding: 1rem 1.5rem; /* Match the new app-container padding */
     }
 
     .logo {
