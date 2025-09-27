@@ -66,6 +66,24 @@ body {
     height: 32px;
 }
 
+/* --- 2.5 INTRO TEXT --- */
+.intro-text {
+    text-align: center;
+    margin-bottom: 2.5rem;
+}
+
+.strapline {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--text-medium);
+    margin-bottom: 0.25rem;
+}
+
+.disclaimer {
+    font-size: 0.9rem;
+    color: var(--text-dark);
+}
+
 /* --- 3. CONTROLS PANEL --- */
 .controls-panel {
     display: flex;
@@ -122,7 +140,7 @@ body {
     font-weight: 700;
     color: var(--text-dark);
     text-align: center;
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
 }
 
 .subcategory-card {
@@ -144,8 +162,8 @@ body {
 }
 
 .task-item + .task-item {
-    margin-top: 1.5rem;
-    padding-top: 1.5rem;
+    margin-top: 1rem;
+    padding-top: 1rem;
     border-top: 1px solid var(--bg-light);
 }
 
@@ -199,7 +217,7 @@ body {
 /* --- 6. MEDIA QUERIES --- */
 @media (max-width: 768px) {
     .header-container {
-        padding: 0.75rem 1rem;
+        padding: 1rem 1rem;
     }
 
     .logo {
