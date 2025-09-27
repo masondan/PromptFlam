@@ -10,6 +10,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const searchInput = document.getElementById('search-input');
     const categoryFilter = document.getElementById('category-filter');
     const subcategoryFilter = document.getElementById('subcategory-filter');
+    const searchToggleBtn = document.getElementById('search-toggle-btn');
+    const searchContainer = document.getElementById('search-container');
 
     // --- 3. FUNCTIONS ---
 
@@ -55,9 +57,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 tasks.forEach(task => {
                     html += `
                         <div class="task-item">
-                            ${task.task ? `<h4>${task.task}</h4>` : ''}
-                            <p>${task.prompt}</p>
-                            <button class="copy-btn" data-prompt-id="${task.id}">Copy</button>
+                            ${task.prompt.trim().startsWith('<p>') ? 
+                                // If prompt already has a <p> tag, inject the label inside it
+                                task.prompt.replace('<p>', `<p>${task.task ? `<strong class="task-label">${task.task}</strong> ` : ''}`) :
+                                // Otherwise, wrap everything in a new <p> tag
+                                `<p>${task.task ? `<strong class="task-label">${task.task}</strong> ` : ''}${task.prompt}</p>`
+                            }
+                            <button class="copy-btn" data-prompt-id="${task.id}">COPY</button>
                         </div>
                     `;
                 });
@@ -75,12 +81,16 @@ document.addEventListener('DOMContentLoaded', () => {
      * Populates the category filter dropdown with unique categories from allPrompts.
      */
     function populateCategoryFilter() {
+        // Define the desired order for categories
+        const customCategoryOrder = ['Text', 'Audio', 'Video', 'Social Media', 'Website', 'Strategy', 'Co-pilot', 'Image Gen'];
+
         // Get unique categories, convert to Set to remove duplicates, then back to Array
         const categories = [...new Set(allPrompts.map(prompt => prompt.category))];
-        categories.sort(); // Sort categories alphabetically for a better user experience
+        // Sort categories based on the custom order
+        categories.sort((a, b) => customCategoryOrder.indexOf(a) - customCategoryOrder.indexOf(b));
 
-        // Clear existing options (keeping the "All Categories" option from HTML)
-        categoryFilter.innerHTML = '<option value="all">All Categories</option>';
+        // Clear existing options (keeping the "All Prompts" option from HTML)
+        categoryFilter.innerHTML = '<option value="all">All Prompts</option>';
 
         categories.forEach(category => {
             const option = document.createElement('option');
@@ -106,7 +116,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const subcategories = [...new Set(promptsInCategory.map(p => p.subCategory))];
         subcategories.sort();
 
-        subcategoryFilter.innerHTML = '<option value="all">All Sub-categories</option>';
+        subcategoryFilter.innerHTML = '<option value="all">Filter Prompts</option>';
         subcategories.forEach(sub => {
             const option = document.createElement('option');
             option.value = sub;
@@ -158,13 +168,21 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Create a temporary element to convert HTML to plain text
                 const tempDiv = document.createElement('div');
                 tempDiv.innerHTML = promptToCopy.prompt;
-                const plainText = tempDiv.textContent || tempDiv.innerText || "";
 
+                // For innerText to correctly calculate line breaks, the element must be in the DOM.
+                // We'll add it, get the text, and remove it immediately.
+                // It's positioned off-screen so it's not visible.
+                tempDiv.style.position = 'absolute';
+                tempDiv.style.left = '-9999px';
+                document.body.appendChild(tempDiv);
+                const plainText = tempDiv.innerText;
+                document.body.removeChild(tempDiv);
+                
                 // Use the Clipboard API to copy the plain text version
                 navigator.clipboard.writeText(plainText).then(() => {
                     // Provide visual feedback
                     const originalText = button.textContent;
-                    button.textContent = 'Copied!';
+                    button.textContent = 'COPIED';
                     button.classList.add('copied');
 
                     // Revert the button text after 2 seconds
@@ -189,6 +207,13 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     subcategoryFilter.addEventListener('change', applyFilters);
 
+    // New event listener for the search toggle icon
+    searchToggleBtn.addEventListener('click', () => {
+        searchContainer.classList.toggle('hidden');
+        if (!searchContainer.classList.contains('hidden')) {
+            searchInput.focus(); // Automatically focus the input when shown
+        }
+    });
 
 
     // --- 5. INITIALIZATION ---

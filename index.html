@@ -7,19 +7,26 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <header class="app-header">
+        <div class="header-container">
+            <img src="promptflam-logo100.png" alt="PromptFlam Logo" class="logo">
+            <button id="search-toggle-btn" class="search-toggle-btn" aria-label="Toggle search">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            </button>
+        </div>
+    </header>
+
     <div class="app-container">
-        <header class="app-header">
-            <h1>PromptFlam</h1>
-        </header>
- 
         <main class="app-main">
             <section class="controls-panel">
-                <input type="search" id="search-input" placeholder="Search prompts...">
+                <div id="search-container" class="search-container hidden">
+                    <input type="search" id="search-input" placeholder="Search prompts...">
+                </div>
                 <select id="category-filter">
-                    <option value="all">All Categories</option>
+                    <option value="all">All Prompts</option>
                 </select>
                 <select id="subcategory-filter" class="hidden">
-                    <option value="all">All Sub-categories</option>
+                    <option value="all">Filter Prompts</option>
                 </select>
             </section>
  
@@ -29,5 +36,8 @@
         </main>
     </div>
     <script src="script.js"></script>
+    <footer class="app-footer">
+        <p>Dan Mason | 2025</p>
+    </footer>
 </body>
 </html>
