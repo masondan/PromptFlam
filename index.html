@@ -5,43 +5,60 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PromptFlam</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="public/promptflam-icon.svg" type="image/svg+xml">
 </head>
 <body>
-    <header class="app-header">
-        <div class="header-container">
-            <img src="promptflam-logo100.png" alt="PromptFlam Logo" class="logo">
-            <button id="search-toggle-btn" class="search-toggle-btn" aria-label="Toggle search">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-            </button>
-        </div>
-    </header>
 
-    <div class="app-container">
-        <main class="app-main">
-            <section class="intro-text">
-                <p class="strapline">Prompts for content creators</p>
-                <p class="disclaimer">Always check. AI can make mistakes.</p>
-            </section>
-            <section class="controls-panel">
-                <div id="search-container" class="search-container hidden">
-                    <input type="search" id="search-input" placeholder="Search prompts...">
-                </div>
-                <select id="category-filter">
-                    <option value="all">All Prompts</option>
-                </select>
-                <select id="subcategory-filter" class="hidden">
-                    <option value="all">Filter Prompts</option>
-                </select>
-            </section>
- 
-            <section id="prompt-list" class="prompt-list-container">
-                <!-- Prompts will be dynamically inserted here by JavaScript -->
-            </section>
-        </main>
+    <!-- Splash Screen -->
+    <div id="splash-screen">
+        <div class="splash-content">
+            <div class="splash-main-content">
+                <img src="public/promptflam-logo.png" alt="PromptFlam Logo" class="splash-logo">
+                <p class="splash-text">Create explainer stories, video scripts, voiceovers and more with this library of prompts for content creators. Free.</p>
+                <button id="enter-app-btn">Get Started</button>
+            </div>
+            <p class="splash-footer">Made with <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m2 2 8 8m12-8-8 8"/><ellipse cx="12" cy="9" rx="10" ry="5"/><path d="M7 13.4v7.9m5-7.3v8m5-8.6v7.9M2 9v8a10 5 0 0 0 20 0V9"/></svg> by Dan Mason</p>
+        </div>
     </div>
-    <script src="script.js"></script>
-    <footer class="app-footer">
-        <p>Dan Mason | 2025</p>
-    </footer>
+
+    <!-- Main App Content (initially hidden) -->
+    <div id="app-content" style="display: none;">
+        <header class="app-header">
+            <div class="header-container">
+                <img src="promptflam-logo100.png" alt="PromptFlam Logo" class="logo">
+                <button id="search-toggle-btn" class="search-toggle-btn" aria-label="Toggle search">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                </button>
+            </div>
+        </header>
+
+        <div class="app-container">
+            <main class="app-main">
+                <section class="intro-text">
+                    <p class="strapline">Prompts for content creators</p>
+                    <p class="disclaimer">Always check. AI can make mistakes.</p>
+                </section>
+                <section class="controls-panel">
+                    <div id="search-container" class="search-container hidden">
+                        <input type="search" id="search-input" placeholder="Search prompts...">
+                    </div>
+                    <select id="category-filter">
+                        <option value="all">All Prompts</option>
+                    </select>
+                    <select id="subcategory-filter" class="hidden">
+                        <option value="all">Filter Prompts</option>
+                    </select>
+                </section>
+    
+                <section id="prompt-list" class="prompt-list-container">
+                    <!-- Prompts will be dynamically inserted here by JavaScript -->
+                </section>
+            </main>
+        </div>
+        <script src="script.js"></script>
+        <footer class="app-footer">
+            <p>Dan Mason | 2025</p>
+        </footer>
+    </div>
 </body>
 </html>

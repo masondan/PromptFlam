@@ -1,5 +1,18 @@
 // Wait for the HTML to be fully loaded before running the script
 document.addEventListener('DOMContentLoaded', () => {
+    // --- SPLASH SCREEN LOGIC ---
+    const enterBtn = document.getElementById('enter-app-btn');
+    const splashScreen = document.getElementById('splash-screen');
+    const appContent = document.getElementById('app-content');
+
+    // Check if all elements exist before adding the event listener
+    if (enterBtn && splashScreen && appContent) {
+        enterBtn.addEventListener('click', () => {
+            splashScreen.style.display = 'none';
+            appContent.style.display = 'block';
+        });
+    }
+
     // --- 1. STATE ---
     // This will hold all our prompts after we fetch them.
     let allPrompts = [];

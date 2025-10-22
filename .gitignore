@@ -1,0 +1,19 @@
+# Dependencies and Builds
+node_modules/
+dist/
+build/
+.cache/
+
+# Logs and Temporary Files
+logs/
+*.log
+npm-debug.log*
+yarn-error.log*
+
+# OS and IDE Files
+.DS_Store
+.vscode/
+
+# Project-Specific Exclusions
+filetree.txt
+info/
