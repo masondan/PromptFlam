@@ -1,39 +1,31 @@
-# PromptFlam Improvements - TODO List
+# TODO: Reposition Favourite Buttons in PromptFlam
 
-## TASK 1: Header & UI Improvements ✨
-- [x] Replace logo with public/promptflam-logo.png
-- [x] Increase search icon size to match logo height (45px)
-- [x] Add semi-transparent header effect on scroll (70% opacity)
-- [x] Remove strapline and disclaimer text section
-- [x] Change category titles to purple (#4B0082)
+## Task Overview
+Move favourite buttons from individual prompts to subcategory titles, change logic to favourite entire subcategories, make hearts larger and red when active, centre remaining buttons under prompts.
 
-## TASK 2: Favourites Functionality ❤️
-- [x] Replace COPY text buttons with copy icons
-- [x] Add heart buttons below each prompt (outline → filled states)
-- [x] Add heart filter button in header (80% dropdown / 20% heart)
-- [x] Implement localStorage for favourites persistence
-- [x] Create favourites filtering logic
-- [x] Style button layout: Heart (left), Copy (center)
+## Steps to Complete
 
-## TASK 3: Back to Top Button ⬆️
-- [x] Add back-to-top icon below each prompt
-- [x] Update button layout: Heart (left), Copy (middle), Back-to-top (right)
-- [x] Implement smooth scroll to top functionality
+### 1. Update Favourite Logic in script.js
+- [x] Change favourites storage from individual prompt IDs to subcategory identifiers (e.g., "Text-Blog").
+- [x] Update toggleFavourite function to handle subcategories.
+- [x] Update applyFilters to filter by favourited subcategories.
 
-## TASK 4: Tooltip/Tutorial 💡
-- [x] Create tooltip HTML structure
-- [x] Style tooltip (adapted from PicFlam)
-- [x] Add grey overlay
-- [x] Implement 4-step navigation (arrows, dots, close)
-- [x] Add tooltip content (Welcome → Favourites → Copy → Remember)
-- [x] Show tooltip once only (localStorage)
-- [x] Trigger after "Get Started" button
+### 2. Modify HTML Generation in displayPrompts Function
+- [x] Add favourite button to subcategory-title row (left: title, right: heart button).
+- [x] Remove favourite buttons from individual task-item action-buttons.
+- [x] Centre the remaining copy and back-to-top buttons under each prompt.
 
----
+### 3. Update CSS in style.css
+- [x] Style subcategory-title as flex row with space-between.
+- [x] Make subcategory favourite buttons larger (e.g., 32px).
+- [x] Change active heart color from purple (#4B0082) to red.
+- [x] Ensure action-buttons are centred under prompts.
 
-## Implementation Notes
-- Favourites: Permanent storage using localStorage
-- Tooltip: Show once only ever
-- Header transparency: 70% opacity on scroll
-- Dropdown/Heart split: 80%/20%
-- Testing: All devices (user will test)
+### 4. Update Tooltip Text in script.js
+- [x] Change tooltip step 2 to reflect tapping heart next to subcategory title.
+
+### 5. Testing and Validation
+- [ ] Test favourite functionality per subcategory.
+- [ ] Verify button positions and styling.
+- [ ] Test on dev server.
+- [ ] Commit and deploy for live testing.

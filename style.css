@@ -135,8 +135,8 @@ body {
 }
 
 .favourites-filter-btn.active {
-    background-color: #4B0082;
-    border-color: #4B0082;
+    background-color: #DC143C;
+    border-color: #DC143C;
     color: #ffffff;
 }
 
@@ -178,13 +178,19 @@ body {
     margin-bottom: 1.5rem; /* Space between cards in the same category */
 }
 
+.subcategory-title-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--bg-light);
+}
+
 .subcategory-title {
     font-size: 1.3rem;
-    margin-bottom: 0.5rem;
     color: var(--text-medium);
-    padding-bottom: 1rem;
-    margin-bottom: 1rem;
-    border-bottom: 1px solid var(--bg-light);
+    margin: 0;
 }
 
 .task-item + .task-item {
@@ -234,19 +240,19 @@ body {
     height: 24px;
 }
 
-/* Favourite button states */
-.favourite-btn svg {
+/* Subcategory favourite button states */
+.subcategory-favourite-btn svg {
     stroke: currentColor;
     stroke-width: 0.5;
 }
 
-.favourite-btn.active {
-    color: #4B0082;
+.subcategory-favourite-btn.active {
+    color: #DC143C;
 }
 
-.favourite-btn.active svg {
-    fill: #4B0082;
-    stroke: #4B0082;
+.subcategory-favourite-btn.active svg {
+    fill: #DC143C;
+    stroke: #DC143C;
 }
 
 /* Copy button states */
@@ -255,7 +261,7 @@ body {
 }
 
 .copy-btn.copied {
-    color: #4B0082;
+    color: #DC143C;
 }
 
 /* Back to top button */
@@ -264,7 +270,7 @@ body {
 }
 
 .back-to-top-btn:hover {
-    color: #4B0082;
+    color: #DC143C;
 }
 
 .back-to-top-btn svg {
@@ -531,7 +537,7 @@ body {
 }
 
 .tooltip-progress-dots .dot.active {
-  background-color: #333;
+  background-color: #555555;
 }
 
 .tooltip-arrow-btn {
