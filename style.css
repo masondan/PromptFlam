@@ -91,9 +91,8 @@ body {
     align-items: center;
 }
 
-/* Base styles for all input/select controls */
-#search-input,
-#category-filter, #subcategory-filter {
+/* Base styles for input */
+#search-input {
     width: 100%;
     padding: 0.75rem;
     font-size: 1rem;
@@ -102,16 +101,72 @@ body {
     background-color: #fff;
 }
 
-/* Specific styles for dropdowns to add custom chevron */
-#category-filter, #subcategory-filter {
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-    /* Add custom chevron */
+/* --- Custom Select Dropdown --- */
+.custom-select {
+    position: relative;
+    width: 100%;
+    font-size: 1rem;
+}
+
+.select-selected {
+    background-color: #fff;
+    padding: 0.75rem 2.5rem 0.75rem 0.75rem;
+    border: 1px solid var(--bg-medium);
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    user-select: none;
+}
+
+.select-selected.select-arrow-active .select-arrow {
+    transform: rotate(180deg);
+}
+
+.select-arrow {
+    width: 20px;
+    height: 20px;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%23333333' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
     background-repeat: no-repeat;
-    background-position: right 0.75rem center;
-    padding-right: 2.5rem; /* Add space on the right for the new chevron */
+    background-position: center;
+    transition: transform 0.2s ease;
+    position: absolute;
+    right: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.select-items {
+    position: absolute;
+    background-color: #fff;
+    top: calc(100% + 4px);
+    left: 0;
+    right: 0;
+    z-index: 99;
+    border: 1px solid var(--bg-medium);
+    border-radius: 6px;
+    max-height: 75vh;
+    overflow-y: auto;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.select-hide {
+    display: none;
+}
+
+.select-items div {
+    padding: 0.75rem;
+    cursor: pointer;
+    border-bottom: 1px solid var(--bg-light);
+}
+
+.select-items div:last-child {
+    border-bottom: none;
+}
+
+.select-items div:hover, .same-as-selected {
+    background-color: #f0f0f0;
 }
 
 /* Favourites filter button in header */
@@ -244,7 +299,7 @@ body {
 /* Subcategory favourite button states */
 .subcategory-favourite-btn svg {
     stroke: currentColor;
-    stroke-width: 0.5;
+    stroke-width: 2.0;
 }
 
 .subcategory-favourite-btn.active {
