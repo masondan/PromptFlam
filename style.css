@@ -443,7 +443,7 @@ body {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background-color: rgba(230, 226, 255, 0.95);
+  background-color: #e6e2fff2;
   color: #000000;
   padding: 1.5rem;
   border-radius: 12px;

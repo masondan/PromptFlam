@@ -1,0 +1,16 @@
+{
+  "name": "PromptFlam",
+  "short_name": "PromptFlam",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#e6e2ff",
+  "theme_color": "#555555",
+  "description": "A free mobile-first library of AI prompts for content creators and journalists.",
+  "icons": [
+    {
+      "src": "public/promptflam-icon.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ]
+}
