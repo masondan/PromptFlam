@@ -261,7 +261,7 @@ body {
 }
 
 .copy-btn.copied {
-    color: #DC143C;
+    color: #4f0388;
 }
 
 /* Back to top button */
@@ -270,7 +270,7 @@ body {
 }
 
 .back-to-top-btn:hover {
-    color: #DC143C;
+    color: #999999;
 }
 
 .back-to-top-btn svg {
@@ -401,7 +401,7 @@ body {
 /* Mobile adjustments */
 @media (max-width: 480px) {
   #splash-screen {
-    padding: 1rem;
+    padding: 2rem;
   }
 
   .splash-logo {
@@ -439,7 +439,7 @@ body {
   padding: 1.5rem;
   border-radius: 12px;
   max-width: 320px;
-  width: 90%;
+  width: 80%;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
   border: 1px solid #cccccc;
   z-index: 1100;
@@ -562,11 +562,11 @@ body {
 }
 
 .tooltip-arrow-btn:not(.inactive) {
-  background-color: #333333;
+  background-color: #4f0388;
 }
 
 .tooltip-arrow-btn:hover:not(.inactive) {
-  background-color: #000000;
+  background-color: #4f0388;
 }
 
 .tooltip-arrow-btn.inactive {

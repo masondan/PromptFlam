@@ -36,15 +36,15 @@ document.addEventListener('DOMContentLoaded', () => {
         },
         {
             title: 'Favourites',
-            text: 'Tap the heart next to any prompt group then use the heart at the top to view favourites.'
+            text: 'Tap the heart next to any prompt group then use the button at the top to view favourites.'
         },
         {
-            title: 'Copy and Go',
-            text: 'Copy a prompt, paste into your AI chatbot of choice and customise for your story.'
+            title: 'Copy & Create',
+            text: 'Copy a prompt, paste into your AI chatbot of choice and customise for your story or task.'
         },
         {
-            title: 'Remember',
-            text: 'AI can make mistakes - always check sources. Happy storytelling with PromptFlam!'
+            title: 'Always check',
+            text: 'AI can make mistakes - always check sources and facts. Happy storytelling with PromptFlam!'
         }
     ];
 
