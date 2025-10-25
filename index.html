@@ -1,29 +1,34 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- Primary Meta Tags -->
     <title>PromptFlam | AI Prompts for Content Creators</title>
-    <meta name="description" content="Supercharge your creativity with PromptFlam, a free library of powerful prompts for text, video, audio, and social media content. Get ideas for scripts, stories, and more.">
-    <meta name="keywords" content="content creator, prompts, AI prompts, script writing, video ideas, social media content, creative writing, story ideas">
+    <meta name="description"
+        content="Supercharge your creativity with PromptFlam, a free library of powerful prompts for text, video, audio, and social media content. Get ideas for scripts, stories, and more.">
+    <meta name="keywords"
+        content="content creator, prompts, AI prompts, script writing, video ideas, social media content, creative writing, story ideas">
     <meta name="author" content="Dan Mason">
     <meta name="robots" content="noindex, nofollow">
-    
+
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://promptflam.pages.dev/">
     <meta property="og:title" content="PromptFlam: Free Prompts for Content Creators">
-    <meta property="og:description" content="A free library of powerful prompts for text, video, audio, and social media content.">
+    <meta property="og:description"
+        content="A free library of powerful prompts for text, video, audio, and social media content.">
     <meta property="og:image" content="public/promptflam-logo.png">
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="https://promptflam.pages.dev/">
     <meta property="twitter:title" content="PromptFlam: Free Prompts for Content Creators">
-    <meta property="twitter:description" content="A free library of powerful prompts for text, video, audio, and social media content.">
+    <meta property="twitter:description"
+        content="A free library of powerful prompts for text, video, audio, and social media content.">
     <meta property="twitter:image" content="public/promptflam-logo.png">
 
     <!-- Theme Color -->
@@ -33,6 +38,7 @@
     <link rel="manifest" href="manifest.json">
     <link rel="icon" href="public/promptflam-icon.png" type="image/png">
 </head>
+
 <body>
 
     <!-- Splash Screen -->
@@ -40,7 +46,8 @@
         <div class="splash-content">
             <div class="splash-main-content">
                 <img src="public/promptflam-logo.png" alt="PromptFlam Logo" class="splash-logo">
-                <p class="splash-text">Create explainers, social media video scripts, voiceovers and more with this free library of prompts for content creators.</p>
+                <p class="splash-text">Create explainers, social media video scripts, voiceovers and more with this free
+                    library of prompts for content creators.</p>
                 <button id="enter-app-btn">Get Started</button>
             </div>
         </div>
@@ -52,7 +59,8 @@
     <!-- Tooltip -->
     <div id="tooltip" class="tooltip hidden">
         <button id="tooltip-close" class="tooltip-close" aria-label="Close tooltip">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <line x1="18" y1="6" x2="6" y2="18"></line>
                 <line x1="6" y1="6" x2="18" y2="18"></line>
             </svg>
@@ -60,12 +68,15 @@
         <div class="tooltip-content">
             <div class="tooltip-text-area">
                 <h3 id="tooltip-title">Welcome</h3>
-                <p id="tooltip-text">Browse all prompts, tap search, or drill down using the category dropdown menus.</p>
+                <p id="tooltip-text">Browse all prompts, tap search, or drill down using the category dropdown menus.
+                </p>
             </div>
             <div class="tooltip-footer">
                 <button id="tooltip-prev" class="tooltip-arrow-btn inactive" aria-label="Previous tip">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 -960 960 960" fill="currentColor">
-                        <path d="m480-320 56-56-64-64h168v-80H472l64-64-56-56-160 160zm0 240q-83 0-156-31.5T197-197t-85.5-127T80-480t31.5-156T197-763t127-85.5T480-880t156 31.5T763-763t85.5 127T880-480t-31.5 156T763-197t-127 85.5T480-80m0-80q134 0 227-93t93-227-93-227-227-93-227 93-93 227 93 227 227 93m0-320"/>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 -960 960 960"
+                        fill="currentColor">
+                        <path
+                            d="m480-320 56-56-64-64h168v-80H472l64-64-56-56-160 160zm0 240q-83 0-156-31.5T197-197t-85.5-127T80-480t31.5-156T197-763t127-85.5T480-880t156 31.5T763-763t85.5 127T880-480t-31.5 156T763-197t-127 85.5T480-80m0-80q134 0 227-93t93-227-93-227-227-93-227 93-93 227 93 227 227 93m0-320" />
                     </svg>
                 </button>
                 <div class="tooltip-progress-dots">
@@ -75,11 +86,52 @@
                     <span class="dot"></span>
                 </div>
                 <button id="tooltip-next" class="tooltip-arrow-btn" aria-label="Next tip">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 -960 960 960" fill="currentColor">
-                        <path d="m480-320 160-160-160-160-56 56 64 64H320v80h168l-64 64zm0 240q-83 0-156-31.5T197-197t-85.5-127T80-480t31.5-156T197-763t127-85.5T480-880t156 31.5T763-763t85.5 127T880-480t-31.5 156T763-197t-127 85.5T480-80m0-80q134 0 227-93t93-227-93-227-227-93-227 93-93 227 93 227 227 93m0-320"/>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 -960 960 960"
+                        fill="currentColor">
+                        <path
+                            d="m480-320 160-160-160-160-56 56 64 64H320v80h168l-64 64zm0 240q-83 0-156-31.5T197-197t-85.5-127T80-480t31.5-156T197-763t127-85.5T480-880t156 31.5T763-763t85.5 127T880-480t-31.5 156T763-197t-127 85.5T480-80m0-80q134 0 227-93t93-227-93-227-227-93-227 93-93 227 93 227 227 93m0-320" />
                     </svg>
                 </button>
             </div>
+        </div>
+    </div>
+
+    <!-- Edit Drawer Overlay -->
+    <div id="edit-drawer-overlay" class="edit-drawer-overlay hidden"></div>
+
+    <!-- Edit Drawer -->
+    <div id="edit-drawer" class="edit-drawer hidden">
+        <div class="edit-drawer-content">
+            <div class="edit-drawer-actions">
+                <div class="edit-drawer-actions-left">
+                    <button id="edit-drawer-share-btn" class="edit-drawer-icon-btn" aria-label="Share prompt">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="18" cy="5" r="3"></circle>
+                            <circle cx="6" cy="12" r="3"></circle>
+                            <circle cx="18" cy="19" r="3"></circle>
+                            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                            <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+                        </svg>
+                    </button>
+                    <button id="edit-drawer-copy-btn" class="edit-drawer-icon-btn" aria-label="Copy prompt">
+                        <svg width="24" height="24" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd" clip-rule="evenodd"
+                                d="M1 9.50006C1 10.3285 1.67157 11.0001 2.5 11.0001H4L4 10.0001H2.5C2.22386 10.0001 2 9.7762 2 9.50006L2 2.50006C2 2.22392 2.22386 2.00006 2.5 2.00006L9.5 2.00006C9.77614 2.00006 10 2.22392 10 2.50006V4.00002H5.5C4.67158 4.00002 4 4.67159 4 5.50002V12.5C4 13.3284 4.67158 14 5.5 14H12.5C13.3284 14 14 13.3284 14 12.5V5.50002C14 4.67159 13.3284 4.00002 12.5 4.00002H11V2.50006C11 1.67163 10.3284 1.00006 9.5 1.00006H2.5C1.67157 1.00006 1 1.67163 1 2.50006V9.50006ZM5 5.50002C5 5.22388 5.22386 5.00002 5.5 5.00002H12.5C12.7761 5.00002 13 5.22388 13 5.50002V12.5C13 12.7762 12.7761 13 12.5 13H5.5C5.22386 13 5 12.7762 5 12.5V5.50002Z"
+                                fill="currentColor" />
+                        </svg>
+                    </button>
+                </div>
+                <button id="edit-drawer-close-btn" class="edit-drawer-icon-btn" aria-label="Close drawer">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+            <textarea id="edit-drawer-textarea" class="edit-drawer-textarea"
+                placeholder="Edit your prompt here..."></textarea>
         </div>
     </div>
 
@@ -89,7 +141,11 @@
             <div class="header-container">
                 <img src="public/promptflam-logo.png" alt="PromptFlam Logo" class="logo">
                 <button id="search-toggle-btn" class="search-toggle-btn" aria-label="Toggle search">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
                 </button>
             </div>
         </header>
@@ -110,8 +166,10 @@
                             <div class="select-items select-hide"></div>
                         </div>
                         <button id="favourites-filter-btn" class="favourites-filter-btn" aria-label="Show favourites">
-                            <svg width="16" height="16" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="currentColor">
-                                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                            <svg width="16" height="16" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"
+                                fill="currentColor">
+                                <path
+                                    d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
                             </svg>
                         </button>
                     </div>
@@ -124,16 +182,21 @@
                         <div class="select-items select-hide"></div>
                     </div>
                 </section>
-    
+
                 <section id="prompt-list" class="prompt-list-container">
                     <!-- Prompts will be dynamically inserted here by JavaScript -->
                 </section>
             </main>
         </div>
         <footer class="app-footer">
-            <p>Made with <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m2 2 8 8m12-8-8 8"/><ellipse cx="12" cy="9" rx="10" ry="5"/><path d="M7 13.4v7.9m5-7.3v8m5-8.6v7.9M2 9v8a10 5 0 0 0 20 0V9"/></svg> by Dan Mason</p>
+            <p>Made with <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="m2 2 8 8m12-8-8 8" />
+                    <ellipse cx="12" cy="9" rx="10" ry="5" />
+                    <path d="M7 13.4v7.9m5-7.3v8m5-8.6v7.9M2 9v8a10 5 0 0 0 20 0V9" />
+                </svg> by Dan Mason</p>
         </footer>
         <script src="script.js"></script>
     </div>
 </body>
+
 </html>

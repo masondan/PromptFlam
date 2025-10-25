@@ -26,7 +26,8 @@ body {
 
 /* --- 2. LAYOUT & CONTAINER STYLES --- */
 .app-container {
-    max-width: 960px; /* Adjusted for a more focused content area */
+    max-width: 960px;
+    /* Adjusted for a more focused content area */
     margin: 0 auto;
     padding: 2rem 1rem;
 }
@@ -66,6 +67,7 @@ body {
     align-items: center;
     justify-content: center;
 }
+
 .search-toggle-btn svg {
     stroke: white;
     width: 52px;
@@ -148,7 +150,7 @@ body {
     border-radius: 6px;
     max-height: 75vh;
     overflow-y: auto;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .select-hide {
@@ -165,7 +167,8 @@ body {
     border-bottom: none;
 }
 
-.select-items div:hover, .same-as-selected {
+.select-items div:hover,
+.same-as-selected {
     background-color: #f0f0f0;
 }
 
@@ -212,8 +215,9 @@ body {
 } */
 
 /* --- 4. PROMPT LIST & CARDS (NEW STRUCTURE) --- */
-.category-group + .category-group {
-    margin-top: 3rem; /* Space between major category groups */
+.category-group+.category-group {
+    margin-top: 3rem;
+    /* Space between major category groups */
 }
 
 .category-title {
@@ -230,8 +234,9 @@ body {
     border: 1px solid var(--bg-medium);
     border-radius: 8px;
     padding: 1.5rem;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-    margin-bottom: 1.5rem; /* Space between cards in the same category */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    margin-bottom: 1.5rem;
+    /* Space between cards in the same category */
 }
 
 .subcategory-title-row {
@@ -249,7 +254,7 @@ body {
     margin: 0;
 }
 
-.task-item + .task-item {
+.task-item+.task-item {
     margin-top: 1rem;
     padding-top: 1rem;
     border-top: 1px solid var(--bg-light);
@@ -323,9 +328,17 @@ body {
 
 /* Adds animation to copy button */
 @keyframes pulse-animation {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.2); }
-  100% { transform: scale(1); }
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.2);
+    }
+
+    100% {
+        transform: scale(1);
+    }
 }
 
 /* Back to top button */
@@ -343,11 +356,13 @@ body {
 
 /* --- 5. FOOTER --- */
 .app-footer {
-    background-color: #555555; /* Same as header */
+    background-color: #555555;
+    /* Same as header */
     color: white;
     text-align: center;
     padding: 1.5rem;
-    margin-top: 3rem; /* Pushes footer away from the content */
+    margin-top: 3rem;
+    /* Pushes footer away from the content */
 }
 
 .app-footer p {
@@ -379,7 +394,8 @@ body {
     }
 
     .header-container {
-        padding: 1rem 1.5rem; /* Match the new app-container padding */
+        padding: 1rem 1.5rem;
+        /* Match the new app-container padding */
     }
 
     .logo {
@@ -394,250 +410,374 @@ body {
 
 /* --- 7. SPLASH SCREEN --- */
 #splash-screen {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: linear-gradient(135deg, #8A2BE2 0%, #4B0082 100%);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-  padding: 2rem;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: linear-gradient(135deg, #8A2BE2 0%, #4B0082 100%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    padding: 2rem;
 }
 
 .splash-content {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  width: 100%;
-  align-items: center;
-  text-align: center;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+    align-items: center;
+    text-align: center;
 }
 
 .splash-main-content {
-  flex-grow: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 1rem;
-  max-width: 320px; /* Control max width of content */
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    max-width: 320px;
+    /* Control max width of content */
 }
 
 .splash-logo {
-  width: 300px;
-  height: auto;
-  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
-  margin-bottom: 1.5rem;
+    width: 300px;
+    height: auto;
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+    margin-bottom: 1.5rem;
 }
 
 .splash-text {
-  font-size: 1.2rem;
-  color: #FFFFFF;
-  margin: 0;
-  font-weight: 400;
-  line-height: 1.4;
+    font-size: 1.2rem;
+    color: #FFFFFF;
+    margin: 0;
+    font-weight: 400;
+    line-height: 1.4;
 }
 
 #enter-app-btn {
-  background: #FFD700;
-  color: #000000;
-  border: none;
-  padding: 1rem 2rem;
-  border-radius: 8px;
-  font-size: 1.1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  margin-top: 1.5rem;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    background: #FFD700;
+    color: #000000;
+    border: none;
+    padding: 1rem 2rem;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin-top: 1.5rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 #enter-app-btn:hover {
-  background: #FFC107;
-  transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(0,0,0,0.3);
+    background: #FFC107;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
 }
 
 
 /* Mobile adjustments */
 @media (max-width: 480px) {
-  #splash-screen {
-    padding: 2rem;
-  }
+    #splash-screen {
+        padding: 2rem;
+    }
 
-  .splash-logo {
-    width: 200px;
-  }
+    .splash-logo {
+        width: 200px;
+    }
 
-  .splash-text {
-    font-size: 1rem;
-  }
+    .splash-text {
+        font-size: 1rem;
+    }
 
-  #enter-app-btn {
-    padding: 0.875rem 1.5rem;
-    font-size: 1rem;
-  }
+    #enter-app-btn {
+        padding: 0.875rem 1.5rem;
+        font-size: 1rem;
+    }
 }
 
-/* --- 8. TOOLTIP --- */
+/* --- 8. EDIT DRAWER --- */
+.edit-drawer-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 2000;
+    transition: opacity 0.3s ease;
+}
+
+.edit-drawer-overlay.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.edit-drawer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: var(--bg-light);
+    z-index: 2100;
+    display: flex;
+    flex-direction: column;
+    transform: translateY(100%);
+    transition: transform 0.3s ease-out;
+}
+
+.edit-drawer.hidden {
+    transform: translateY(100%);
+    pointer-events: none;
+}
+
+.edit-drawer.open {
+    transform: translateY(0);
+}
+
+.edit-drawer-content {
+    flex: 1;
+    padding: 2rem 1rem;
+    /* ☝️ Controls MARGIN OUTSIDE textarea (top/bottom left/right) */
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    /* ☝️ Controls space BETWEEN icon row and textarea (reduce this to bring them closer) */
+}
+
+.edit-drawer-actions {
+    display: flex;
+    justify-content: space-between;
+    /* ☝️ Share/Copy left, Close right */
+    gap: 1rem;
+    align-items: center;
+}
+
+.edit-drawer-actions-left {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.edit-drawer-icon-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #555555;
+    transition: all 0.2s ease;
+}
+
+.edit-drawer-icon-btn:hover {
+    transform: scale(1.1);
+}
+
+.edit-drawer-icon-btn.copied {
+    color: #4f0388;
+    animation: pulse-animation 0.4s ease-in-out;
+}
+
+.edit-drawer-icon-btn svg {
+    width: 24px;
+    height: 24px;
+}
+
+.edit-drawer-textarea {
+    width: 100%;
+    flex: 1;
+    padding: 1.5rem;
+    /* ☝️ Controls PADDING INSIDE textarea (between border and text) */
+    font-size: 1rem;
+    line-height: 1.6;
+    font-family: var(--font-primary);
+    color: var(--text-dark);
+    background-color: #ffffff;
+    border: 1px solid var(--bg-medium);
+    border-radius: 6px;
+    resize: none;
+    outline: none;
+}
+
+.edit-drawer-textarea:focus {
+    border-color: var(--bg-medium);
+}
+
+.edit-drawer-textarea::placeholder {
+    color: var(--text-light);
+}
+
+/* Mobile adjustments for edit drawer */
+@media (max-width: 768px) {
+    .edit-drawer-content {
+        padding: 2rem 1.5rem;
+        /* ☝️ Mobile: top/bottom 2rem, left/right 1.5rem (more breathing room on mobile) */
+    }
+}
+
+/* --- 9. TOOLTIP --- */
 .tooltip-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background-color: rgba(0, 0, 0, 0.5);
-  z-index: 1050;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1050;
 }
 
 .tooltip {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background-color: #e6e2fff2;
-  color: #000000;
-  padding: 1.5rem;
-  border-radius: 12px;
-  max-width: 320px;
-  width: 80%;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
-  border: 1px solid #cccccc;
-  z-index: 1100;
-  animation: tooltipFadeIn 0.3s ease-out;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #e6e2fff2;
+    color: #000000;
+    padding: 1.5rem;
+    border-radius: 12px;
+    max-width: 320px;
+    width: 80%;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+    border: 1px solid #cccccc;
+    z-index: 1100;
+    animation: tooltipFadeIn 0.3s ease-out;
 }
 
 @keyframes tooltipFadeIn {
-  from {
-    opacity: 0;
-    transform: translate(-50%, -45%);
-  }
-  to {
-    opacity: 1;
-    transform: translate(-50%, -50%);
-  }
+    from {
+        opacity: 0;
+        transform: translate(-50%, -45%);
+    }
+
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%);
+    }
 }
 
 .tooltip-content {
-  position: relative;
+    position: relative;
 }
 
 .tooltip-text-area {
-  min-height: 120px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
+    min-height: 120px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
 .tooltip-text-area h3 {
-  margin-top: 0;
-  margin-bottom: 0.75rem;
-  font-size: 1.2rem;
-  color: #333;
-  text-align: center;
+    margin-top: 0;
+    margin-bottom: 0.75rem;
+    font-size: 1.2rem;
+    color: #333;
+    text-align: center;
 }
 
 .tooltip-text-area p {
-  margin-top: 0;
-  margin-bottom: 1.5rem;
-  font-size: 0.9rem;
-  font-weight: 700;
-  line-height: 1.5;
-  color: #333;
-  text-align: center;
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+    font-size: 0.9rem;
+    font-weight: 700;
+    line-height: 1.5;
+    color: #333;
+    text-align: center;
 }
 
 .tooltip-close {
-  position: absolute;
-  top: -10px;
-  right: -10px;
-  background-color: #555;
-  color: #fff;
-  border: none;
-  border-radius: 50%;
-  width: 32px;
-  height: 32px;
-  font-size: 22px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background-color 0.2s ease;
-  z-index: 1;
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    background-color: #555;
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    font-size: 22px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s ease;
+    z-index: 1;
 }
 
 .tooltip-close:hover {
-  background-color: #000;
+    background-color: #000;
 }
 
 .tooltip-close svg {
-  width: 16px;
-  height: 16px;
+    width: 16px;
+    height: 16px;
 }
 
 .tooltip-footer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 1rem;
 }
 
 .tooltip-progress-dots {
-  display: flex;
-  gap: 6px;
-  flex-grow: 1;
-  justify-content: center;
+    display: flex;
+    gap: 6px;
+    flex-grow: 1;
+    justify-content: center;
 }
 
 .tooltip-progress-dots .dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background-color: #888888;
-  transition: background-color 0.3s;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: #888888;
+    transition: background-color 0.3s;
 }
 
 .tooltip-progress-dots .dot.active {
-  background-color: #555555;
+    background-color: #555555;
 }
 
 .tooltip-arrow-btn {
-  background: none;
-  border: none;
-  padding: 0;
-  margin: 0;
-  cursor: pointer;
-  font-size: 32px;
-  line-height: 1;
-  transition: all 0.2s ease-in-out;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    cursor: pointer;
+    font-size: 32px;
+    line-height: 1;
+    transition: all 0.2s ease-in-out;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
 }
 
 .tooltip-arrow-btn svg {
-  width: 36px;
-  height: 36px;
-  fill: #ffffff;
+    width: 36px;
+    height: 36px;
+    fill: #ffffff;
 }
 
 .tooltip-arrow-btn:not(.inactive) {
-  background-color: #4f0388;
+    background-color: #4f0388;
 }
 
 .tooltip-arrow-btn:hover:not(.inactive) {
-  background-color: #4f0388;
+    background-color: #4f0388;
 }
 
 .tooltip-arrow-btn.inactive {
-  background-color: transparent;
-  cursor: default;
+    background-color: transparent;
+    cursor: default;
 }
 
 .tooltip-arrow-btn.inactive svg {
-  fill: #777777;
+    fill: #777777;
 }

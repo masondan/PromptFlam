@@ -100,6 +100,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const searchContainer = document.getElementById('search-container');
     const favouritesFilterBtn = document.getElementById('favourites-filter-btn');
 
+    // Edit drawer elements
+    const editDrawer = document.getElementById('edit-drawer');
+    const editDrawerOverlay = document.getElementById('edit-drawer-overlay');
+    const editDrawerTextarea = document.getElementById('edit-drawer-textarea');
+    const editDrawerCopyBtn = document.getElementById('edit-drawer-copy-btn');
+    const editDrawerShareBtn = document.getElementById('edit-drawer-share-btn');
+    const editDrawerCloseBtn = document.getElementById('edit-drawer-close-btn');
+
     // --- 3. CUSTOM SELECT DROPDOWN LOGIC ---
     function initCustomSelect(selectElement) {
         const selected = selectElement.querySelector('.select-selected');
@@ -132,7 +140,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Add click listeners to new options
             Array.from(items.children).forEach(item => {
-                item.addEventListener('click', function() {
+                item.addEventListener('click', function () {
                     selectedText.textContent = this.textContent;
                     selectElement.dataset.value = this.getAttribute('data-value');
                     items.classList.add('select-hide');
@@ -155,6 +163,87 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     document.addEventListener('click', closeAllSelect);
+
+    // --- 3B. EDIT DRAWER FUNCTIONS ---
+    function openEditDrawer(promptId) {
+        const prompt = allPrompts.find(p => p.id === promptId);
+        if (!prompt) return;
+
+        // Extract plain text from HTML
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = prompt.prompt;
+        const plainText = tempDiv.innerText || tempDiv.textContent;
+
+        // Populate textarea
+        editDrawerTextarea.value = plainText;
+
+        // Show drawer
+        editDrawerOverlay.classList.remove('hidden');
+        editDrawer.classList.remove('hidden');
+
+        // Trigger animation
+        setTimeout(() => {
+            editDrawer.classList.add('open');
+        }, 10);
+
+        // Focus textarea with small delay for iOS
+        setTimeout(() => {
+            editDrawerTextarea.focus();
+            // Move cursor to end of text
+            editDrawerTextarea.setSelectionRange(plainText.length, plainText.length);
+        }, 350);
+
+        // Prevent body scroll
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeEditDrawer() {
+        editDrawer.classList.remove('open');
+
+        setTimeout(() => {
+            editDrawer.classList.add('hidden');
+            editDrawerOverlay.classList.add('hidden');
+            editDrawerTextarea.value = '';
+        }, 300);
+
+        // Restore body scroll
+        document.body.style.overflow = '';
+    }
+
+    function copyTextFromDrawer() {
+        const text = editDrawerTextarea.value;
+        if (!text) return;
+
+        navigator.clipboard.writeText(text).then(() => {
+            editDrawerCopyBtn.classList.add('copied');
+            setTimeout(() => editDrawerCopyBtn.classList.remove('copied'), 2000);
+        }).catch(err => console.error('Failed to copy text: ', err));
+    }
+
+    async function shareTextFromDrawer() {
+        const text = editDrawerTextarea.value;
+        if (!text) return;
+
+        // Check if Web Share API is supported
+        if (navigator.share) {
+            try {
+                await navigator.share({
+                    text: text,
+                    title: 'PromptFlam Prompt'
+                });
+            } catch (err) {
+                // User cancelled or error occurred
+                if (err.name !== 'AbortError') {
+                    console.error('Share failed:', err);
+                    // Fallback to copy
+                    copyTextFromDrawer();
+                }
+            }
+        } else {
+            // Fallback to copy for desktop
+            copyTextFromDrawer();
+        }
+    }
 
     // --- 4. FUNCTIONS ---
     function displayPrompts(prompts) {
@@ -188,6 +277,9 @@ document.addEventListener('DOMContentLoaded', () => {
                         <div class="task-item">
                             ${task.prompt.trim().startsWith('<p>') ? task.prompt.replace('<p>', `<p>${task.task ? `<strong class="task-label">${task.task}</strong> ` : ''}`) : `<p>${task.task ? `<strong class="task-label">${task.task}</strong> ` : ''}${task.prompt}</p>`}
                             <div class="action-buttons">
+                                <button class="action-btn edit-btn" data-prompt-id="${task.id}" aria-label="Edit prompt">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                                </button>
                                 <button class="action-btn copy-btn" data-prompt-id="${task.id}" aria-label="Copy prompt">
                                     <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M1 9.50006C1 10.3285 1.67157 11.0001 2.5 11.0001H4L4 10.0001H2.5C2.22386 10.0001 2 9.7762 2 9.50006L2 2.50006C2 2.22392 2.22386 2.00006 2.5 2.00006L9.5 2.00006C9.77614 2.00006 10 2.22392 10 2.50006V4.00002H5.5C4.67158 4.00002 4 4.67159 4 5.50002V12.5C4 13.3284 4.67158 14 5.5 14H12.5C13.3284 14 14 13.3284 14 12.5V5.50002C14 4.67159 13.3284 4.00002 12.5 4.00002H11V2.50006C11 1.67163 10.3284 1.00006 9.5 1.00006H2.5C1.67157 1.00006 1 1.67163 1 2.50006V9.50006ZM5 5.50002C5 5.22388 5.22386 5.00002 5.5 5.00002H12.5C12.7761 5.00002 13 5.22388 13 5.50002V12.5C13 12.7762 12.7761 13 12.5 13H5.5C5.22386 13 5 12.7762 5 12.5V5.50002Z" fill="currentColor"/></svg>
                                 </button>
@@ -274,6 +366,10 @@ document.addEventListener('DOMContentLoaded', () => {
         if (target.classList.contains('subcategory-favourite-btn')) {
             toggleFavourite(target.dataset.subcategoryId);
         }
+        if (target.classList.contains('edit-btn')) {
+            const promptId = parseInt(target.dataset.promptId, 10);
+            openEditDrawer(promptId);
+        }
         if (target.classList.contains('copy-btn')) {
             const promptId = parseInt(target.dataset.promptId, 10);
             const promptToCopy = allPrompts.find(p => p.id === promptId);
@@ -319,6 +415,19 @@ document.addEventListener('DOMContentLoaded', () => {
             subcategoryFilter.classList.add('hidden');
         }
         applyFilters();
+    });
+
+    // Edit drawer event listeners
+    editDrawerCloseBtn.addEventListener('click', closeEditDrawer);
+    editDrawerOverlay.addEventListener('click', closeEditDrawer);
+    editDrawerCopyBtn.addEventListener('click', copyTextFromDrawer);
+    editDrawerShareBtn.addEventListener('click', shareTextFromDrawer);
+
+    // Close drawer on escape key
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && !editDrawer.classList.contains('hidden')) {
+            closeEditDrawer();
+        }
     });
 
     // --- 6. INITIALIZATION ---
