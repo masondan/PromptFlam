@@ -169,10 +169,21 @@ document.addEventListener('DOMContentLoaded', () => {
         const prompt = allPrompts.find(p => p.id === promptId);
         if (!prompt) return;
 
-        // Extract plain text from HTML
+        // Extract plain text from HTML, preserving line breaks
         const tempDiv = document.createElement('div');
         tempDiv.innerHTML = prompt.prompt;
-        const plainText = tempDiv.innerText || tempDiv.textContent;
+        
+        // Replace <br> tags with newlines before extracting text
+        tempDiv.querySelectorAll('br').forEach(br => {
+            br.replaceWith('\n');
+        });
+        
+        // Replace closing </p> tags with double newlines for paragraph breaks
+        tempDiv.querySelectorAll('p').forEach(p => {
+            p.insertAdjacentText('afterend', '\n');
+        });
+        
+        const plainText = (tempDiv.innerText || tempDiv.textContent).trim();
 
         // Populate textarea
         editDrawerTextarea.value = plainText;

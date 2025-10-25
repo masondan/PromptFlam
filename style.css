@@ -541,6 +541,10 @@ body {
 
 .edit-drawer-content {
     flex: 1;
+    max-width: 960px;
+    /* ☝️ Matches app-container max-width to prevent width jump on desktop */
+    margin: 0 auto;
+    width: 100%;
     padding: 2rem 1rem;
     /* ☝️ Controls MARGIN OUTSIDE textarea (top/bottom left/right) */
     display: flex;
@@ -603,6 +607,8 @@ body {
     border-radius: 6px;
     resize: none;
     outline: none;
+    -webkit-text-size-adjust: 100%;
+    /* ☝️ Prevents browser auto-adjusting font size on some Android devices */
 }
 
 .edit-drawer-textarea:focus {
@@ -616,8 +622,11 @@ body {
 /* Mobile adjustments for edit drawer */
 @media (max-width: 768px) {
     .edit-drawer-content {
-        padding: 2rem 1.5rem;
-        /* ☝️ Mobile: top/bottom 2rem, left/right 1.5rem (more breathing room on mobile) */
+        padding-top: max(2rem, env(safe-area-inset-top));
+        /* ☝️ Respects notch/status bar on iPhone, prevents button cut-off */
+        padding-bottom: max(2rem, env(safe-area-inset-bottom));
+        padding-left: max(1.5rem, env(safe-area-inset-left));
+        padding-right: max(1.5rem, env(safe-area-inset-right));
     }
 }
 
