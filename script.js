@@ -545,96 +545,52 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Helper function to estimate cursor position from click coordinates in textarea
-    function getCursorPositionFromCoordinates(textarea, clickX, clickY) {
-        const rect = textarea.getBoundingClientRect();
-        const x = clickX - rect.left;
-        const y = clickY - rect.top;
-        
-        // Get the text and split by lines
-        const text = textarea.value;
-        const lines = text.split('\n');
-        
-        // Approximate line height from font size
-        const style = window.getComputedStyle(textarea);
-        const lineHeight = parseInt(style.lineHeight) || parseInt(style.fontSize) * 1.6;
-        
-        // Estimate which line was clicked (accounting for padding)
-        const paddingTop = parseInt(style.paddingTop) || 0;
-        const lineIndex = Math.floor((y - paddingTop) / lineHeight);
-        
-        // Calculate character position up to the clicked line
-        let charPos = 0;
-        for (let i = 0; i < Math.min(lineIndex, lines.length); i++) {
-            charPos += lines[i].length + 1; // +1 for newline
-        }
-        
-        // If we're within a valid line, return position at start of that line
-        // (Precise character calculation is complex, but start of line is good enough for bracket detection)
-        if (lineIndex >= 0 && lineIndex < lines.length) {
-            return charPos;
-        }
-        
-        // Fallback to current selection
-        return textarea.selectionStart;
-    }
-
-    // Track click coordinates for second tap detection
-    let lastClickCoords = { x: 0, y: 0 };
-
     // Bracket selection on textarea click
-    editDrawerTextarea.addEventListener('click', (e) => {
+    editDrawerTextarea.addEventListener('mousedown', (e) => {
+        // Use mousedown instead of click for better control over selection behavior
         const text = editDrawerTextarea.value;
-        const currentSelection = {
-            start: editDrawerTextarea.selectionStart,
-            end: editDrawerTextarea.selectionEnd
-        };
         
-        // Check if there's currently a selection
-        const hasSelection = currentSelection.start !== currentSelection.end;
-        
-        let cursorPos;
-        
-        if (hasSelection && lastSelectedBracket) {
-            // Second tap on selected text - estimate position from click coordinates
-            cursorPos = getCursorPositionFromCoordinates(editDrawerTextarea, e.clientX, e.clientY);
-        } else {
-            // First tap or tap on unselected text - use selectionStart (reliable here)
-            cursorPos = editDrawerTextarea.selectionStart;
-        }
-        
-        const bracket = findBracketAtPosition(text, cursorPos);
+        // Small delay to let browser process the mousedown first
+        setTimeout(() => {
+            const currentSelection = {
+                start: editDrawerTextarea.selectionStart,
+                end: editDrawerTextarea.selectionEnd
+            };
 
-        if (bracket) {
-            // Check if this bracket is already selected (second tap)
-            if (lastSelectedBracket && 
-                lastSelectedBracket.start === bracket.start && 
-                lastSelectedBracket.end === bracket.end &&
-                hasSelection) {
-                
-                // Second tap - deselect and place cursor in middle of bracketed text
-                // This is more reliable than trying to calculate exact click position
-                const middlePos = bracket.start + 1 + Math.floor((bracket.end - bracket.start - 2) / 2);
-                editDrawerTextarea.setSelectionRange(middlePos, middlePos);
-                editDrawerTextarea.focus();
+            // Check if there's currently a selection
+            const hasSelection = currentSelection.start !== currentSelection.end;
+
+            // Use the current cursor position to find if we're in a bracket
+            const clickPos = editDrawerTextarea.selectionStart;
+            const bracket = findBracketAtPosition(text, clickPos);
+
+            if (bracket) {
+                // Check if this bracket is already selected (second tap)
+                if (lastSelectedBracket &&
+                    lastSelectedBracket.start === bracket.start &&
+                    lastSelectedBracket.end === bracket.end &&
+                    hasSelection) {
+
+                    // Second tap - clear tracking and let the cursor stay where browser placed it
+                    lastSelectedBracket = null;
+                    // The browser has already collapsed the selection and placed cursor
+                    return;
+                }
+
+                // First tap - select the bracket
+                editDrawerTextarea.setSelectionRange(bracket.start, bracket.end);
+                lastSelectedBracket = bracket;
+
+                // Show tooltip
+                const textareaRect = editDrawerTextarea.getBoundingClientRect();
+                const isNearBottom = e.clientY > (window.innerHeight / 2);
+                const isMobile = window.innerWidth <= 768;
+                showBracketTooltip(e.clientX, e.clientY, textareaRect, isNearBottom, isMobile);
+            } else {
+                // Not clicking on a bracket - clear tracking
                 lastSelectedBracket = null;
-                return;
             }
-
-            // First tap - select the bracket
-            editDrawerTextarea.setSelectionRange(bracket.start, bracket.end);
-            lastSelectedBracket = bracket;
-
-            // Show tooltip
-            const textareaRect = editDrawerTextarea.getBoundingClientRect();
-            const isNearBottom = e.clientY > (window.innerHeight / 2);
-            const isMobile = window.innerWidth <= 768;
-            showBracketTooltip(e.clientX, e.clientY, textareaRect, isNearBottom, isMobile);
-        } else {
-            lastSelectedBracket = null;
-        }
-        
-        lastClickCoords = { x: e.clientX, y: e.clientY };
+        }, 0);
     });
 
     // Dismiss tooltip on any keystroke
