@@ -598,7 +598,8 @@ body {
     flex: 1;
     padding: 1.5rem;
     /* ☝️ Controls PADDING INSIDE textarea (between border and text) */
-    font-size: 1rem;
+    font-size: 16px;
+    /* ☝️ Changed from 1rem to 16px - prevents Android auto-zoom on textareas */
     line-height: 1.6;
     font-family: var(--font-primary);
     color: var(--text-dark);
