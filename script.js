@@ -108,6 +108,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const editDrawerShareBtn = document.getElementById('edit-drawer-share-btn');
     const editDrawerCloseBtn = document.getElementById('edit-drawer-close-btn');
 
+    // Bracket tooltip elements
+    const bracketTooltip = document.getElementById('bracket-tooltip');
+    const bracketTooltipClose = document.getElementById('bracket-tooltip-close');
+
     // --- 3. CUSTOM SELECT DROPDOWN LOGIC ---
     function initCustomSelect(selectElement) {
         const selected = selectElement.querySelector('.select-selected');
@@ -164,7 +168,97 @@ document.addEventListener('DOMContentLoaded', () => {
 
     document.addEventListener('click', closeAllSelect);
 
-    // --- 3B. EDIT DRAWER FUNCTIONS ---
+    // --- 3B. BRACKET SELECTION FUNCTIONS ---
+    let lastSelectedBracket = null; // Track last selected bracket for double-tap logic
+
+    function findBracketAtPosition(text, cursorPos) {
+        // Find all [bracketed] text patterns
+        const bracketRegex = /\[([^\]]+)\]/g;
+        let match;
+        
+        while ((match = bracketRegex.exec(text)) !== null) {
+            const start = match.index;
+            const end = start + match[0].length;
+            
+            // Check if cursor is inside this bracket (including the brackets themselves)
+            if (cursorPos >= start && cursorPos <= end) {
+                return {
+                    start: start,
+                    end: end,
+                    text: match[0]
+                };
+            }
+        }
+        return null;
+    }
+
+    function showBracketTooltip(x, y, textareaRect, isNearBottom, isMobile) {
+        const hasSeenTip = localStorage.getItem('bracketTipSeen');
+        if (hasSeenTip) return;
+
+        bracketTooltip.classList.remove('hidden');
+        
+        // Wait for browser to calculate dimensions
+        setTimeout(() => {
+            const tooltipWidth = bracketTooltip.offsetWidth;
+            const tooltipHeight = bracketTooltip.offsetHeight;
+            const viewportWidth = window.innerWidth;
+            const viewportHeight = window.innerHeight;
+            
+            let left, top;
+            
+            if (isMobile) {
+                // Mobile: Center horizontally within textarea, position below selection
+                const textareaCenterX = textareaRect.left + (textareaRect.width / 2);
+                left = textareaCenterX - (tooltipWidth / 2);
+                
+                // Ensure tooltip doesn't overflow left/right edges
+                const margin = 10;
+                left = Math.max(margin, Math.min(left, viewportWidth - tooltipWidth - margin));
+                
+                // Position below or above selection
+                if (isNearBottom) {
+                    top = y - tooltipHeight - 10;
+                } else {
+                    top = y + 20;
+                }
+            } else {
+                // Desktop: Position near click but ensure visibility
+                left = x - (tooltipWidth / 2);
+                
+                // Keep within viewport bounds
+                const margin = 20;
+                left = Math.max(margin, Math.min(left, viewportWidth - tooltipWidth - margin));
+                
+                // Position below or above
+                if (isNearBottom) {
+                    top = y - tooltipHeight - 15;
+                } else {
+                    top = y + 15;
+                }
+            }
+            
+            bracketTooltip.style.left = left + 'px';
+            bracketTooltip.style.top = top + 'px';
+            
+            // Trigger show animation
+            bracketTooltip.classList.add('show');
+        }, 10);
+    }
+
+    function hideBracketTooltip() {
+        bracketTooltip.classList.remove('show');
+        setTimeout(() => {
+            bracketTooltip.classList.add('hidden');
+        }, 200);
+    }
+
+    function dismissBracketTooltip() {
+        hideBracketTooltip();
+        localStorage.setItem('bracketTipSeen', 'true');
+    }
+
+    // --- 3C. EDIT DRAWER FUNCTIONS ---
     function openEditDrawer(promptId) {
         const prompt = allPrompts.find(p => p.id === promptId);
         if (!prompt) return;
@@ -440,6 +534,132 @@ document.addEventListener('DOMContentLoaded', () => {
             closeEditDrawer();
         }
     });
+
+    // Prevent context menu on textarea (prevents right-click menu on second tap)
+    editDrawerTextarea.addEventListener('contextmenu', (e) => {
+        const cursorPos = editDrawerTextarea.selectionStart;
+        const text = editDrawerTextarea.value;
+        const bracket = findBracketAtPosition(text, cursorPos);
+        if (bracket) {
+            e.preventDefault();
+        }
+    });
+
+    // Helper function to estimate cursor position from click coordinates in textarea
+    function getCursorPositionFromCoordinates(textarea, clickX, clickY) {
+        const rect = textarea.getBoundingClientRect();
+        const x = clickX - rect.left;
+        const y = clickY - rect.top;
+        
+        // Get the text and split by lines
+        const text = textarea.value;
+        const lines = text.split('\n');
+        
+        // Approximate line height from font size
+        const style = window.getComputedStyle(textarea);
+        const lineHeight = parseInt(style.lineHeight) || parseInt(style.fontSize) * 1.6;
+        
+        // Estimate which line was clicked (accounting for padding)
+        const paddingTop = parseInt(style.paddingTop) || 0;
+        const lineIndex = Math.floor((y - paddingTop) / lineHeight);
+        
+        // Calculate character position up to the clicked line
+        let charPos = 0;
+        for (let i = 0; i < Math.min(lineIndex, lines.length); i++) {
+            charPos += lines[i].length + 1; // +1 for newline
+        }
+        
+        // If we're within a valid line, return position at start of that line
+        // (Precise character calculation is complex, but start of line is good enough for bracket detection)
+        if (lineIndex >= 0 && lineIndex < lines.length) {
+            return charPos;
+        }
+        
+        // Fallback to current selection
+        return textarea.selectionStart;
+    }
+
+    // Track click coordinates for second tap detection
+    let lastClickCoords = { x: 0, y: 0 };
+
+    // Bracket selection on textarea click
+    editDrawerTextarea.addEventListener('click', (e) => {
+        const text = editDrawerTextarea.value;
+        const currentSelection = {
+            start: editDrawerTextarea.selectionStart,
+            end: editDrawerTextarea.selectionEnd
+        };
+        
+        // Check if there's currently a selection
+        const hasSelection = currentSelection.start !== currentSelection.end;
+        
+        let cursorPos;
+        
+        if (hasSelection && lastSelectedBracket) {
+            // Second tap on selected text - estimate position from click coordinates
+            cursorPos = getCursorPositionFromCoordinates(editDrawerTextarea, e.clientX, e.clientY);
+        } else {
+            // First tap or tap on unselected text - use selectionStart (reliable here)
+            cursorPos = editDrawerTextarea.selectionStart;
+        }
+        
+        const bracket = findBracketAtPosition(text, cursorPos);
+
+        if (bracket) {
+            // Check if this bracket is already selected (second tap)
+            if (lastSelectedBracket && 
+                lastSelectedBracket.start === bracket.start && 
+                lastSelectedBracket.end === bracket.end &&
+                hasSelection) {
+                
+                // Second tap - deselect and place cursor in middle of bracketed text
+                // This is more reliable than trying to calculate exact click position
+                const middlePos = bracket.start + 1 + Math.floor((bracket.end - bracket.start - 2) / 2);
+                editDrawerTextarea.setSelectionRange(middlePos, middlePos);
+                editDrawerTextarea.focus();
+                lastSelectedBracket = null;
+                return;
+            }
+
+            // First tap - select the bracket
+            editDrawerTextarea.setSelectionRange(bracket.start, bracket.end);
+            lastSelectedBracket = bracket;
+
+            // Show tooltip
+            const textareaRect = editDrawerTextarea.getBoundingClientRect();
+            const isNearBottom = e.clientY > (window.innerHeight / 2);
+            const isMobile = window.innerWidth <= 768;
+            showBracketTooltip(e.clientX, e.clientY, textareaRect, isNearBottom, isMobile);
+        } else {
+            lastSelectedBracket = null;
+        }
+        
+        lastClickCoords = { x: e.clientX, y: e.clientY };
+    });
+
+    // Dismiss tooltip on any keystroke
+    editDrawerTextarea.addEventListener('input', () => {
+        if (!bracketTooltip.classList.contains('hidden')) {
+            dismissBracketTooltip();
+        }
+    });
+
+    // Tooltip close button
+    bracketTooltipClose.addEventListener('click', (e) => {
+        e.stopPropagation();
+        dismissBracketTooltip();
+    });
+
+    // Dismiss tooltip on tap/click anywhere (including on tooltip itself)
+    document.addEventListener('click', (e) => {
+        if (!bracketTooltip.classList.contains('hidden') && 
+            bracketTooltip.classList.contains('show')) {
+            // Check if click is not on the close button (already handled above)
+            if (!bracketTooltipClose.contains(e.target)) {
+                dismissBracketTooltip();
+            }
+        }
+    }, true); // Use capture phase to catch all clicks
 
     // --- 6. INITIALIZATION ---
     initCustomSelect(categoryFilter);

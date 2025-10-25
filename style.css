@@ -620,6 +620,91 @@ body {
     color: var(--text-light);
 }
 
+.edit-drawer-textarea::selection {
+    background-color: rgba(85, 85, 85, 0.3);
+    /* ☝️ Custom grey selection instead of default blue */
+    color: #333333;
+}
+
+.edit-drawer-textarea::-moz-selection {
+    background-color: rgba(85, 85, 85, 0.3);
+    color: #333333;
+}
+
+/* --- 8B. BRACKET SELECTION TOOLTIP --- */
+.bracket-tooltip {
+    position: fixed;
+    background-color: rgba(85, 85, 85, 0.95);
+    color: #ffffff;
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    min-width: 260px;
+    /* ☝️ Ensures tooltip is wide enough for 2-line layout */
+    max-width: 280px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    z-index: 2200;
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    pointer-events: none;
+}
+
+.bracket-tooltip.show {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+}
+
+.bracket-tooltip.hidden {
+    display: none;
+}
+
+.bracket-tooltip-close {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    transition: opacity 0.2s ease;
+    opacity: 0.7;
+}
+
+.bracket-tooltip-close:hover {
+    opacity: 1;
+}
+
+.bracket-tooltip-close svg {
+    width: 14px;
+    height: 14px;
+}
+
+.bracket-tooltip-content {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    padding-right: 1.5rem;
+}
+
+.bracket-tooltip-icon {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    stroke: #ffffff;
+    /* White info icon */
+}
+
+.bracket-tooltip p {
+    margin: 0;
+    font-size: 0.9rem;
+    line-height: 1.4;
+}
+
 /* Mobile adjustments for edit drawer */
 @media (max-width: 768px) {
     .edit-drawer-content {
@@ -628,6 +713,11 @@ body {
         padding-bottom: max(2rem, env(safe-area-inset-bottom));
         padding-left: max(1.5rem, env(safe-area-inset-left));
         padding-right: max(1.5rem, env(safe-area-inset-right));
+    }
+
+    .bracket-tooltip {
+        max-width: 240px;
+        font-size: 0.85rem;
     }
 }
 
