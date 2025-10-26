@@ -26,10 +26,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const tooltipNext = document.getElementById('tooltip-next');
     const tooltipDots = document.querySelectorAll('.tooltip-progress-dots .dot');
     const tooltipSteps = [
-        { title: 'Welcome', text: 'Browse all prompts, tap search, or drill down using the category dropdown menus.' },
-        { title: 'Favourites', text: 'Tap the heart next to any prompt group then use the button at the top to view favourites.' },
-        { title: 'Copy & Create', text: 'Copy a prompt, paste into your AI chatbot of choice and customise for your story or task.' },
-        { title: 'Always check', text: 'AI can make mistakes - always check sources and facts. Happy storytelling with PromptFlam!' }
+        { title: 'Welcome', text: 'Browse all prompts, tap search, or refine using the dropdown menus.' },
+        { title: 'Favourites', text: 'Add favourite prompts and view using the heart button at the top.' },
+        { title: 'Edit & Share', text: 'Edit your prompt then copy or share to your AI chatbot of choice' },
+        { title: 'Always check', text: 'AI makes mistakes - always check. Happy storytelling with PromptFlam!' }
     ];
     let currentTooltipStep = 0;
 
