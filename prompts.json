@@ -4,7 +4,7 @@
     "category": "Text",
     "subCategory": "Blog",
     "task": "IDEAS",
-    "prompt": "<p>Act as a [role]. Suggest 10 ideas for topical explainer articles that will engage an online audience of [who, where].<br />In each case provide a brief outline and explainer headline. Base your ideas on: [trending topics] [topic x] [URL]</p>"
+    "prompt": "<p>Act as a [role]. Suggest 10 ideas for topical explainer articles that will engage an online audience of [who, where].<br />In each case provide a brief outline and explainer headline. Base your ideas on: [high-engagement news topics] [topic/question] [URL]</p>"
   },
   {
     "id": 2,
