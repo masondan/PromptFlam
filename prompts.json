@@ -4,7 +4,7 @@
     "category": "Text",
     "subCategory": "Blog",
     "task": "IDEAS",
-    "prompt": "<p>Act as a [role]. Suggest 10 ideas for topical, factual explainer articles that will engage an online audience of [who, where].<br />In each case provide a brief outline and explainer headline. Cite sources. Base your ideas on: [recent news] [hot topics] [topic/question] [URL]</p>"
+    "prompt": "<p>Act as a [role]. Suggest 10 ideas for topical, factual explainer articles that will engage an online audience of [who, where].<br />In each case provide a brief outline and explainer headline. Cite sources. Explore high-interest and unusual angles. Base your ideas on: [recent news] [hot topics] [topic/question] [URL]</p>"
   },
   {
     "id": 2,
@@ -39,7 +39,7 @@
     "category": "Text",
     "subCategory": "Lists",
     "task": "IDEAS",
-    "prompt": "<p>Act as a [role]. Suggest [x] creative ideas for a factual, list-based explainer article that will engage an online audience of [who, where].<br />In each case, provide a brief outline and explainer headline. Cite sources.<br />Base the ideas on: [recent news] [hot topics] [topic/question] [URL]</p>"
+    "prompt": "<p>Act as a [role]. Suggest [x] creative ideas for a factual, list-based explainer article that will engage an online audience of [who, where].<br />In each case, provide a brief outline and explainer headline. Cite sources. Explore high-interest and unusual angles.<br />Base the ideas on: [recent news] [hot topics] [topic/question] [URL]</p>"
   },
   {
     "id": 7,
@@ -130,35 +130,35 @@
     "category": "Audio",
     "subCategory": "Mini-pod",
     "task": "SCRIPT",
-    "prompt": "<p>Act as a news podcast writer. Draft a 60-second (150-160 word) script targeting an audience of [who, where].<br />Open with a striking fact or statement (the hook), then provide a fact-based, objective explanation.<br />Avoid opinion, speculation, editorialising or personal remarks. Use clear, concise language and simple sentence structure optimised for voice. Avoid jargon. Use verbal source attribution (eg 'according to'). Compare credible sources to verify facts and add additional context.<br />Base the script on: [topic/question] [URL].</p>"
+    "prompt": "<p>Act as a news podcast writer. Draft a 60-second (150-160 word) script targeting an audience of [who, where].<br />Open with a striking explainer hook, then provide a fact-based, objective explanation.<br />Avoid opinion, speculation, editorialising or personal remarks. Use clear, concise language and simple sentence structure optimised for voice. Avoid jargon. Use verbal source attribution (eg 'according to'). Keep the style fast-paced, informative and audience‑focused. Compare credible sources to verify facts and add additional context.<br />Base the script on: [topic/question] [URL].</p>"
   },
   {
     "id": 20,
     "category": "Video",
     "subCategory": "Slideshow + Titles",
     "task": "IDEAS",
-    "prompt": "<p>Act as a video content creator. Suggest 10 ideas for social media explainer videos targeting an online audience of [who, where].<br />In each case provide an explainer hook and brief outline. Cite sources. Base ideas on [recent news] [hot topics] [topic/question] [URL].</p>"
+    "prompt": "<p>Act as a video content creator. Suggest 10 ideas for social media explainer videos targeting an online audience of [who, where]. Explore high-interest and unusual angles.<br />In each case provide an explainer hook and brief outline. Cite sources. Base ideas on [recent news] [hot topics] [topic/question] [URL].</p>"
   },
   {
     "id": 21,
     "category": "Video",
     "subCategory": "Slideshow + Titles",
     "task": "SCRIPT",
-    "prompt": "<p>Based on number [x], draft a fact-based explainer script with [x] sentences, optimised for a slideshow format viewed on vertical mobile screens.<br />Start with a hook using a question, bold claim or surprising fact. Continue with fact-based sentences of around 20 words to explain the key points in simple, narrative language.<br />Avoid opinion and speculation. Use editorial style to attribute facts and sources inline. Consider other credible sources for added context.<br />Suggest images or visuals, with options, to accompany each sentence.</p>"
+    "prompt": "<p>Based on number [x], draft a fact-based explainer script with [x] sentences, optimised for a slideshow format viewed on vertical mobile screens.<br />Start with a snappy explainer hook. Continue with fact-based sentences of around 20 words to explain the key points in simple, narrative language.<br />Avoid opinion and speculation. Use editorial style to attribute facts and sources inline. Consider other credible sources for added context.<br />Suggest images or visuals, with options, to accompany each sentence.</p>"
   },
   {
     "id": 22,
     "category": "Video",
     "subCategory": "Slideshow + Voiceover",
     "task": "IDEAS",
-    "prompt": "<p>Act as a video content creator. Suggest 10 ideas for social media explainer videos targeting an audience of [who, where].<br />In each case provide an explainer hook and brief outline. Cite sources<br />Base answers on: [recent news] [hot topics] [topic/question] [URL].</p>"
+    "prompt": "<p>Act as a video content creator. Suggest 10 ideas for social media explainer videos targeting an audience of [who, where]. Explore high-interest and unusual angles.<br />In each case provide an explainer hook and brief outline. Cite sources.<br />Base answers on: [recent news] [hot topics] [topic/question] [URL].</p>"
   },
   {
     "id": 23,
     "category": "Video",
     "subCategory": "Slideshow + Voiceover",
     "task": "SCRIPT",
-    "prompt": "<p>Draft a 60-second (150-160 words) fact-based explainer script optimised for voiceover, based on number [x]<br />Start with a hook using a question, bold claim or surprising fact. Follow with a punchy, fact-based script using simple, narrative language.<br />Use verbal source attribution (eg 'according to'). Keep the style fast-paced, informative and audience‑focused.</p>"
+    "prompt": "<p>Draft a 60-second (150-160 words) fact-based explainer script optimised for voiceover, based on number [x]<br />Start with a snappy explainer hook. Follow with a punchy, fact-based script using simple, narrative language.<br />Use verbal source attribution (eg 'according to'). Keep the style fast-paced, informative and audience‑focused.</p>"
   },
   {
     "id": 24,
