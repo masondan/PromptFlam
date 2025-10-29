@@ -144,7 +144,7 @@
     "category": "Video",
     "subCategory": "Slideshow + Titles",
     "task": "SCRIPT",
-    "prompt": "<p>Based on number [x], draft a fact-based explainer script with [x] sentences, optimised for a slideshow format viewed on vertical mobile screens.<br />Start with a snappy explainer hook. Continue with fact-based sentences of around 20 words to explain the key points in simple, narrative language.<br />Avoid opinion and speculation. Use editorial style to attribute facts and sources inline. Consider other credible sources for added context.<br />Suggest images or visuals, with options, to accompany each sentence.</p>"
+    "prompt": "<p>Based on number [x], draft a fact-based explainer script with [x] sentences, optimised for captions viewed on vertical mobile screens.<br />Start with a snappy explainer hook. Continue with fact-based sentences of around 15 words to explain the key points in simple, narrative language.<br />Avoid opinion and speculation. Use editorial style to attribute facts and sources inline. Consider other credible sources for added context.<br />Suggest images or visuals, with options, to accompany each sentence.</p>"
   },
   {
     "id": 22,
