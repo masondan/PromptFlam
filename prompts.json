@@ -4,7 +4,7 @@
     "category": "Text",
     "subCategory": "Blog",
     "task": "IDEAS",
-    "prompt": "<p>Act as a [role]. Suggest 10 ideas for topical, factual explainer articles that will engage an online audience of [who, where].<br />In each case provide a brief outline and explainer headline. Cite sources. Explore high-interest and unusual angles. Base your ideas on: [recent news] [hot topics] [topic/question] [URL]</p>"
+    "prompt": "<p>Act as a [role]. Suggest 10 ideas for topical, factual explainer articles that will engage an online audience of [who, where].<br />In each case provide a brief outline and explainer headline. Cite sources for each idea. Include unusual angles supported by facts. Base your ideas on: [recent news] [hot topics] [topic/question] [URL]</p>"
   },
   {
     "id": 2,
@@ -39,7 +39,7 @@
     "category": "Text",
     "subCategory": "Lists",
     "task": "IDEAS",
-    "prompt": "<p>Act as a [role]. Suggest [x] creative ideas for a factual, list-based explainer article that will engage an online audience of [who, where].<br />In each case, provide a brief outline and explainer headline. Cite sources. Explore high-interest and unusual angles.<br />Base the ideas on: [recent news] [hot topics] [topic/question] [URL]</p>"
+    "prompt": "<p>Act as a [role]. Suggest [x] creative ideas for a factual, list-based explainer article that will engage an online audience of [who, where].<br />In each case, provide a brief outline and explainer headline. Cite sources for each idea. Include unusual angles supported by facts.<br />Base the ideas on: [recent news] [hot topics] [topic/question] [URL]</p>"
   },
   {
     "id": 7,
@@ -137,7 +137,7 @@
     "category": "Video",
     "subCategory": "Slideshow + Titles",
     "task": "IDEAS",
-    "prompt": "<p>Act as a video content creator. Suggest 10 ideas for social media explainer videos targeting an online audience of [who, where]. Explore high-interest and unusual angles.<br />In each case provide an explainer hook and brief outline. Cite sources. Base ideas on [recent news] [hot topics] [topic/question] [URL].</p>"
+    "prompt": "<p>Act as a video content creator. Suggest 10 ideas for social media explainer videos targeting an online audience of [who, where].<br />In each case provide an explainer hook and brief outline. Cite sources for each idea. Include unusual angles supported by facts.<br />Base ideas on [recent news] [hot topics] [topic/question] [URL].</p>"
   },
   {
     "id": 21,
@@ -151,7 +151,7 @@
     "category": "Video",
     "subCategory": "Slideshow + Voiceover",
     "task": "IDEAS",
-    "prompt": "<p>Act as a video content creator. Suggest 10 ideas for social media explainer videos targeting an audience of [who, where]. Explore high-interest and unusual angles.<br />In each case provide an explainer hook and brief outline. Cite sources.<br />Base answers on: [recent news] [hot topics] [topic/question] [URL].</p>"
+    "prompt": "<p>Act as a video content creator. Suggest 10 ideas for high-impact social media explainer videos targeting an audience of [who, where].<br />In each case provide an explainer hook and brief outline. Cite sources for each idea. Include unusual angles supported by facts.<br />Base answers on: [recent news] [hot topics] [topic/question] [URL].</p>"
   },
   {
     "id": 23,
