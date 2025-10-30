@@ -67,7 +67,7 @@
     "category": "Text",
     "subCategory": "Q&A | Numbers | Timeline | Quotes",
     "task": "DRAFT",
-    "prompt": "<p>Act as a [role]. Draft a [Q&amp;A] [in numbers] [timeline] [in quotes] article for a news website that will engage an online audience of [who, where].<br />Provide [x] [questions and answers] [diverse numbers] [timeline milestones] [quotes], each with 150 words of explanation and context.<br />Use only cited, authoritative sources. Use editorial style to attribute facts and sources inline.<br />Base your draft on: [topic] [URL].</p>"
+    "prompt": "<p>Act as a [role]. Draft a [Q&amp;A] [in numbers] [timeline] [in quotes] article for a news website that will engage an online audience of [who, where].<br />Provide [x] [questions and answers] [diverse numbers] [timeline milestones] [quotes], each with 150 words of explanation and context.<br />Use only cited, authoritative sources. Use editorial style to attribute facts and sources inline.<br />Base your draft on: [topic] [URL]</p>"
   },
   {
     "id": 11,
@@ -81,14 +81,14 @@
     "category": "Text",
     "subCategory": "Q&A | Numbers | Timeline | Quotes",
     "task": "HEADLINE",
-    "prompt": "<p>Provide ten headline options for social media that balance impact with credibility. The headline must contain [Q&A] [in numbers] [timeline] [in quotes].</p>"
+    "prompt": "<p>Provide ten headline options for social media that balance impact with credibility. The headline must contain [Q&A] [in numbers] [timeline] [in quotes]</p>"
   },
   {
     "id": 13,
     "category": "Text",
     "subCategory": "In Charts",
     "task": "DRAFT",
-    "prompt": "<p>Act as a data journalist. Draft an 'in charts' article with [x] charts for a trusted news website targeting an online audience of [who, where].<br />Viewed in sequence, the simple charts should tell an engaging, data-driven story. Suggest only minimalist charts, based on readily-accessible, credible data sources. Research diverse credible data sources to present additional interesting and unusual angles, insight and context.<br />For each chart, provide:<br /> 1. A short, catchy title.<br />The chart type that best represents the data (eg pie, donut, line, bar, icon/pictograph chart).<br />3. 200 words of objective, engaging, fact-based explanation. Use editorial style to attribute facts and sources inline.<br />4. The specific data source, with link.<br />5. The chart data provided as as plain CSV text, ready to copy and paste, without any tables or visual formatting.<br />6. A graphic representation of each chart, if possible.<br />Base your answer on: [topic/question] [URL].</p>"
+    "prompt": "<p>Act as a data journalist. Draft an 'in charts' article with [x] charts for a trusted news website targeting an online audience of [who, where].<br />Viewed in sequence, the simple charts should tell an engaging, data-driven story. Suggest only minimalist charts, based on readily-accessible, credible data sources. Research diverse credible data sources to present additional interesting and unusual angles, insight and context.<br />For each chart, provide:<br /> 1. A short, catchy title.<br />The chart type that best represents the data (eg pie, donut, line, bar, icon/pictograph chart).<br />3. 200 words of objective, engaging, fact-based explanation. Use editorial style to attribute facts and sources inline.<br />4. The specific data source, with link.<br />5. The chart data provided as as plain CSV text, ready to copy and paste, without any tables or visual formatting.<br />6. A graphic representation of each chart, if possible.<br />Base your answer on: [topic/question] [URL]</p>"
   },
   {
     "id": 14,
@@ -130,49 +130,49 @@
     "category": "Audio",
     "subCategory": "Mini-pod",
     "task": "SCRIPT",
-    "prompt": "<p>Act as a news podcast writer. Draft a 60-second (150-160 word) script targeting an audience of [who, where].<br />Open with a striking explainer hook, then provide a fact-based, objective explanation.<br />Avoid opinion, speculation, editorialising or personal remarks. Use clear, concise language and simple sentence structure optimised for voice. Avoid jargon. Use verbal source attribution (eg 'according to'). Keep the style fast-paced, informative and audience‑focused. Compare credible sources to verify facts and add additional context.<br />Base the script on: [topic/question] [URL].</p>"
+    "prompt": "<p>Act as a news podcast writer. Draft a 60-second (150-160 word) script targeting an audience of [who, where].<br />Open with a striking explainer hook, then provide a fact-based, objective explanation.<br />Avoid opinion, speculation, editorialising or personal remarks. Use clear, concise language and simple sentence structure optimised for voice. Avoid jargon. Use verbal source attribution (eg 'according to'). Keep the style fast-paced, informative and audience‑focused. Compare credible sources to verify facts and add additional context.<br />Base the script on: [topic/question] [URL]</p>"
   },
   {
     "id": 20,
     "category": "Video",
     "subCategory": "Slideshow + Titles",
     "task": "IDEAS",
-    "prompt": "<p>Act as a video content creator. Suggest 10 ideas for social media explainer videos targeting an online audience of [who, where].<br />In each case provide an explainer hook and brief outline. Cite sources for each idea. Include unusual angles supported by facts.<br />Base ideas on [recent news] [hot topics] [topic/question] [URL].</p>"
+    "prompt": "<p>Act as a video content creator. Suggest 10 ideas for social media explainer videos targeting an online audience of [who, where].<br />In each case provide an explainer hook and brief outline. Cite sources for each idea. Include unusual angles supported by facts.<br />Base ideas on [recent news] [hot topics] [topic/question] [URL]</p>"
   },
   {
     "id": 21,
     "category": "Video",
     "subCategory": "Slideshow + Titles",
     "task": "SCRIPT",
-    "prompt": "<p>Based on number [x], draft a fact-based explainer script with [x] sentences, optimised for captions viewed on vertical mobile screens.<br />Start with a snappy explainer hook. Continue with fact-based sentences of around 15 words to explain the key points in simple, narrative language.<br />Avoid opinion and speculation. Use editorial style to attribute facts and sources inline. Consider other credible sources for added context.<br />Suggest images or visuals, with options, to accompany each sentence.</p>"
+    "prompt": "<p>Draft a fact-based explainer script with [x] sentences, optimised for captions viewed on vertical mobile screens.<br />Start with a snappy explainer hook. Continue with fact-based sentences of around 15 words to explain the key points in simple, narrative language.<br />Avoid opinion and speculation. Use editorial style to attribute facts and sources inline. Consider other credible sources for added context.<br />Suggest images or visuals to accompany each sentence.<br />Base answers on: [idea number x] [topic/question] [URL]</p>"
   },
   {
     "id": 22,
     "category": "Video",
     "subCategory": "Slideshow + Voiceover",
     "task": "IDEAS",
-    "prompt": "<p>Act as a video content creator. Suggest 10 ideas for high-impact social media explainer videos targeting an audience of [who, where].<br />In each case provide an explainer hook and brief outline. Cite sources for each idea. Include unusual angles supported by facts.<br />Base answers on: [recent news] [hot topics] [topic/question] [URL].</p>"
+    "prompt": "<p>Act as a video content creator. Suggest 10 ideas for high-impact social media explainer videos targeting an audience of [who, where].<br />In each case provide an explainer hook and brief outline. Cite sources for each idea. Include unusual angles supported by facts.<br />Base answers on: [recent news] [hot topics] [topic/question] [URL]</p>"
   },
   {
     "id": 23,
     "category": "Video",
     "subCategory": "Slideshow + Voiceover",
     "task": "SCRIPT",
-    "prompt": "<p>Draft a 60-second (150-160 words) fact-based explainer script optimised for voiceover, based on number [x]<br />Start with a snappy explainer hook. Follow with a punchy, fact-based script using simple, narrative language.<br />Use verbal source attribution (eg 'according to'). Keep the style fast-paced, informative and audience‑focused.</p>"
+    "prompt": "<p>Draft a [30-second][60-second]fact-based explainer script optimised for voiceover, based on number [x]<br />Start with a snappy explainer hook. Follow with a punchy, fact-based script using simple, narrative language.<br />Use verbal source attribution (eg 'according to') for facts and sources. Consider other credible sources for added context. Keep the style fast-paced, informative and audience‑focused.<br />Base answers on: [idea number x] [topic/question] [URL]</p>"
   },
   {
     "id": 24,
     "category": "Social Media",
     "subCategory": "Posts",
     "task": "DRAFT",
-    "prompt": "<p>Act as a social media content expert. Draft [x] social media posts targeting an audience of [who, where].<br />Optimise for: [Facebook] [X] [Instagram] [LinkedIn]<br />Post type: [Post], [Story]<br />For each post provide:<br />1 - Attention-grabbing image or visual ideas.<br />2 - High-impact overlay text.<br />3 - An audience-focused caption, with high-engagement hashtags.<br />Make the tone [professional] [informative] [empowering] [motivational] [entertaining] [urgent] [action-oriented] [empathetic].<br />Base answers on [topic] [URL].</p>"
+    "prompt": "<p>Act as a social media content expert. Draft [x] social media posts targeting an audience of [who, where].<br />Optimise for: [Facebook] [X] [Instagram] [LinkedIn]<br />Post type: [Post], [Story]<br />For each post provide:<br />1 - Attention-grabbing image or visual ideas.<br />2 - High-impact overlay text.<br />3 - An audience-focused caption, with high-engagement hashtags.<br />Make the tone [professional] [informative] [empowering] [motivational] [entertaining] [urgent] [action-oriented] [empathetic].<br />Base answers on [topic] [URL]</p>"
   },
   {
     "id": 25,
     "category": "Social Media",
     "subCategory": "Carousel",
     "task": "DRAFT",
-    "prompt": "<p>Act as a social media content expert. Break down the following topic into an explainer carousel for an audience of [who, where].<br />Start with a question (eg who, what, why, where, when, how). Continue with fact-based captions of around 20 words to explain the key points in simple, narrative language.<br />Avoid opinion and speculation. Use editorial style to attribute facts and sources inline. Consider other credible sources for added context.<br />Suggest images or visuals for each caption. Total number of slides: [x]<br />Base the carousel on: [topic/question] [URL].</p>"
+    "prompt": "<p>Act as a social media content expert. Break down the following topic into an explainer carousel for an audience of [who, where].<br />Start with a question (eg who, what, why, where, when, how). Continue with fact-based captions of around 20 words to explain the key points in simple, narrative language.<br />Avoid opinion and speculation. Use editorial style to attribute facts and sources inline. Consider other credible sources for added context.<br />Suggest images or visuals for each caption. Total number of slides: [x]<br />Base the carousel on: [topic/question] [URL]</p>"
   },
   {
     "id": 26,
@@ -186,7 +186,7 @@
     "category": "Social Media",
     "subCategory": "Quotes | Numbers | Myths",
     "task": "DRAFT",
-    "prompt": "<p>Act as a social media content creator. Draft [x] image+text-overlay posts featuring [quotes] [facts] [numbers] [myths+facts], targeting an audience of [who, where].<br />Optimise for: [Facebook] [X] [Instagram] [LinkedIn]<br />For each post suggest:<br />1 - Attention-grabbing image or visual ideas.<br />2 - High-impact overlay text.<br />3 - An audience-focused caption, with high-engagement hashtags.<br />Make the tone [professional] [informative] [empowering] [motivational] [entertaining] [urgent] [action-oriented] [empathetic].<br />Base answers on: [topic] [URL].</p>"
+    "prompt": "<p>Act as a social media content creator. Draft [x] image+text-overlay posts featuring [quotes] [facts] [numbers] [myths+facts], targeting an audience of [who, where].<br />Optimise for: [Facebook] [X] [Instagram] [LinkedIn]<br />For each post suggest:<br />1 - Attention-grabbing image or visual ideas.<br />2 - High-impact overlay text.<br />3 - An audience-focused caption, with high-engagement hashtags.<br />Make the tone [professional] [informative] [empowering] [motivational] [entertaining] [urgent] [action-oriented] [empathetic].<br />Base answers on: [topic] [URL]</p>"
   },
   {
     "id": 28,
@@ -207,7 +207,7 @@
     "category": "Website",
     "subCategory": "Landing Page",
     "task": "DRAFT",
-    "prompt": "<p>Act as a copywriting expert. Craft compelling, optimised landing page copy for a website targeting an audience of [who, where].<br />The objective is to: [eg promote a service or campaign, drive subscriptions or donations].<br />Aim for [wordcount].<br />Include headings, calls to action and suggest images/visuals.<br />Make the tone [professional] [informative] [empowering] [motivational] [entertaining] [urgent] [action-oriented] [empathetic].<br />For context: [URL].</p>"
+    "prompt": "<p>Act as a copywriting expert. Craft compelling, optimised landing page copy for a website targeting an audience of [who, where].<br />The objective is to: [eg promote a service or campaign, drive subscriptions or donations].<br />Aim for [wordcount].<br />Include headings, calls to action and suggest images/visuals.<br />Make the tone [professional] [informative] [empowering] [motivational] [entertaining] [urgent] [action-oriented] [empathetic].<br />For context: [URL]</p>"
   },
   {
     "id": 31,
