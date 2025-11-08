@@ -158,7 +158,7 @@
     "category": "Audio",
     "subCategory": "Mini-pod",
     "task": "STANDALONE",
-    "prompt": "<p>Act as a professional podcast scriptwriter. Draft a script for a [x] minute mini-podcast episode that will engage an audience of [who, where].<br />Base the script on: [topic/question] [URL]<br />Open with a striking explainer hook, then provide a fact-based, objective explanation.<br />Avoid opinion or speculation. Use clear, concise language and simple sentence structure optimised for voice. Avoid jargon. Use verbal source attribution (eg 'according to').<br />Keep the style fast-paced, informative and audience‑focused. Compare credible sources to verify facts and add additional context.</p>"
+    "prompt": "<p>Act as a professional podcast scriptwriter. Draft a script for a [x] minute mini-podcast episode that will engage an audience of [who, where].<br />About the podcast: [name, description]<br />Base the script on: [topic/question] [URL]<br />Open with a striking explainer hook, then provide a fact-based, objective explanation.<br />Avoid opinion or speculation. Use clear, concise language and simple sentence structure optimised for voice. Avoid jargon. Use verbal source attribution (eg 'according to').<br />Keep the style fast-paced, informative and audience‑focused. Compare credible sources to verify facts and add additional context.</p>"
   },
   {
     "id": 24,
