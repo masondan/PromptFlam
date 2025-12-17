@@ -103,6 +103,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Edit drawer elements
     const editDrawer = document.getElementById('edit-drawer');
     const editDrawerOverlay = document.getElementById('edit-drawer-overlay');
+
     const editDrawerTextarea = document.getElementById('edit-drawer-textarea');
     const editDrawerCopyBtn = document.getElementById('edit-drawer-copy-btn');
     const editDrawerShareBtn = document.getElementById('edit-drawer-share-btn');

@@ -3,6 +3,12 @@ node_modules/
 dist/
 build/
 .cache/
+.svelte-kit/
+
+# Environment Files
+.env
+.env.local
+.env.*.local
 
 # Logs and Temporary Files
 logs/
