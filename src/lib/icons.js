@@ -1,8 +1,8 @@
 /**
  * Icon Barrel Export
  * 
- * Central export for all SVG icons from public/icons/
- * Icons are loaded as raw SVG strings and rendered via Icon.svelte component.
+ * Central export for all SVG icons from static/icons/
+ * Icons are loaded as img tags and rendered via Icon.svelte component.
  * 
  * Naming convention: icon-{name}.svg and icon-{name}-fill.svg for variants
  * 
@@ -12,9 +12,10 @@
  *   <Icon name="create" filled={true} size={24} />
  */
 
-// Icon paths - these map to files in /public/icons/
+// Icon paths - these map to files in /static/icons/
+// SvelteKit serves static/ from root, so path is /icons/...
 export const iconPaths = {
-	// Navigation icons
+	// Navigation icons (header)
 	create: '/icons/icon-create.svg',
 	'create-fill': '/icons/icon-create-fill.svg',
 	prompts: '/icons/icon-prompts.svg',
@@ -26,12 +27,20 @@ export const iconPaths = {
 	
 	// Chat/Create page icons
 	send: '/icons/icon-send.svg',
+	'send-fill': '/icons/icon-send-fill.svg',
 	close: '/icons/icon-close.svg',
 	newchat: '/icons/icon-newchat.svg',
+	'busy-fill': '/icons/icon-busy-fill.svg',
+	
+	// Prompt card icons
+	expand: '/icons/icon-expand.svg',
+	collapse: '/icons/icon-collapse.svg',
+	copy: '/icons/icon-copy.svg',
 	
 	// Response action icons
 	rewrite: '/icons/icon-rewrite.svg',
 	sources: '/icons/icon-sources.svg',
+	share: '/icons/icon-share.svg',
 	info: '/icons/icon-info.svg'
 };
 
