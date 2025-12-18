@@ -9,6 +9,63 @@
 
 	const dispatch = createEventDispatcher();
 
+	let enrichedSources = [];
+	let isLoading = false;
+	let hasAttemptedFetch = false;
+
+	// Watch for drawer opening and fetch metadata
+	$: if (isOpen && sources.length > 0 && !hasAttemptedFetch) {
+		fetchMetadata();
+	}
+
+	// Reset when sources change
+	$: if (sources) {
+		enrichedSources = sources.map(s => ({ ...s }));
+		hasAttemptedFetch = false;
+	}
+
+	async function fetchMetadata() {
+		if (isLoading) return;
+		
+		isLoading = true;
+		hasAttemptedFetch = true;
+
+		try {
+			const urls = sources.map(s => s.url).filter(Boolean);
+			if (urls.length === 0) {
+				isLoading = false;
+				return;
+			}
+
+			const response = await fetch('/api/metadata', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ urls })
+			});
+
+			if (response.ok) {
+				const { metadata } = await response.json();
+				
+				// Enrich sources with fetched metadata
+				enrichedSources = sources.map(source => {
+					const meta = metadata[source.url];
+					if (meta) {
+						return {
+							...source,
+							title: meta.title || source.title,
+							excerpt: meta.excerpt || source.excerpt
+						};
+					}
+					return source;
+				});
+			}
+		} catch (error) {
+			console.error('Failed to fetch metadata:', error);
+		} finally {
+			isLoading = false;
+		}
+	}
+
 	function close() {
 		dispatch('close');
 	}
@@ -25,16 +82,37 @@
 		}
 	}
 
-	function truncateText(text, maxLength) {
-		if (!text) return '';
-		if (text.length <= maxLength) return text;
-		return text.slice(0, maxLength) + '...';
-	}
-
 	function openSource(url) {
 		if (url) {
 			window.open(url, '_blank', 'noopener,noreferrer');
 		}
+	}
+
+	function formatWebsiteName(domain) {
+		if (!domain) return 'Link';
+		// Remove TLD and format: "premiumtimes.ng" → "Premium Times"
+		const parts = domain.split('.');
+		const name = parts[0];
+		// Split on common separators and capitalize
+		return name
+			.replace(/[-_]/g, ' ')
+			.replace(/([a-z])([A-Z])/g, '$1 $2')
+			.split(' ')
+			.map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+			.join(' ');
+	}
+
+	function getDisplayTitle(source) {
+		// If we have a real title (not "Source X"), use it
+		if (source.title && !source.title.startsWith('Source ')) {
+			return source.title;
+		}
+		// Otherwise use formatted website name
+		return formatWebsiteName(source.domain);
+	}
+
+	function hasRichContent(source) {
+		return source.title && !source.title.startsWith('Source ') && source.excerpt;
 	}
 </script>
 
@@ -58,10 +136,13 @@
 					<Icon name="close" size={20} />
 				</button>
 				<h2 class="drawer-title">Sources</h2>
+				{#if isLoading}
+					<span class="loading-indicator"></span>
+				{/if}
 			</div>
 			
 			<div class="sources-list">
-				{#each sources as source, index}
+				{#each enrichedSources as source, index}
 					<button 
 						class="source-card"
 						class:highlighted={index === highlightIndex}
@@ -70,16 +151,14 @@
 					>
 						<div class="source-number">{index + 1}.</div>
 						<div class="source-content">
-							<h3 class="source-title">{source.title || source.domain || 'Source'}</h3>
-							{#if source.excerpt}
+							<h3 class="source-title">{getDisplayTitle(source)}</h3>
+							{#if hasRichContent(source)}
 								<p class="source-excerpt">{source.excerpt}</p>
 							{/if}
-							<div class="source-meta">
-								<span class="source-domain">{source.domain || 'Link'}</span>
-							</div>
+							<span class="source-domain">{source.domain || 'Link'}</span>
 						</div>
 					</button>
-					{#if index < sources.length - 1}
+					{#if index < enrichedSources.length - 1}
 						<div class="separator"></div>
 					{/if}
 				{/each}
@@ -139,6 +218,19 @@
 	.drawer-title {
 		font-size: var(--font-size-lg);
 		font-weight: 600;
+	}
+
+	.loading-indicator {
+		width: 16px;
+		height: 16px;
+		border: 2px solid var(--color-border);
+		border-top-color: var(--color-primary);
+		border-radius: 50%;
+		animation: spin 0.8s linear infinite;
+	}
+
+	@keyframes spin {
+		to { transform: rotate(360deg); }
 	}
 
 	.sources-list {
@@ -203,13 +295,6 @@
 		-webkit-line-clamp: 2;
 		-webkit-box-orient: vertical;
 		overflow: hidden;
-	}
-
-	.source-meta {
-		display: flex;
-		align-items: center;
-		gap: var(--spacing-xs);
-		margin-top: var(--spacing-xs);
 	}
 
 	.source-domain {

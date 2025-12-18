@@ -99,7 +99,7 @@ function formatCitations(citations) {
 		if (typeof citation === 'string') {
 			const domain = extractDomain(citation);
 			return {
-				title: `Source ${index + 1}`,
+				title: null, // Will be enriched by metadata fetch or use domain fallback
 				url: citation,
 				excerpt: '',
 				domain
@@ -107,7 +107,7 @@ function formatCitations(citations) {
 		}
 
 		return {
-			title: citation.title || `Source ${index + 1}`,
+			title: citation.title || null,
 			url: citation.url || citation,
 			excerpt: citation.snippet || citation.excerpt || '',
 			domain: extractDomain(citation.url || citation)
