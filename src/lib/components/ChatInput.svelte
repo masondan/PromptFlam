@@ -13,6 +13,50 @@
 	$: hasContent = value.trim().length > 0;
 	$: canSend = hasContent && !isLoading;
 
+	function findBracketBoundaries(text, cursorPos) {
+		let openBracket = -1;
+		let closeBracket = -1;
+
+		for (let i = cursorPos - 1; i >= 0; i--) {
+			if (text[i] === '[') {
+				openBracket = i;
+				break;
+			}
+			if (text[i] === ']') {
+				break;
+			}
+		}
+
+		if (openBracket === -1) return null;
+
+		for (let i = cursorPos; i < text.length; i++) {
+			if (text[i] === ']') {
+				closeBracket = i;
+				break;
+			}
+			if (text[i] === '[') {
+				break;
+			}
+		}
+
+		if (closeBracket === -1) return null;
+
+		return { start: openBracket, end: closeBracket + 1 };
+	}
+
+	function handleClick(e) {
+		if (!textareaEl) return;
+		
+		setTimeout(() => {
+			const cursorPos = textareaEl.selectionStart;
+			const boundaries = findBracketBoundaries(value, cursorPos);
+			
+			if (boundaries) {
+				textareaEl.setSelectionRange(boundaries.start, boundaries.end);
+			}
+		}, 0);
+	}
+
 	function handleInput(e) {
 		value = e.target.value;
 		autoResize();
@@ -67,6 +111,7 @@
 			{placeholder}
 			on:input={handleInput}
 			on:keydown={handleKeydown}
+			on:click={handleClick}
 			rows="1"
 			aria-label="Message input"
 		></textarea>

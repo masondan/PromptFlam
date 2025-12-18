@@ -161,8 +161,8 @@ Each phase follows this workflow:
 **Objective**: Migrate existing prompts page into new architecture; implement two access points.
 
 **Important Distinction**: There are **two separate ways** to access prompts:
-1. **Prompts Page** (via navigation button or swipe) - Full browsing experience for discovering prompts
-2. **Prompt Shortcut Drawer** (icon in Create page chat input) - Quick insertion into chat for active conversation
+1. **Prompts Page** (via navigation button or swipe) - Full browsing experience for discovering prompts. Copy prompt for insertion into Create page AI prompt.
+2. **Prompt Shortcut Drawer** (icon in Create page chat input) - Enables prompts to be added directly to prompt input window.
 
 **Deliverables:**
 
