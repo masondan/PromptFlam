@@ -3,13 +3,13 @@
 </script>
 
 <svelte:head>
-	<title>Edit | PromptFlam</title>
+	<title>Notepad | PromptFlam</title>
 </svelte:head>
 
 <Header />
 
 <main class="page">
-	<h1>Edit</h1>
+	<h1>Notepad</h1>
 	<p>Text editor will be built in Phase 6.</p>
 	<p class="placeholder">This page will include:</p>
 	<ul>

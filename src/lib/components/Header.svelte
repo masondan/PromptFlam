@@ -8,7 +8,7 @@
 	const navItems = [
 		{ name: 'prompts', path: '/prompts', label: 'Prompts' },
 		{ name: 'create', path: '/', label: 'Create' },
-		{ name: 'edit', path: '/edit', label: 'Edit' },
+		{ name: 'notepad', path: '/notepad', label: 'Notepad' },
 		{ name: 'archive', path: '/archive', label: 'Saved' }
 	];
 

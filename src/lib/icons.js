@@ -22,6 +22,8 @@ export const iconPaths = {
 	'prompts-fill': '/icons/icon-prompts-fill.svg',
 	edit: '/icons/icon-edit.svg',
 	'edit-fill': '/icons/icon-edit-fill.svg',
+	notepad: '/icons/icon-notepad.svg',
+	'notepad-fill': '/icons/icon-notepad-fill.svg',
 	archive: '/icons/icon-archive.svg',
 	'archive-fill': '/icons/icon-archive-fill.svg',
 	

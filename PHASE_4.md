@@ -14,6 +14,37 @@ Integrate the prompt library with two separate access points:
 
 ---
 
+## Notes from Project Lead
+
+**We will minimise changes to the v1 PromptFlam content and style for now. Here are additional notes and overview to accompany the information below:**
+
+- The header with PromptFlam logo will not be used. We will use the same header as the Create page, standardised across the app
+- The search button moves from the old header to sit between All Prompts and Favourites
+- The footer should be completely removed
+- Overall, we should adopt the same clean, minimalist feel to be consistent with the Create page ...
+- Begin by making the page background WHITE.
+- We will leave the prompt card design approach as in v1 for now (boxes with round corners. Fine border. White background)
+- We will use the same JSON content and structure for now.
+- Under every prompt are currently (v1) three buttons: Edit, Copy, Back to Top. Leave the Copy and Back to Top buttons as now.
+	- IN THE SEPARATE PROMPT LIBRARY PAGE: Leave the edit button as now. Tapping this triggers the same full-screen overlay as now. The only difference is that the drawer background should be WHITE.
+	- IN THE CREATE PAGE PROMPT LIBRARY DRAWER. In the drawer that is triggered from the Create Page AI input window, the Edit icon is REPLACED by the 'insert into chat' button. Tapping this button  under a prompt collapses the prompt library drawer and inserts the prompt into the chat window ready for editing and submitting.
+
+**Icons**
+
+Phase 4 uses the following icons, which are all in static/icons
+
+Search - icon-search.svg
+Back to Top (Under prompts) - icon-arrow-up.svg
+Edit (Under prompts) - icon-edit.svg	
+Share (Under prompts + prompt edit drawer) - icon-share.svg
+Copy (Under prompts + prompt edit drawer)	icon-copy.svg
+Close (in Edit drawer) icon-close.svg
+Expand (chevron for prompt category dropdowns) icon-expand.svg
+Collapse (chevron for prompt category dropdowns) icon-collapse.svg
+Add to chat (Replaces icon-edit.svg in Create page prompt drawer) icon-create.svg
+Favourite inactive (for toolbar and individual prompts) - icon-heart.svg
+Favourite active (coloured red, for toolbar and individual prompts when tapped) - icon-heart-fill.svg
+
 ## Deliverables (Non-Negotiable)
 
 ### A. Prompts Page (Full Library)
@@ -23,14 +54,14 @@ Integrate the prompt library with two separate access points:
 - [ ] Favorites system (saved to localStorage)
 - [ ] Copy prompt functionality
 - [ ] Browse-only (no direct insertion from page; users navigate via button)
+- [ ] Prompt Edit drawer triggered from Edit button beneath prompt
 
 ### B. Prompt Shortcut Drawer (In Create Page)
 - [ ] Full-screen drawer accessible from chat input icon
 - [ ] Same category/subcategory filters
 - [ ] Same search functionality
-- [ ] "Insert Prompt" button closes drawer and adds prompt to chat input
+- [ ] "Insert Prompt" button closes drawer and adds prompt to chat input (replaces Edit button in prompt library edit drawer)
 - [ ] Prompt text with [square brackets] inserted into chat input
-- [ ] Bracket content renders as visual chips in chat input
 
 ---
 
@@ -430,12 +461,6 @@ Yes
 - [ ] Project Lead confirms: "Ready for Phase 5"
 
 **No guessing**. Wait for explicit approval before starting Phase 5.
-
----
-
-## Notes from Project Lead
-
-[Space for Dan to add implementation notes before coding begins]
 
 ---
 
