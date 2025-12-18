@@ -13,9 +13,9 @@ Each phase has its own detailed file. This document shows the overall structure.
 | 1 | Foundation & Refactor | ✓ Complete | Week 1-2 |
 | 2 | Chat UI Skeleton | ✓ Complete | Week 2-3 |
 | 3 | Real AI Integration | ✓ Complete | Week 3-4 |
-| 4 | Prompt Library Integration | **Current** | Week 4-5 |
-| 5 | Archive Page | Pending | Week 5-6 |
-| 6 | Edit Page | Pending | Week 6-7 |
+| 4 | Prompt Library Integration | ✓ Complete | Week 4-5 |
+| 5 | Archive Page | **Current** | Week 5-6 |
+| 6 | Notepad Page | Pending | Week 6-7 |
 | 7 | Advanced Features & Polish | Pending | Week 7-8 |
 | 8 | Deployment & Launch | Pending | Week 8 |
 
@@ -23,7 +23,7 @@ Each phase has its own detailed file. This document shows the overall structure.
 
 ## Current Phase
 
-**See**: `PHASE_4.md` for detailed tasks and deliverables.
+**See**: `PHASE_5.md` for detailed tasks and deliverables.
 
 ---
 
@@ -115,14 +115,20 @@ Before proceeding to next phase:
 
 **Status**: Complete
 
+### Phase 4: Prompt Library Integration ✓
+- PromptLibrary shared component
+- Prompts page with filters/search/favorites
+- Prompt shortcut drawer in Create page
+- PromptEditDrawer for editing prompts
+- Favorites stored in localStorage
+
+**Status**: Complete
+
 ---
 
 ## Upcoming Phases (Pending)
 
-### Phase 5: Archive Page
-See `PHASE_5.md` for reference
-
-### Phase 6: Edit Page
+### Phase 6: Notepad Page
 See `PHASE_6.md` for reference
 
 ### Phase 7: Advanced Features & Polish
@@ -204,5 +210,5 @@ Yes
 ---
 
 **Last Updated**: Dec 18, 2025  
-**Current Phase**: 4 (Prompt Library Integration)  
+**Current Phase**: 5 (Archive Page)  
 **Project Lead**: Dan Mason

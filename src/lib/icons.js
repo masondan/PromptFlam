@@ -43,7 +43,13 @@ export const iconPaths = {
 	rewrite: '/icons/icon-rewrite.svg',
 	sources: '/icons/icon-sources.svg',
 	share: '/icons/icon-share.svg',
-	info: '/icons/icon-info.svg'
+	info: '/icons/icon-info.svg',
+	
+	// Prompt library icons
+	heart: '/icons/icon-heart.svg',
+	'heart-fill': '/icons/icon-heart-fill.svg',
+	'arrow-up': '/icons/icon-arrow-up.svg',
+	search: '/icons/icon-search.svg'
 };
 
 // List of all available icon names

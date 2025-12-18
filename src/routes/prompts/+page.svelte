@@ -1,5 +1,22 @@
 <script>
-	import { Header } from '$lib/components';
+	import { Header, PromptLibrary, PromptEditDrawer } from '$lib/components';
+
+	let showEditDrawer = false;
+	let editText = '';
+
+	function handleEdit(e) {
+		editText = e.detail.text;
+		showEditDrawer = true;
+	}
+
+	function handleCloseEditDrawer() {
+		showEditDrawer = false;
+		editText = '';
+	}
+
+	function handleCopy(e) {
+		// Optional: could show a toast notification
+	}
 </script>
 
 <svelte:head>
@@ -8,42 +25,26 @@
 
 <Header />
 
-<main class="page">
-	<h1>Prompts</h1>
-	<p>Prompt library will be built in Phase 4.</p>
-	<p class="placeholder">This page will include:</p>
-	<ul>
-		<li>Category and subcategory filters</li>
-		<li>Search functionality</li>
-		<li>Favorites system</li>
-		<li>Copy prompt functionality</li>
-	</ul>
+<main class="prompts-page">
+	<PromptLibrary 
+		mode="page" 
+		on:edit={handleEdit}
+		on:copy={handleCopy}
+	/>
 </main>
 
+<PromptEditDrawer 
+	isOpen={showEditDrawer}
+	text={editText}
+	on:close={handleCloseEditDrawer}
+/>
+
 <style>
-	.page {
-		padding: var(--spacing-lg);
-		padding-top: calc(var(--header-height) + var(--spacing-lg));
-		max-width: 600px;
+	.prompts-page {
+		min-height: 100vh;
+		padding: var(--spacing-md);
+		padding-top: calc(var(--header-height) + var(--spacing-md));
+		max-width: var(--max-content-width);
 		margin: 0 auto;
-	}
-
-	h1 {
-		margin-bottom: var(--spacing-md);
-	}
-
-	.placeholder {
-		color: var(--color-text-muted);
-		margin-top: var(--spacing-lg);
-	}
-
-	ul {
-		color: var(--color-text-muted);
-		padding-left: var(--spacing-lg);
-		margin-top: var(--spacing-sm);
-	}
-
-	li {
-		margin-bottom: var(--spacing-xs);
 	}
 </style>

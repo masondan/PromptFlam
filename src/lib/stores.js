@@ -70,9 +70,9 @@ export const currentPrompts = createPersistentStore('currentPrompts', []);
 // Schema: [{id: number, messages: array, timestamp: number}]
 export const archiveChats = createPersistentStore('archiveChats', []);
 
-// Archived edit drafts (max 10, auto-cleanup after 30 days)
+// Archived notes (max 10, auto-cleanup after 30 days)
 // Schema: [{id: number, title: string, content: string, timestamp: number}]
-export const archiveEdits = createPersistentStore('archiveEdits', []);
+export const archiveNotes = createPersistentStore('archiveNotes', []);
 
 // Helper functions for common operations
 
@@ -139,19 +139,19 @@ export function archiveCurrentChat() {
 }
 
 /**
- * Save a draft to archive
+ * Save a note to archive
  */
-export function archiveEdit(title, content) {
-	archiveEdits.update((edits) => {
-		const newEdit = {
+export function archiveNote(title, content) {
+	archiveNotes.update((notes) => {
+		const newNote = {
 			id: Date.now(),
 			title,
 			content,
 			timestamp: Date.now()
 		};
 		
-		// Add new edit, keep max 10, remove oldest if exceeded
-		const updated = [newEdit, ...edits].slice(0, 10);
+		// Add new note, keep max 10, remove oldest if exceeded
+		const updated = [newNote, ...notes].slice(0, 10);
 		return updated;
 	});
 }
@@ -166,7 +166,39 @@ export function cleanupOldArchives() {
 		chats.filter((chat) => chat.timestamp > thirtyDaysAgo)
 	);
 	
-	archiveEdits.update((edits) => 
-		edits.filter((edit) => edit.timestamp > thirtyDaysAgo)
+	archiveNotes.update((notes) => 
+		notes.filter((note) => note.timestamp > thirtyDaysAgo)
 	);
+}
+
+// Favorites store for prompt subcategories
+// Uses category-subcategory ID pattern to avoid collisions
+// Schema: ['Text-Blog', 'Audio-Mini-pod', ...]
+export const favorites = createPersistentStore('favorites', []);
+
+/**
+ * Toggle a subcategory in favorites
+ * @param {string} category - The category name
+ * @param {string} subCategory - The subcategory name
+ */
+export function toggleFavorite(category, subCategory) {
+	const id = `${category}-${subCategory}`;
+	favorites.update((favs) => {
+		if (favs.includes(id)) {
+			return favs.filter((f) => f !== id);
+		}
+		return [...favs, id];
+	});
+}
+
+/**
+ * Check if a subcategory is favorited
+ * @param {string} category - The category name
+ * @param {string} subCategory - The subcategory name
+ * @param {array} favsList - Current favorites array
+ * @returns {boolean}
+ */
+export function isFavorite(category, subCategory, favsList) {
+	const id = `${category}-${subCategory}`;
+	return favsList.includes(id);
 }

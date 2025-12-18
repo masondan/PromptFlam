@@ -1,6 +1,6 @@
 <script>
 	import { createEventDispatcher } from 'svelte';
-	import { Icon } from '$lib/components';
+	import { Icon, PromptLibrary } from '$lib/components';
 	import { fade, fly } from 'svelte/transition';
 
 	export let isOpen = false;
@@ -23,9 +23,13 @@
 		}
 	}
 
-	function handleInsertPrompt(promptText) {
-		dispatch('insert', { prompt: promptText });
+	function handleInsertPrompt(e) {
+		dispatch('insert', { prompt: e.detail.prompt });
 		close();
+	}
+
+	function handleCopy(e) {
+		// Optional: show feedback
 	}
 </script>
 
@@ -52,25 +56,11 @@
 			</div>
 			
 			<div class="drawer-content">
-				<p class="placeholder-text">
-					Prompt library will be fully implemented in Phase 4.
-				</p>
-				<p class="placeholder-text">
-					This drawer will include:
-				</p>
-				<ul class="feature-list">
-					<li>Category & subcategory filters</li>
-					<li>Search functionality</li>
-					<li>Favorites system</li>
-					<li>"Insert Prompt" button</li>
-				</ul>
-				
-				<button 
-					class="demo-button"
-					on:click={() => handleInsertPrompt('Write a compelling headline for an article about [topic]. The headline should be clear, engaging, and suitable for [audience].')}
-				>
-					Insert Demo Prompt
-				</button>
+				<PromptLibrary 
+					mode="drawer" 
+					on:insert={handleInsertPrompt}
+					on:copy={handleCopy}
+				/>
 			</div>
 		</div>
 	</div>
@@ -102,6 +92,7 @@
 		gap: var(--spacing-sm);
 		padding: var(--spacing-md);
 		border-bottom: 1px solid var(--color-border-light);
+		flex-shrink: 0;
 	}
 
 	.close-button {
@@ -121,43 +112,12 @@
 	.drawer-title {
 		font-size: var(--font-size-lg);
 		font-weight: 600;
+		margin: 0;
 	}
 
 	.drawer-content {
 		flex: 1;
 		overflow-y: auto;
-		padding: var(--spacing-lg);
-	}
-
-	.placeholder-text {
-		color: var(--color-text-muted);
-		margin-bottom: var(--spacing-md);
-	}
-
-	.feature-list {
-		color: var(--color-text-muted);
-		margin-bottom: var(--spacing-lg);
-		padding-left: var(--spacing-lg);
-	}
-
-	.feature-list li {
-		margin-bottom: var(--spacing-xs);
-	}
-
-	.demo-button {
-		display: block;
-		width: 100%;
 		padding: var(--spacing-md);
-		background: var(--color-surface);
-		border: 1px solid var(--color-border-light);
-		border-radius: var(--radius-md);
-		font-weight: 500;
-		color: var(--color-text-secondary);
-		transition: background-color 0.15s, border-color 0.15s;
-	}
-
-	.demo-button:hover {
-		background: var(--color-surface-dark);
-		border-color: var(--color-border);
 	}
 </style>

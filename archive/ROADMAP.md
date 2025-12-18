@@ -201,18 +201,18 @@ Each phase follows this workflow:
 
 ---
 
-### Phase 5: Archive Page (Week 5-6)
+### Phase 5: Archive Page
 **Objective**: Build unified archive for saved AI chats and edited notes with auto-cleanup logic.
 
 **Deliverables:**
 - [ ] Archive page route (`/archive`)
-- [ ] Two-tab interface: "Chats" tab + "Edits" tab
+- [ ] Two-tab interface: "Chats" tab + "Notes" tab
 - [ ] Chat archive: list of saved AI conversations
   - [ ] Preview (first 50-100 characters, max 2 lines)
   - [ ] Timestamp (when saved)
   - [ ] Three-dot menu: Download | Share | Delete
   - [ ] Tap to restore chat into Create page
-- [ ] Edit archive: list of saved note drafts
+- [ ] Notes archive: list of saved note drafts
   - [ ] Preview (first 50-100 characters, max 2 lines)
   - [ ] Timestamp (when saved)
   - [ ] Three-dot menu: Download | Share | Delete
@@ -232,7 +232,7 @@ Each phase follows this workflow:
 - `ArchiveMenu.svelte` - Three-dot dropdown (Download | Share | Delete)
 
 **Definition of Done:**
-- Archive page accessible from footer navigation
+- Archive page accessible from header navigation
 - Both tabs display saved items with previews + timestamps
 - Download button exports as .txt correctly
 - Share button opens system share dialog
