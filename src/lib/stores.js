@@ -92,6 +92,24 @@ export function addChatMessage(role, content, sources = []) {
 }
 
 /**
+ * Update the last message (used for streaming)
+ */
+export function updateLastMessage(content, sources = null) {
+	chatMessages.update((messages) => {
+		if (messages.length === 0) return messages;
+		
+		const updated = [...messages];
+		const lastIndex = updated.length - 1;
+		updated[lastIndex] = {
+			...updated[lastIndex],
+			content,
+			...(sources !== null ? { sources } : {})
+		};
+		return updated;
+	});
+}
+
+/**
  * Clear current chat session
  */
 export function clearChat() {

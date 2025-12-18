@@ -1,60 +1,130 @@
 /**
  * Perplexity API Service
  * 
- * Handles all communication with the Perplexity API.
- * Full implementation will be added in Phase 3.
- * 
- * Features (Phase 3):
- * - Real API calls to Perplexity chat endpoint
- * - Streaming response display
- * - Citation extraction and display
- * - Error handling and retry logic
- * - Cost monitoring
+ * Communicates with our server-side proxy to keep API key secure.
+ * Supports streaming for real-time response display.
  */
-
-const SYSTEM_PROMPT = `You are a helpful writing assistant for journalists. 
-Provide accurate, well-researched responses with citations when relevant.
-Be concise and factual. When citing sources, include the source name and URL.`;
 
 /**
- * Call Perplexity API with messages
+ * Call Perplexity API with streaming support
  * @param {Array} messages - Array of {role, content} objects
+ * @param {Function} onChunk - Callback for each text chunk (for streaming)
  * @returns {Promise<{content: string, sources: Array}>}
  */
-export async function callPerplexity(messages) {
-	// Phase 3 will implement real API call
-	// For now, return mock response for testing
+export async function callPerplexity(messages, onChunk = null) {
+	const response = await fetch('/api/chat', {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json'
+		},
+		body: JSON.stringify({ messages })
+	});
+
+	if (!response.ok) {
+		const error = await response.json().catch(() => ({ error: 'Request failed' }));
+		throw new Error(error.error || `API error: ${response.status}`);
+	}
+
+	// Handle streaming response
+	const reader = response.body.getReader();
+	const decoder = new TextDecoder();
 	
-	console.warn('Perplexity API not yet implemented. Using mock response.');
-	
-	return new Promise((resolve) => {
-		setTimeout(() => {
-			resolve({
-				content: 'This is a mock AI response. Real Perplexity integration will be added in Phase 3.',
-				sources: []
-			});
-		}, 500);
+	let fullContent = '';
+	let citations = [];
+
+	try {
+		while (true) {
+			const { done, value } = await reader.read();
+			
+			if (done) break;
+
+			const chunk = decoder.decode(value, { stream: true });
+			const lines = chunk.split('\n');
+
+			for (const line of lines) {
+				if (line.startsWith('data: ')) {
+					const data = line.slice(6);
+					
+					if (data === '[DONE]') {
+						continue;
+					}
+
+					try {
+						const parsed = JSON.parse(data);
+						
+						// Handle content chunks
+						if (parsed.content) {
+							fullContent += parsed.content;
+							if (onChunk) {
+								onChunk(parsed.content, fullContent);
+							}
+						}
+						
+						// Handle citations (sent at end)
+						if (parsed.citations) {
+							citations = parsed.citations;
+						}
+					} catch {
+						// Skip malformed JSON
+					}
+				}
+			}
+		}
+	} catch (error) {
+		console.error('Stream reading error:', error);
+		throw error;
+	}
+
+	// Transform citations to our source format
+	const sources = formatCitations(citations);
+
+	return {
+		content: fullContent,
+		sources
+	};
+}
+
+/**
+ * Format Perplexity citations to our source format
+ * @param {Array} citations - Raw citations from API
+ * @returns {Array<{title: string, url: string, excerpt: string, domain: string}>}
+ */
+function formatCitations(citations) {
+	if (!citations || !Array.isArray(citations)) {
+		return [];
+	}
+
+	return citations.map((citation, index) => {
+		// Perplexity returns citations as URLs or objects
+		if (typeof citation === 'string') {
+			const domain = extractDomain(citation);
+			return {
+				title: `Source ${index + 1}`,
+				url: citation,
+				excerpt: '',
+				domain
+			};
+		}
+
+		return {
+			title: citation.title || `Source ${index + 1}`,
+			url: citation.url || citation,
+			excerpt: citation.snippet || citation.excerpt || '',
+			domain: extractDomain(citation.url || citation)
+		};
 	});
 }
 
 /**
- * Stream response from Perplexity API (Phase 3)
- * @param {Array} messages - Array of {role, content} objects
- * @param {Function} onChunk - Callback for each text chunk
- * @returns {Promise<{content: string, sources: Array}>}
+ * Extract domain from URL
+ * @param {string} url 
+ * @returns {string}
  */
-export async function streamPerplexity(messages, onChunk) {
-	// Phase 3 will implement streaming
-	console.warn('Streaming not yet implemented.');
-	return callPerplexity(messages);
-}
-
-/**
- * Extract citations from Perplexity response (Phase 3)
- * @param {object} response - Raw API response
- * @returns {Array<{title: string, url: string}>}
- */
-export function extractCitations(response) {
-	// Phase 3 will implement citation extraction
-	return response.citations || [];
+function extractDomain(url) {
+	try {
+		const urlObj = new URL(url);
+		return urlObj.hostname.replace('www.', '');
+	} catch {
+		return url;
+	}
 }

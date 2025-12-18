@@ -1,5 +1,13 @@
 # Development Setup & Workflow
 
+**Use this document for**: Local setup instructions, environment configuration, troubleshooting.
+
+**For architecture questions**: See `ARCHITECTURE.md`  
+**For current phase tasks**: See `PHASES.md` or `PHASE_N.md`  
+**For project overview**: See `README.md`
+
+---
+
 This document guides AI agents and developers through setting up the PromptFlam Svelte refactor locally.
 
 ---

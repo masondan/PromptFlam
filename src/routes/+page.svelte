@@ -9,10 +9,14 @@
 		TextSelectionMenu,
 		ThinkingDots 
 	} from '$lib/components';
-	import { chatMessages, addChatMessage, clearChat, archiveCurrentChat } from '$lib/stores';
+	import { chatMessages, addChatMessage, clearChat, archiveCurrentChat, updateLastMessage } from '$lib/stores';
+	import { callPerplexity } from '$lib/services/perplexity.js';
 
 	let inputValue = '';
 	let isLoading = false;
+	let isStreaming = false;
+	let streamingContent = '';
+	let errorMessage = '';
 	let showPromptDrawer = false;
 	let showSourcesDrawer = false;
 	let currentSources = [];
@@ -21,60 +25,48 @@
 
 	$: hasMessages = $chatMessages.length > 0;
 
-	const mockSources = [
-		{
-			title: 'Reuters: Global Climate Summit Reaches Historic Agreement',
-			excerpt: 'World leaders have agreed to a landmark climate deal that sets ambitious targets for reducing carbon emissions by 2030...',
-			url: 'https://reuters.com/climate-summit',
-			domain: 'reuters.com'
-		},
-		{
-			title: 'AP News: New Study Reveals Impact of Rising Temperatures',
-			excerpt: 'Scientists have published findings showing the direct correlation between industrial emissions and global temperature increases...',
-			url: 'https://apnews.com/climate-study',
-			domain: 'apnews.com'
-		},
-		{
-			title: 'BBC: Climate Change Effects Already Visible Worldwide',
-			excerpt: 'From melting glaciers to intensifying storms, the effects of climate change are now observable across every continent...',
-			url: 'https://bbc.com/climate-effects',
-			domain: 'bbc.com'
-		}
-	];
-
-	function generateMockResponse(prompt) {
-		return `## Climate Crisis: A Call to Action
-
-The global climate crisis has reached a critical juncture, demanding immediate and coordinated action from world leaders [1]. Recent scientific studies have confirmed that rising temperatures are directly linked to human industrial activity [2].
-
-### Key Findings
-
-The latest research shows that we are approaching several climate tipping points that could trigger irreversible changes to our planet's ecosystems. From the melting Arctic ice caps to the increasing frequency of extreme weather events, the evidence is undeniable [3].
-
-### What Can Be Done
-
-Experts recommend a multi-pronged approach:
-- Rapid transition to renewable energy sources
-- Investment in carbon capture technology
-- International cooperation on emissions standards
-- Support for communities most affected by climate change
-
-The time for action is now. Every fraction of a degree matters in the fight against climate change.`;
-	}
-
 	async function handleSend(e) {
 		const message = e.detail.message;
-		if (!message) return;
+		if (!message || isLoading) return;
 
+		errorMessage = '';
 		addChatMessage('user', message);
 		inputValue = '';
 		isLoading = true;
+		isStreaming = false;
+		streamingContent = '';
 
-		await new Promise(resolve => setTimeout(resolve, 2000));
+		try {
+			// Prepare messages for API (convert to simple format)
+			const apiMessages = $chatMessages.map(m => ({
+				role: m.role,
+				content: m.content
+			}));
 
-		const response = generateMockResponse(message);
-		addChatMessage('assistant', response, mockSources);
-		isLoading = false;
+			// Start streaming - add placeholder message
+			isStreaming = true;
+			addChatMessage('assistant', '', []);
+
+			const { content, sources } = await callPerplexity(apiMessages, (chunk, fullContent) => {
+				// Update streaming content as chunks arrive
+				streamingContent = fullContent;
+				updateLastMessage(fullContent);
+			});
+
+			// Final update with complete content and sources
+			updateLastMessage(content, sources);
+			
+		} catch (error) {
+			console.error('Chat error:', error);
+			errorMessage = error.message || 'Failed to get response. Please try again.';
+			
+			// Remove the placeholder message on error
+			chatMessages.update(msgs => msgs.slice(0, -1));
+		} finally {
+			isLoading = false;
+			isStreaming = false;
+			streamingContent = '';
+		}
 	}
 
 	function handleNewChat() {
@@ -96,7 +88,7 @@ The time for action is now. Every fraction of a degree matters in the fight agai
 	}
 
 	function handleOpenSources(e) {
-		currentSources = e.detail.sources || mockSources;
+		currentSources = e.detail.sources || [];
 		highlightedSourceIndex = e.detail.highlightIndex ?? -1;
 		showSourcesDrawer = true;
 	}
@@ -135,8 +127,10 @@ The time for action is now. Every fraction of a degree matters in the fight agai
 	}
 
 	function handleSelectionSource(e) {
+		// Find the last assistant message to get its sources
+		const lastAssistant = $chatMessages.findLast(m => m.role === 'assistant');
+		currentSources = lastAssistant?.sources || [];
 		showSourcesDrawer = true;
-		currentSources = mockSources;
 	}
 
 	function handleSelectionCopy(e) {
@@ -168,6 +162,7 @@ The time for action is now. Every fraction of a degree matters in the fight agai
 					<ChatMessage 
 						content={message.content}
 						sources={message.sources}
+						isStreaming={isStreaming && index === $chatMessages.length - 1}
 						on:rewrite={handleRewrite}
 						on:openSources={handleOpenSources}
 						on:share={handleShare}
@@ -176,8 +171,15 @@ The time for action is now. Every fraction of a degree matters in the fight agai
 				{/if}
 			{/each}
 			
-			{#if isLoading}
+			{#if isLoading && !isStreaming}
 				<ThinkingDots />
+			{/if}
+
+			{#if errorMessage}
+				<div class="error-message">
+					<p>{errorMessage}</p>
+					<button on:click={() => errorMessage = ''}>Dismiss</button>
+				</div>
 			{/if}
 		</div>
 		
@@ -240,5 +242,35 @@ The time for action is now. Every fraction of a degree matters in the fight agai
 		max-width: var(--max-content-width);
 		margin: 0 auto;
 		width: 100%;
+	}
+
+	.error-message {
+		background: #fef2f2;
+		border: 1px solid #fecaca;
+		border-radius: var(--radius-md);
+		padding: var(--spacing-md);
+		margin-top: var(--spacing-md);
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: var(--spacing-sm);
+	}
+
+	.error-message p {
+		color: #dc2626;
+		margin: 0;
+		font-size: var(--font-size-sm);
+	}
+
+	.error-message button {
+		background: transparent;
+		color: #dc2626;
+		font-size: var(--font-size-sm);
+		padding: var(--spacing-xs) var(--spacing-sm);
+		border-radius: var(--radius-sm);
+	}
+
+	.error-message button:hover {
+		background: #fee2e2;
 	}
 </style>
