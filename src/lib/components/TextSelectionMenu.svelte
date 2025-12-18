@@ -2,12 +2,14 @@
 	import { createEventDispatcher, onMount, onDestroy } from 'svelte';
 
 	export let containerRef = null;
+	export let messages = [];
 
 	const dispatch = createEventDispatcher();
 
 	let isVisible = false;
 	let selectedText = '';
 	let position = { x: 0, y: 0 };
+	let selectedMessageIndex = -1;
 
 	function handleSelectionChange() {
 		const selection = window.getSelection();
@@ -27,6 +29,27 @@
 					x: rangeRect.left + rangeRect.width / 2,
 					y: rangeRect.top - 8
 				};
+				
+				// Find which message the selection is in
+				const messageElements = containerRef.querySelectorAll('.message-content');
+				selectedMessageIndex = -1;
+				for (let i = 0; i < messageElements.length; i++) {
+					if (messageElements[i].contains(range.commonAncestorContainer)) {
+						// Map to actual message index (assistant messages only)
+						let assistantCount = 0;
+						for (let j = 0; j < messages.length; j++) {
+							if (messages[j].role === 'assistant') {
+								if (assistantCount === i) {
+									selectedMessageIndex = j;
+									break;
+								}
+								assistantCount++;
+							}
+						}
+						break;
+					}
+				}
+				
 				isVisible = true;
 			} else {
 				isVisible = false;
@@ -47,12 +70,45 @@
 	}
 
 	function handleRewrite() {
-		dispatch('rewrite', { text: selectedText });
+		dispatch('rewrite', { 
+			text: selectedText, 
+			messageIndex: selectedMessageIndex 
+		});
 		clearSelection();
 	}
 
 	function handleSource() {
-		dispatch('source', { text: selectedText });
+		// Get sources from the selected message
+		const message = messages[selectedMessageIndex];
+		const allSources = message?.sources || [];
+		
+		// Extract citation numbers - could be [1] format or just standalone numbers (from rendered buttons)
+		// Match: [1], [2] OR standalone single/double digit numbers that appear after punctuation or whitespace
+		const bracketMatches = selectedText.match(/\[(\d+)\]/g) || [];
+		const bracketIndices = bracketMatches.map(m => parseInt(m.slice(1, -1), 10) - 1);
+		
+		// Also match standalone numbers (1-2 digits) that are likely citation buttons
+		// These appear as just "1" or "12" in the selected text
+		const standaloneMatches = selectedText.match(/(?:^|[\s.!?,;:])(\d{1,2})(?=[\s.!?,;:]|$)/g) || [];
+		const standaloneIndices = standaloneMatches
+			.map(m => parseInt(m.trim().replace(/[^\d]/g, ''), 10) - 1)
+			.filter(i => i >= 0 && i < allSources.length); // Only valid source indices
+		
+		const citationIndices = [...new Set([...bracketIndices, ...standaloneIndices])];
+		
+		// Filter to only sources referenced in selection
+		let filteredSources = allSources;
+		if (citationIndices.length > 0) {
+			filteredSources = citationIndices
+				.filter(i => i >= 0 && i < allSources.length)
+				.map(i => allSources[i]);
+		}
+		
+		dispatch('source', { 
+			text: selectedText, 
+			sources: filteredSources.length > 0 ? filteredSources : allSources,
+			messageIndex: selectedMessageIndex 
+		});
 		clearSelection();
 	}
 
@@ -114,17 +170,13 @@
 		font-weight: 700;
 		text-transform: uppercase;
 		color: var(--color-text-muted);
+		background: transparent;
 		border-radius: var(--radius-sm);
-		transition: background-color 0.15s, color 0.15s;
+		transition: color 0.15s;
 		white-space: nowrap;
 	}
 
 	.menu-button:hover {
-		background: var(--color-border);
-		color: var(--color-icon-active);
-	}
-
-	.menu-button:first-child {
-		background: rgba(0, 0, 0, 0.05);
+		color: var(--color-text);
 	}
 </style>

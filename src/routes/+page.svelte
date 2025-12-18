@@ -43,11 +43,12 @@
 				content: m.content
 			}));
 
-			// Start streaming - add placeholder message
-			isStreaming = true;
-			addChatMessage('assistant', '', []);
-
 			const { content, sources } = await callPerplexity(apiMessages, (chunk, fullContent) => {
+				// On first chunk, switch from thinking dots to streaming
+				if (!isStreaming) {
+					isStreaming = true;
+					addChatMessage('assistant', '', []);
+				}
 				// Update streaming content as chunks arrive
 				streamingContent = fullContent;
 				updateLastMessage(fullContent);
@@ -98,8 +99,68 @@
 		highlightedSourceIndex = -1;
 	}
 
-	function handleRewrite() {
-		console.log('Rewrite requested');
+	async function handleRewrite(e) {
+		const messageIndex = e.detail?.index;
+		if (messageIndex === undefined || isLoading) return;
+
+		const messageToRewrite = $chatMessages[messageIndex];
+		if (!messageToRewrite || messageToRewrite.role !== 'assistant') return;
+
+		errorMessage = '';
+		isLoading = true;
+		isStreaming = true;
+
+		// Clear the message content to show streaming
+		chatMessages.update(msgs => {
+			const updated = [...msgs];
+			updated[messageIndex] = { ...updated[messageIndex], content: '' };
+			return updated;
+		});
+
+		try {
+			// Find the user message that prompted this response
+			let userPrompt = '';
+			for (let i = messageIndex - 1; i >= 0; i--) {
+				if ($chatMessages[i].role === 'user') {
+					userPrompt = $chatMessages[i].content;
+					break;
+				}
+			}
+
+			const rewriteMessages = [
+				{ role: 'user', content: userPrompt },
+				{ role: 'assistant', content: messageToRewrite.content },
+				{ role: 'user', content: 'Please rewrite your previous response. Keep the same information but use different wording and structure. Make it fresh and engaging.' }
+			];
+
+			const { content, sources } = await callPerplexity(rewriteMessages, (chunk, fullContent) => {
+				chatMessages.update(msgs => {
+					const updated = [...msgs];
+					updated[messageIndex] = { ...updated[messageIndex], content: fullContent };
+					return updated;
+				});
+			});
+
+			// Final update with complete content and sources
+			chatMessages.update(msgs => {
+				const updated = [...msgs];
+				updated[messageIndex] = { ...updated[messageIndex], content, sources };
+				return updated;
+			});
+
+		} catch (error) {
+			console.error('Rewrite error:', error);
+			errorMessage = error.message || 'Failed to rewrite. Please try again.';
+			// Restore original content on error
+			chatMessages.update(msgs => {
+				const updated = [...msgs];
+				updated[messageIndex] = messageToRewrite;
+				return updated;
+			});
+		} finally {
+			isLoading = false;
+			isStreaming = false;
+		}
 	}
 
 	function handleShare() {
@@ -122,14 +183,17 @@
 		isLoading = false;
 	}
 
-	function handleSelectionRewrite(e) {
-		console.log('Rewrite selection:', e.detail.text);
+	async function handleSelectionRewrite(e) {
+		// TODO: Inline rewrite disabled - text selection from rendered HTML doesn't match 
+		// raw markdown content (e.g. "**bold**" renders as "bold"). Need different approach.
+		// For now, users can use the full message rewrite button instead.
+		console.log('Inline rewrite not yet implemented - use full message rewrite button');
+		return;
 	}
 
 	function handleSelectionSource(e) {
-		// Find the last assistant message to get its sources
-		const lastAssistant = $chatMessages.findLast(m => m.role === 'assistant');
-		currentSources = lastAssistant?.sources || [];
+		// Use the filtered sources from the selection menu
+		currentSources = e.detail.sources || [];
 		showSourcesDrawer = true;
 	}
 
@@ -158,11 +222,18 @@
 			{#each $chatMessages as message, index}
 				{#if message.role === 'user'}
 					<PromptCard content={message.content} timestamp={message.timestamp} />
+					{#if index === $chatMessages.length - 1 && isLoading && !isStreaming}
+						<ThinkingDots />
+					{/if}
 				{:else}
+					{@const isCurrentlyStreaming = isStreaming && index === $chatMessages.length - 1}
+					{@const isComplete = !isCurrentlyStreaming && message.content}
 					<ChatMessage 
 						content={message.content}
 						sources={message.sources}
-						isStreaming={isStreaming && index === $chatMessages.length - 1}
+						isStreaming={isCurrentlyStreaming}
+						showSourcesLink={isComplete && message.sources && message.sources.length > 0}
+						{index}
 						on:rewrite={handleRewrite}
 						on:openSources={handleOpenSources}
 						on:share={handleShare}
@@ -170,10 +241,6 @@
 					/>
 				{/if}
 			{/each}
-			
-			{#if isLoading && !isStreaming}
-				<ThinkingDots />
-			{/if}
 
 			{#if errorMessage}
 				<div class="error-message">
@@ -185,6 +252,7 @@
 		
 		<TextSelectionMenu 
 			containerRef={chatContentRef}
+			messages={$chatMessages}
 			on:rewrite={handleSelectionRewrite}
 			on:source={handleSelectionSource}
 			on:copy={handleSelectionCopy}

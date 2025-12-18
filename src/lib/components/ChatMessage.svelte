@@ -6,8 +6,12 @@
 	export let content = '';
 	export let sources = [];
 	export let isStreaming = false;
+	export let showSourcesLink = false;
+	export let index = 0;
 
 	const dispatch = createEventDispatcher();
+
+	$: wordCount = content ? content.trim().split(/\s+/).filter(w => w.length > 0).length : 0;
 
 	marked.setOptions({
 		breaks: true,
@@ -15,7 +19,7 @@
 	});
 
 	function handleRewrite() {
-		dispatch('rewrite');
+		dispatch('rewrite', { index });
 	}
 
 	function handleSources() {
@@ -65,6 +69,19 @@
 </script>
 
 <div class="message">
+	{#if isStreaming}
+		<div class="streaming-indicator">
+			<span class="dot"></span>
+			<span class="dot"></span>
+			<span class="dot"></span>
+		</div>
+	{:else if showSourcesLink && sources.length > 0}
+		<button class="sources-link" on:click={handleSources}>
+			{sources.length} sources
+			<Icon name="sources" size={14} color="#999999" />
+		</button>
+	{/if}
+	
 	<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
 	<div 
 		class="message-content"
@@ -80,6 +97,7 @@
 	
 	{#if !isStreaming}
 		<div class="message-actions">
+			<span class="word-count">{wordCount} words</span>
 			<button class="action-button" on:click={handleRewrite} aria-label="Rewrite response">
 				<Icon name="rewrite" size={18} />
 			</button>
@@ -99,6 +117,65 @@
 <style>
 	.message {
 		padding: var(--spacing-md) 0;
+	}
+
+	.sources-link {
+		display: inline-flex;
+		align-items: center;
+		gap: 6px;
+		color: #999999;
+		font-size: var(--font-size-sm);
+		font-weight: 400;
+		background: transparent;
+		border: none;
+		padding: 0;
+		margin-bottom: var(--spacing-sm);
+		cursor: pointer;
+		transition: color 0.15s;
+	}
+
+	.sources-link:hover {
+		color: var(--color-text-secondary);
+	}
+
+	.streaming-indicator {
+		display: flex;
+		align-items: center;
+		gap: 4px;
+		padding: 0;
+		margin-bottom: var(--spacing-sm);
+		height: 18px;
+	}
+
+	.streaming-indicator .dot {
+		width: 6px;
+		height: 6px;
+		background-color: #999999;
+		border-radius: 50%;
+		animation: pulse 1.4s ease-in-out infinite;
+	}
+
+	.streaming-indicator .dot:nth-child(1) {
+		animation-delay: 0s;
+	}
+
+	.streaming-indicator .dot:nth-child(2) {
+		animation-delay: 0.2s;
+	}
+
+	.streaming-indicator .dot:nth-child(3) {
+		animation-delay: 0.4s;
+	}
+
+	@keyframes pulse {
+		0%, 100% {
+			opacity: 0.3;
+			transform: scale(0.8);
+		}
+		50% {
+			opacity: 1;
+			transform: scale(1);
+		}
 	}
 
 	.message-content {
@@ -202,10 +279,17 @@
 
 	.message-actions {
 		display: flex;
-		justify-content: flex-end;
+		align-items: center;
 		gap: var(--spacing-sm);
 		margin-top: var(--spacing-md);
 		padding-top: var(--spacing-sm);
+	}
+
+	.word-count {
+		font-size: var(--font-size-sm);
+		font-weight: 700;
+		color: #999999;
+		margin-right: auto;
 	}
 
 	.action-button {

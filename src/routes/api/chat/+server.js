@@ -84,6 +84,7 @@ export async function POST({ request }) {
 		const stream = new ReadableStream({
 			async start(controller) {
 				let citations = [];
+				let buffer = '';
 				
 				try {
 					while (true) {
@@ -97,8 +98,13 @@ export async function POST({ request }) {
 							break;
 						}
 
-						const chunk = decoder.decode(value, { stream: true });
-						const lines = chunk.split('\n');
+						// Append new data to buffer
+						buffer += decoder.decode(value, { stream: true });
+						
+						// Process complete lines only
+						const lines = buffer.split('\n');
+						// Keep the last incomplete line in buffer
+						buffer = lines.pop() || '';
 
 						for (const line of lines) {
 							if (line.startsWith('data: ')) {

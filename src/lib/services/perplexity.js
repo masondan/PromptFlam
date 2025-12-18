@@ -31,6 +31,7 @@ export async function callPerplexity(messages, onChunk = null) {
 	
 	let fullContent = '';
 	let citations = [];
+	let buffer = '';
 
 	try {
 		while (true) {
@@ -38,8 +39,13 @@ export async function callPerplexity(messages, onChunk = null) {
 			
 			if (done) break;
 
-			const chunk = decoder.decode(value, { stream: true });
-			const lines = chunk.split('\n');
+			// Append new data to buffer
+			buffer += decoder.decode(value, { stream: true });
+			
+			// Process complete lines only
+			const lines = buffer.split('\n');
+			// Keep the last incomplete line in buffer
+			buffer = lines.pop() || '';
 
 			for (const line of lines) {
 				if (line.startsWith('data: ')) {
@@ -77,9 +83,12 @@ export async function callPerplexity(messages, onChunk = null) {
 
 	// Transform citations to our source format
 	const sources = formatCitations(citations);
+	
+	// Normalize citation placement: move citations after punctuation
+	const normalizedContent = normalizeCitationPlacement(fullContent);
 
 	return {
-		content: fullContent,
+		content: normalizedContent,
 		sources
 	};
 }
@@ -127,4 +136,20 @@ function extractDomain(url) {
 	} catch {
 		return url;
 	}
+}
+
+/**
+ * Normalize citation placement so citations appear after punctuation
+ * Converts "text[1]." to "text.[1]" and "text[1][2]." to "text.[1][2]"
+ * @param {string} content 
+ * @returns {string}
+ */
+function normalizeCitationPlacement(content) {
+	// Match one or more citations followed by punctuation
+	// e.g., "[1]." or "[1][2]." or "[1][2][3],"
+	return content.replace(/(\[[\d]+\])+([.!?,;:])/g, (match, citations, punct) => {
+		// Extract all citation markers
+		const citationMarkers = match.match(/\[\d+\]/g) || [];
+		return punct + citationMarkers.join('');
+	});
 }
