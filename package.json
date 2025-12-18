@@ -12,7 +12,13 @@
     "type": "git",
     "url": "git+https://github.com/masondan/PromptFlam.git"
   },
-  "keywords": ["svelte", "sveltekit", "prompts", "ai", "journalism"],
+  "keywords": [
+    "svelte",
+    "sveltekit",
+    "prompts",
+    "ai",
+    "journalism"
+  ],
   "author": "Dan Mason",
   "license": "ISC",
   "bugs": {
@@ -25,5 +31,8 @@
     "@sveltejs/vite-plugin-svelte": "^5.0.0",
     "svelte": "^5.0.0",
     "vite": "^6.0.0"
+  },
+  "dependencies": {
+    "marked": "^17.0.1"
   }
 }

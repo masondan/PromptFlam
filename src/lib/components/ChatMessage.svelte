@@ -1,12 +1,18 @@
 <script>
 	import { createEventDispatcher } from 'svelte';
 	import { Icon } from '$lib/components';
+	import { marked } from 'marked';
 
 	export let content = '';
 	export let sources = [];
 	export let isStreaming = false;
 
 	const dispatch = createEventDispatcher();
+
+	marked.setOptions({
+		breaks: true,
+		gfm: true
+	});
 
 	function handleRewrite() {
 		dispatch('rewrite');
@@ -25,20 +31,25 @@
 	}
 
 	function handleCitationClick(index) {
-		dispatch('openSources', { sources, highlightIndex: index });
+		// Open drawer with ONLY the clicked source
+		const singleSource = sources[index];
+		if (singleSource) {
+			dispatch('openSources', { sources: [singleSource], highlightIndex: -1, isSingleSource: true });
+		}
 	}
 
 	function renderContentWithCitations(text, citationSources) {
-		if (!citationSources || citationSources.length === 0) {
-			return text;
-		}
+		// First parse markdown to HTML
+		let result = marked.parse(text || '');
 		
-		let result = text;
-		citationSources.forEach((source, index) => {
-			const citationNum = index + 1;
-			const pattern = new RegExp(`\\[${citationNum}\\]`, 'g');
-			result = result.replace(pattern, `<button class="citation" data-index="${index}">${citationNum}</button>`);
-		});
+		// Then replace citation markers with clickable buttons
+		if (citationSources && citationSources.length > 0) {
+			citationSources.forEach((source, index) => {
+				const citationNum = index + 1;
+				const pattern = new RegExp(`\\[${citationNum}\\]`, 'g');
+				result = result.replace(pattern, `<button class="citation" data-index="${index}">${citationNum}</button>`);
+			});
+		}
 		
 		return result;
 	}
@@ -99,21 +110,38 @@
 	.message-content :global(h1),
 	.message-content :global(h2),
 	.message-content :global(h3) {
-		font-weight: 600;
-		margin-top: var(--spacing-lg);
+		font-weight: 700;
+		margin-top: var(--spacing-xl);
 		margin-bottom: var(--spacing-sm);
+		color: var(--color-text);
+		line-height: 1.3;
 	}
 
 	.message-content :global(h1) {
-		font-size: var(--font-size-xl);
+		font-size: 1.5rem;
 	}
 
 	.message-content :global(h2) {
-		font-size: var(--font-size-lg);
+		font-size: 1.25rem;
+		margin-top: var(--spacing-lg);
+	}
+
+	.message-content :global(h3) {
+		font-size: 1.125rem;
+		margin-top: var(--spacing-md);
 	}
 
 	.message-content :global(p) {
 		margin-bottom: var(--spacing-md);
+	}
+
+	.message-content :global(p:first-child) {
+		margin-top: 0;
+	}
+
+	.message-content :global(strong) {
+		font-weight: 600;
+		color: var(--color-text);
 	}
 
 	.message-content :global(ul),
@@ -123,7 +151,18 @@
 	}
 
 	.message-content :global(li) {
+		margin-bottom: var(--spacing-sm);
+	}
+
+	.message-content :global(li > p) {
 		margin-bottom: var(--spacing-xs);
+	}
+
+	.message-content :global(blockquote) {
+		border-left: 3px solid var(--color-primary);
+		padding-left: var(--spacing-md);
+		margin: var(--spacing-md) 0;
+		color: var(--color-text-secondary);
 	}
 
 	.message-content :global(.citation) {

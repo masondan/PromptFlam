@@ -70,9 +70,13 @@
 					>
 						<div class="source-number">{index + 1}.</div>
 						<div class="source-content">
-							<h3 class="source-title">{truncateText(source.title, 80)}</h3>
-							<p class="source-excerpt">{truncateText(source.excerpt, 100)}</p>
-							<span class="source-link">{source.domain || 'Link'}</span>
+							<h3 class="source-title">{source.title || source.domain || 'Source'}</h3>
+							{#if source.excerpt}
+								<p class="source-excerpt">{source.excerpt}</p>
+							{/if}
+							<div class="source-meta">
+								<span class="source-domain">{source.domain || 'Link'}</span>
+							</div>
 						</div>
 					</button>
 					{#if index < sources.length - 1}
@@ -145,13 +149,14 @@
 
 	.source-card {
 		display: flex;
-		gap: var(--spacing-sm);
+		gap: var(--spacing-md);
 		width: 100%;
-		padding: var(--spacing-md) 0;
+		padding: var(--spacing-md) var(--spacing-sm);
 		text-align: left;
 		background: transparent;
 		cursor: pointer;
 		transition: background-color 0.15s;
+		border-radius: var(--radius-sm);
 	}
 
 	.source-card:hover {
@@ -165,19 +170,24 @@
 	.source-number {
 		flex-shrink: 0;
 		font-weight: 600;
+		font-size: var(--font-size-base);
 		color: var(--color-text-secondary);
+		min-width: 20px;
 	}
 
 	.source-content {
 		flex: 1;
 		min-width: 0;
+		display: flex;
+		flex-direction: column;
+		gap: var(--spacing-xs);
 	}
 
 	.source-title {
 		font-size: var(--font-size-base);
 		font-weight: 600;
-		color: var(--color-text);
-		margin-bottom: var(--spacing-xs);
+		color: var(--color-primary);
+		line-height: 1.4;
 		display: -webkit-box;
 		-webkit-line-clamp: 2;
 		-webkit-box-orient: vertical;
@@ -186,22 +196,30 @@
 
 	.source-excerpt {
 		font-size: var(--font-size-sm);
-		color: var(--color-text-muted);
-		margin-bottom: var(--spacing-xs);
+		color: var(--color-text-secondary);
+		line-height: 1.5;
+		margin: 0;
 		display: -webkit-box;
 		-webkit-line-clamp: 2;
 		-webkit-box-orient: vertical;
 		overflow: hidden;
 	}
 
-	.source-link {
+	.source-meta {
+		display: flex;
+		align-items: center;
+		gap: var(--spacing-xs);
+		margin-top: var(--spacing-xs);
+	}
+
+	.source-domain {
 		font-size: var(--font-size-sm);
-		color: var(--color-primary);
+		color: var(--color-text-muted);
 	}
 
 	.separator {
 		height: 1px;
-		background: var(--color-separator);
-		opacity: 0.3;
+		background: var(--color-border);
+		margin: 0 var(--spacing-sm);
 	}
 </style>
