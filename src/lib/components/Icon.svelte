@@ -2,8 +2,10 @@
 	/**
 	 * Icon Component
 	 * 
-	 * Renders SVG icons from public/icons/ folder.
-	 * Supports outline and filled variants, custom sizing, and colors.
+	 * Renders SVG icons from static/icons/ folder inline.
+	 * Supports outline and filled variants, custom sizing, and dynamic colors.
+	 * 
+	 * Icons are rendered inline, allowing CSS color to apply via currentColor.
 	 * 
 	 * Usage:
 	 *   <Icon name="send" />
@@ -18,7 +20,7 @@
 	 *   label: Accessibility label (default: icon name)
 	 */
 
-	import { getIconPath } from '$lib/icons.js';
+	import { getIcon } from '$lib/icons.js';
 
 	export let name;
 	export let size = 24;
@@ -26,18 +28,18 @@
 	export let color = 'currentColor';
 	export let label = '';
 
-	$: iconPath = getIconPath(name, filled);
+	$: svgString = getIcon(name, filled);
 	$: ariaLabel = label || name;
 </script>
 
-{#if iconPath}
+{#if svgString}
 	<span
 		class="icon"
 		style="--icon-size: {size}px; --icon-color: {color};"
 		role="img"
 		aria-label={ariaLabel}
 	>
-		<img src={iconPath} alt="" width={size} height={size} />
+		{@html svgString}
 	</span>
 {:else}
 	<span class="icon icon--missing" style="--icon-size: {size}px;">
@@ -53,12 +55,12 @@
 		width: var(--icon-size);
 		height: var(--icon-size);
 		flex-shrink: 0;
+		color: var(--icon-color);
 	}
 
-	.icon img {
+	:global(.icon svg) {
 		width: 100%;
 		height: 100%;
-		object-fit: contain;
 	}
 
 	.icon--missing {

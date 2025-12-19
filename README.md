@@ -3,8 +3,8 @@
 An AI-powered prompt library and writing assistant for journalists and content creators.
 
 **Live**: [https://promptflam.pages.dev/](https://promptflam.pages.dev/)  
-**Status**: Phase 3 (Real AI Integration)  
-**Last Updated**: Dec 18, 2025
+**Status**: Phase 6 Complete (Testing & Refinement)  
+**Last Updated**: Dec 19, 2025
 
 ---
 
@@ -18,7 +18,7 @@ An AI-powered prompt library and writing assistant for journalists and content c
 | What's the tech stack? | [Below](#tech-stack) |
 | How do I set up locally? | `DEVELOPMENT.md` |
 | How does this work technically? | `ARCHITECTURE.md` |
-| What do I build this week? | `PHASE_3.md` |
+| What's been built? | `PHASES.md` → "Historical Phases" |
 | What's the approval workflow? | `PHASES.md` |
 | I'm stuck, what do I do? | `DEVELOPMENT.md` (Troubleshooting) |
 
@@ -115,21 +115,19 @@ public/
 
 ---
 
-## Current Phase: Phase 3 (Real AI Integration)
+## Project Status: Phase 6 Complete
 
-### What's Built
-- ✓ SvelteKit foundation with routing
-- ✓ State management (stores + localStorage)
-- ✓ Chat UI skeleton with message display
-- ✓ Navigation bar with page tabs
+**All core features built and integrated.** Currently in testing and refinement phase.
 
-### What's Next
-- [ ] Real Perplexity API integration
-- [ ] Streaming response display
-- [ ] Citation extraction & display
-- [ ] Error handling + loading states
+### Completed Phases
+1. ✓ SvelteKit foundation with routing
+2. ✓ Chat UI with message display
+3. ✓ Perplexity API integration with streaming & citations
+4. ✓ Prompt library with search/filters/favorites
+5. ✓ Archive page (saved chats & edits)
+6. ✓ Edit/notepad page with text formatting & export
 
-**Phase Details & Task List**: See `PHASE_3.md`
+See `PHASES.md` for complete historical breakdown.
 
 ---
 
@@ -181,12 +179,11 @@ npm run lint      # Check for errors
 ## Documentation
 
 - **README.md** (this file) — Start here; 5-min overview + navigation
-- **DEVELOPMENT.md** — Step-by-step local setup & troubleshooting
-- **ARCHITECTURE.md** — Technical deep-dive (stores, services, components)
-- **PHASES.md** — Current phase workflow and approval gates
-- **PHASE_3.md** — This week's deliverables and implementation guide
+- **DEVELOPMENT.md** — Local setup & troubleshooting
+- **ARCHITECTURE.md** — Technical deep-dive (stores, services, components, current state)
+- **PHASES.md** — Historical phases and what's been built
 
-*Historical docs archived in `/archive` folder.*
+*Phase details archived in `/archive` folder.*
 
 ---
 
@@ -220,18 +217,17 @@ git push origin main     # Cloudflare auto-deploys
 ### New Developer
 1. README.md (this file)
 2. DEVELOPMENT.md (setup)
-3. ARCHITECTURE.md (how it works)
-4. PHASE_3.md (tasks)
+3. ARCHITECTURE.md (how it works & current state)
 
-### AI Agent Joining Mid-Project
+### AI Agent (Bug Fixing / Testing)
 1. README.md (this file)
-2. PHASE_3.md (current tasks)
-3. ARCHITECTURE.md (coding patterns)
+2. ARCHITECTURE.md (current implementation)
+3. Identify issue → locate relevant component/store in codebase
 
 ### Project Lead
-1. PHASES.md (oversight)
-2. PHASE_N.md (current phase details)
-3. Review submissions + approve
+1. PHASES.md (project history)
+2. README.md (current status)
+3. Review + approve fixes
 
 ---
 

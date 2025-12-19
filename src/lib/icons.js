@@ -2,7 +2,7 @@
  * Icon Barrel Export
  * 
  * Central export for all SVG icons from static/icons/
- * Icons are loaded as img tags and rendered via Icon.svelte component.
+ * Icons are loaded as raw SVG strings and rendered inline via Icon.svelte component.
  * 
  * Naming convention: icon-{name}.svg and icon-{name}-fill.svg for variants
  * 
@@ -12,56 +12,73 @@
  *   <Icon name="create" filled={true} size={24} />
  */
 
-// Icon paths - these map to files in /static/icons/
-// SvelteKit serves static/ from root, so path is /icons/...
-export const iconPaths = {
+// Icon SVGs - imported as raw strings for inline rendering
+import IconCreate from '../../static/icons/icon-create.svg?raw';
+import IconPrompts from '../../static/icons/icon-prompts.svg?raw';
+import IconEdit from '../../static/icons/icon-edit.svg?raw';
+import IconNotepad from '../../static/icons/icon-notepad.svg?raw';
+import IconArchive from '../../static/icons/icon-archive.svg?raw';
+import IconSend from '../../static/icons/icon-send.svg?raw';
+import IconSendFill from '../../static/icons/icon-send-fill.svg?raw';
+import IconClose from '../../static/icons/icon-close.svg?raw';
+import IconNewchat from '../../static/icons/icon-newchat.svg?raw';
+import IconBusyFill from '../../static/icons/icon-busy-fill.svg?raw';
+import IconExpand from '../../static/icons/icon-expand.svg?raw';
+import IconCollapse from '../../static/icons/icon-collapse.svg?raw';
+import IconCopy from '../../static/icons/icon-copy.svg?raw';
+import IconRewrite from '../../static/icons/icon-rewrite.svg?raw';
+import IconSources from '../../static/icons/icon-sources.svg?raw';
+import IconShare from '../../static/icons/icon-share.svg?raw';
+import IconInfo from '../../static/icons/icon-info.svg?raw';
+import IconHeart from '../../static/icons/icon-heart.svg?raw';
+import IconHeartFill from '../../static/icons/icon-heart-fill.svg?raw';
+import IconArrowUp from '../../static/icons/icon-arrow-up.svg?raw';
+import IconSearch from '../../static/icons/icon-search.svg?raw';
+
+// Icon map - maps icon names to their SVG strings
+export const iconMap = {
 	// Navigation icons (header)
-	create: '/icons/icon-create.svg',
-	'create-fill': '/icons/icon-create-fill.svg',
-	prompts: '/icons/icon-prompts.svg',
-	'prompts-fill': '/icons/icon-prompts-fill.svg',
-	edit: '/icons/icon-edit.svg',
-	'edit-fill': '/icons/icon-edit-fill.svg',
-	notepad: '/icons/icon-notepad.svg',
-	'notepad-fill': '/icons/icon-notepad-fill.svg',
-	archive: '/icons/icon-archive.svg',
-	'archive-fill': '/icons/icon-archive-fill.svg',
+	create: IconCreate,
+	prompts: IconPrompts,
+	edit: IconEdit,
+	notepad: IconNotepad,
+	archive: IconArchive,
 	
 	// Chat/Create page icons
-	send: '/icons/icon-send.svg',
-	'send-fill': '/icons/icon-send-fill.svg',
-	close: '/icons/icon-close.svg',
-	newchat: '/icons/icon-newchat.svg',
-	'busy-fill': '/icons/icon-busy-fill.svg',
+	send: IconSend,
+	'send-fill': IconSendFill,
+	close: IconClose,
+	newchat: IconNewchat,
+	'busy-fill': IconBusyFill,
 	
 	// Prompt card icons
-	expand: '/icons/icon-expand.svg',
-	collapse: '/icons/icon-collapse.svg',
-	copy: '/icons/icon-copy.svg',
+	expand: IconExpand,
+	collapse: IconCollapse,
+	copy: IconCopy,
 	
 	// Response action icons
-	rewrite: '/icons/icon-rewrite.svg',
-	sources: '/icons/icon-sources.svg',
-	share: '/icons/icon-share.svg',
-	info: '/icons/icon-info.svg',
+	rewrite: IconRewrite,
+	sources: IconSources,
+	share: IconShare,
+	info: IconInfo,
 	
 	// Prompt library icons
-	heart: '/icons/icon-heart.svg',
-	'heart-fill': '/icons/icon-heart-fill.svg',
-	'arrow-up': '/icons/icon-arrow-up.svg',
-	search: '/icons/icon-search.svg'
+	heart: IconHeart,
+	'heart-fill': IconHeartFill,
+	'arrow-up': IconArrowUp,
+	search: IconSearch
 };
 
 // List of all available icon names
-export const iconNames = Object.keys(iconPaths);
+export const iconNames = Object.keys(iconMap);
 
 /**
- * Get the path for an icon
+ * Get the SVG string for an icon
  * @param {string} name - Icon name (e.g., 'send', 'create')
  * @param {boolean} filled - Whether to use filled variant
- * @returns {string} Path to SVG file
+ * @returns {string|null} SVG string
  */
-export function getIconPath(name, filled = false) {
+export function getIcon(name, filled = false) {
 	const key = filled ? `${name}-fill` : name;
-	return iconPaths[key] || iconPaths[name] || null;
+	return iconMap[key] || iconMap[name] || null;
 }

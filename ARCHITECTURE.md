@@ -13,10 +13,12 @@ src/
 │   ├── +layout.svelte         Root layout with header/nav
 │   ├── prompts/
 │   │   └── +page.svelte       Prompts library page
-│   ├── edit/
-│   │   └── +page.svelte       Draft editor page
-│   └── archive/
-│       └── +page.svelte       Saved chats & edits archive
+│   ├── notepad/
+│   │   └── +page.svelte       Text editor page
+│   ├── archive/
+│   │   └── +page.svelte       Saved chats & edits archive
+│   └── api/
+│       └── perplexity.js      Server-side API proxy
 │
 ├── lib/
 │   ├── stores.js              State management (all stores)
@@ -302,17 +304,20 @@ Pattern for all reusable components:
 - Select prompt → "Insert Prompt" → adds to chat input
 - Bracket content renders as visual chips for editing
 
-### Edit Page (`src/routes/edit/+page.svelte`)
+### Notepad Page (`src/routes/notepad/+page.svelte`)
 
 **What it shows**:
 - Text editor with title + content
-- Formatting toolbar (Bold, Italic, Underline, Text Size)
-- Save, Download, Clear buttons
+- Formatting toolbar (Font size, Undo, Redo, List, Italic, Bold)
+- More menu (⋯) for additional actions
+- Three action buttons under text: Share, Download, Copy
 
 **Key interactions**:
 - Type/format text → auto-save to localStorage
+- Select text → inline menu (Copy, Italic, Bold)
 - Download as .txt file
-- Load saved drafts from list
+- Share via system share
+- Copy content to clipboard
 
 ### Archive Page (`src/routes/archive/+page.svelte`)
 
@@ -616,4 +621,4 @@ For now: Manual testing in dev server (`npm run dev`).
 
 ---
 
-**Last Updated**: Dec 18, 2025
+**Last Updated**: Dec 19, 2025

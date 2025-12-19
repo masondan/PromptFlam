@@ -86,7 +86,7 @@
 		width: 40px;
 		height: 40px;
 		border-radius: 50%;
-		border: 2px solid var(--color-icon-default);
+		border: 1px solid var(--color-icon-default);
 		color: var(--color-icon-default);
 		text-decoration: none;
 		transition: border-color 0.15s, color 0.15s;
@@ -99,7 +99,7 @@
 	}
 
 	.nav-button.active {
-		border-color: var(--color-icon-active);
+		border: 2px solid var(--color-icon-active);
 		color: var(--color-icon-active);
 	}
 
@@ -110,12 +110,13 @@
 		width: 40px;
 		height: 40px;
 		border-radius: 50%;
-		border: 2px solid var(--color-icon-default);
-		color: var(--color-icon-active);
+		border: 1px solid var(--color-icon-default);
+		color: var(--color-icon-default);
 		transition: border-color 0.15s, color 0.15s;
 	}
 
 	.new-chat-button:hover {
 		border-color: var(--color-icon-active);
+		color: var(--color-icon-active);
 	}
 </style>
