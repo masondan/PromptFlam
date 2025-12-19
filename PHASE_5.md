@@ -62,11 +62,15 @@ A single Archive page with two tabs (Chats | Notes) displaying saved sessions. I
 ## Icons Used
 
 From `static/icons/`:
-- Three-dot menu: `icon-more.svg` (create if needed)
-- Download: `icon-download.svg` (create if needed)
-- Share: `icon-share.svg` (exists)
-- Delete: `icon-delete.svg` (create if needed)
-- Close: `icon-close.svg` (exists)
+More (three dot menu) icon-more.svg
+Copy (in more menu) icon-copy.svg
+Download (in more menu) icon-download.svg
+Trash (in more menu) icon-trash.svg
+Share (in more menu) icon-share.svg
+Time (clock icon for timestamp) icon-time.svg
+Circle (inactive radio button) icon-circle.svg
+Radio (active radio button) icon-radio.svg
+Select All (selects all archive list) icon-select-all.svg
 
 ---
 
@@ -97,6 +101,38 @@ async function handleShare(text) {
 - **Chats**: Save entire `chatMessages` array to `archiveChats` after each AI response
 - **Notes**: Debounce saves (e.g., 2 seconds after typing stops)
 - Use session ID to update existing entry vs creating new
+
+---
+
+### Design notes
+
+- The Archive page inherits the same clean, minimalist look as other pages in the app.
+- The layout, functions and styles of both Chats and Notes is the same
+- Review the visuals in info/ carefully.
+
+**See info/archive1.png for default layout**
+- The Archive Page has two tabs: Chats and Notes. The text tabs are aligned LEFT below the header navigation. Inactive tab is #999999. Active tab is #555555 with #555555 line underscore.
+- Aligned RIGHT on the Chats/Notes row is a Select All button (icon-select-all.svg). Inactive colour: #999999. Active colour: #555555
+- When the page is scrolled, the tab row moves up with the archive listing.
+- Saved Chats and Notes appear as a list. Heading/Title = two lines max with [...] if required. Body text = two lines max with [...] if required.
+- Under each archive listing is a timestamp. This is aligned left. Colour: #999999. With clock icon (icon-time.svg) followed by the timestamp [icon][timestamp]
+- Fine separator lines separate archive listings. 1px #999999.
+- Archive headings are indented to allow for a three-dot menu (icon-more.svg). Inactive colour #999999. Active colour #555555 (Body text is justified full width)
+
+**See archive2.png and archive3.png for layout with active toolbar**
+- When a three-dot menu is tapped next to any archive listing, a horizontal pill-style toolbar is displayed to the left of the three-dot menu. Background colour: #efefef 
+- The menu consists of three text + one icon menu items. From left to right: [COPY][SHARE][DOWNLOAD][|][TRASH ICON]. Default colour for TEXT: #999999 Colour on mouseover/tap trigger #555555.
+- Default colour of trash icon #999999. When tapped the trash icon turns purple #5422B0 and a confirmation button is displayed under the trash button. Pill style, background #purple #5422B0. White text [DELETE?] (see archive3.png)
+- Note the small vertical separator to the left of the trash button.
+- When an archive listing is deleted, other listings move smoothly up to fill the space.
+
+**See archive4.png and archive5.png for bulk select/delete**
+- When the select all button (icon-select-all.svg) is tapped it turns from default #999999 to active #555555. This triggers ...
+- The archive listing is indented at the left side (leaving in place full width separator lines). Outline circle selectors are displayed aligned left to the left of headings - inactive colour #999999.
+- When a circle (icon-circle.svg colour #999999) is tapped it becomes an active radio button (icon-radio.svg Colour #555555)
+- at the same time a trash button (icon-trash.svg colour purple #5422B0) appears to the left of the select all button
+- when one or more radio buttons then the trash button is tapped a confirmation button is displayed under the trash button. Pill style, background purple #5422B0. White text [DELETE?]
+- When archive listings are deleted, other listings move smoothly up to fill the space.
 
 ---
 

@@ -18,3 +18,4 @@ export { default as PromptEditDrawer } from './PromptEditDrawer.svelte';
 export { default as SourcesDrawer } from './SourcesDrawer.svelte';
 export { default as TextSelectionMenu } from './TextSelectionMenu.svelte';
 export { default as ThinkingDots } from './ThinkingDots.svelte';
+export { default as ArchiveItem } from './ArchiveItem.svelte';

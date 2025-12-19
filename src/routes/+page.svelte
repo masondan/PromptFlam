@@ -9,7 +9,7 @@
 		TextSelectionMenu,
 		ThinkingDots 
 	} from '$lib/components';
-	import { chatMessages, addChatMessage, clearChat, archiveCurrentChat, updateLastMessage } from '$lib/stores';
+	import { chatMessages, addChatMessage, clearChat, archiveCurrentChat, updateLastMessage, autoSaveChat, currentChatSessionId } from '$lib/stores';
 	import { callPerplexity } from '$lib/services/perplexity.js';
 
 	let inputValue = '';
@@ -57,6 +57,9 @@
 			// Final update with complete content and sources
 			updateLastMessage(content, sources);
 			
+			// Auto-save to archive after each AI response
+			autoSaveChat();
+			
 		} catch (error) {
 			console.error('Chat error:', error);
 			errorMessage = error.message || 'Failed to get response. Please try again.';
@@ -71,8 +74,10 @@
 	}
 
 	function handleNewChat() {
-		archiveCurrentChat();
+		// Don't archive again - it's already auto-saved
+		// Just reset the session to start fresh
 		clearChat();
+		currentChatSessionId.set(null);
 	}
 
 	function handleOpenPromptDrawer() {

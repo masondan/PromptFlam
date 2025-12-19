@@ -243,19 +243,18 @@ Each phase follows this workflow:
 
 ---
 
-### Phase 6: Edit Page (Week 6-7)
+### Phase 6: Edit Page 
 **Objective**: Build text editor for refining and exporting draft content.
 
 **Deliverables:**
 - [ ] Title input field
 - [ ] Rich text area (editable content)
-- [ ] Text formatting toolbar (Bold, Italic, Underline, Text Size)
+- [ ] Text formatting toolbar
 - [ ] Copy to clipboard
-- [ ] Save draft to localStorage
+- [ ] Save draft to localStorage automatically
 - [ ] Download as .txt file
 - [ ] Clear draft button
-- [ ] Optional: Spelling/grammar checker (if time permits)
-- [ ] Draft list (manage multiple drafts)
+- [ ] Optional: Spelling/grammar checker
 
 **Key Components:**
 - `TextEditor.svelte` - Main editor
