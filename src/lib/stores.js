@@ -247,6 +247,12 @@ export function autoSaveNote() {
 	// Don't save empty notes
 	if (!title.trim() && !content.trim()) return;
 	
+	// Handle empty title case
+	const displayTitle = title.trim() || 'Untitled note';
+	
+	// Handle empty content case - create placeholder preview text
+	const displayContent = content.trim() || 'Brevity is a virtue, but this note is a little light on detail';
+	
 	archiveNotes.update((notes) => {
 		if (sessionId) {
 			// Update existing archive entry
@@ -255,8 +261,8 @@ export function autoSaveNote() {
 				const updated = [...notes];
 				updated[existingIndex] = {
 					...updated[existingIndex],
-					title: title || 'Untitled Note',
-					content,
+					title: displayTitle,
+					content: displayContent,
 					timestamp: Date.now()
 				};
 				return updated;
@@ -269,8 +275,8 @@ export function autoSaveNote() {
 		
 		const newNote = {
 			id: newId,
-			title: title || 'Untitled Note',
-			content,
+			title: displayTitle,
+			content: displayContent,
 			timestamp: Date.now()
 		};
 		

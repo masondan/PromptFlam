@@ -1,5 +1,6 @@
 <script>
-	import { Header } from '$lib/components';
+	import { onMount } from 'svelte';
+	import { Header, NotepadToolbar, NotepadSelectionMenu } from '$lib/components';
 	import { 
 		currentNoteTitle, 
 		currentNoteContent, 
@@ -7,19 +8,52 @@
 		startNewNote
 	} from '$lib/stores';
 
+	let editorRef;
+	let titleRef;
 	let saveTimeout;
+	let toolbarExpanded = false;
+	let fontSizeState = 0; // 0 = default, 1 = medium, 2 = large
+	let isBoldActive = false;
+	let isItalicActive = false;
+	let showToast = false;
+	let toastMessage = '';
+	let hasContent = false;
 
 	$: title = $currentNoteTitle;
 	$: content = $currentNoteContent;
+	$: wordCount = getWordCount(content);
+	$: hasContent = content.trim().length > 0 || title.trim().length > 0;
 
-	function handleTitleChange(e) {
-		currentNoteTitle.set(e.target.value);
+	function getWordCount(text) {
+		if (!text || !text.trim()) return 0;
+		return text.trim().split(/\s+/).filter(w => w).length;
+	}
+
+	function handleTitleInput(e) {
+		currentNoteTitle.set(e.target.textContent || '');
 		debouncedSave();
 	}
 
-	function handleContentChange(e) {
-		currentNoteContent.set(e.target.value);
-		debouncedSave();
+	function handleTitleKeydown(e) {
+		if (e.key === 'Enter') {
+			e.preventDefault();
+			editorRef?.focus();
+		}
+	}
+
+	function handleContentInput() {
+		if (editorRef) {
+			currentNoteContent.set(editorRef.innerHTML || '');
+			updateFormattingState();
+			debouncedSave();
+		}
+	}
+
+	function updateFormattingState() {
+		if (typeof document !== 'undefined') {
+			isBoldActive = document.queryCommandState('bold');
+			isItalicActive = document.queryCommandState('italic');
+		}
 	}
 
 	function debouncedSave() {
@@ -29,13 +63,23 @@
 		}, 2000);
 	}
 
-	function handleNewNote() {
-		startNewNote();
+	function handleStartOver() {
+		if (hasContent) {
+			if (confirm('Start a new note? Current note is auto-saved.')) {
+				startNewNote();
+				if (editorRef) editorRef.innerHTML = '';
+				if (titleRef) titleRef.textContent = '';
+				fontSizeState = 0;
+				updateEditorFontSize();
+			}
+		}
 	}
 
 	function handleDownload() {
-		const text = `${title}\n\n${content}`;
-		const filename = `${(title || 'note').replace(/[^a-z0-9]/gi, '-').toLowerCase()}.txt`;
+		const plainText = editorRef ? editorRef.innerText : content;
+		const noteTitle = title || 'Untitled note';
+		const text = `${noteTitle}\n\n${plainText}`;
+		const filename = `${noteTitle.replace(/[^a-z0-9]/gi, '-').toLowerCase()}.txt`;
 		
 		const blob = new Blob([text], { type: 'text/plain' });
 		const url = URL.createObjectURL(blob);
@@ -44,7 +88,108 @@
 		a.download = filename;
 		a.click();
 		URL.revokeObjectURL(url);
+		
+		showToastMessage('Downloaded');
 	}
+
+	async function handleCopy() {
+		const plainText = editorRef ? editorRef.innerText : content;
+		const noteTitle = title || 'Untitled note';
+		const text = `${noteTitle}\n\n${plainText}`;
+		
+		try {
+			await navigator.clipboard.writeText(text);
+			showToastMessage('Copied to clipboard');
+		} catch (err) {
+			console.error('Copy failed:', err);
+			showToastMessage('Failed to copy');
+		}
+	}
+
+	async function handleShare() {
+		const plainText = editorRef ? editorRef.innerText : content;
+		const noteTitle = title || 'Untitled note';
+		const text = `${noteTitle}\n\n${plainText}`;
+		
+		if (navigator.share) {
+			try {
+				await navigator.share({
+					title: noteTitle,
+					text: text
+				});
+			} catch (err) {
+				if (err.name !== 'AbortError') {
+					console.error('Share failed:', err);
+				}
+			}
+		} else {
+			await handleCopy();
+		}
+	}
+
+	function showToastMessage(msg) {
+		toastMessage = msg;
+		showToast = true;
+		setTimeout(() => {
+			showToast = false;
+		}, 2000);
+	}
+
+	// Toolbar handlers
+	function handleFontSize() {
+		fontSizeState = (fontSizeState + 1) % 3;
+		updateEditorFontSize();
+	}
+
+	function updateEditorFontSize() {
+		if (editorRef) {
+			const sizes = ['1rem', '1.125rem', '1.25rem'];
+			editorRef.style.fontSize = sizes[fontSizeState];
+		}
+	}
+
+	function handleUndo() {
+		document.execCommand('undo');
+		editorRef?.focus();
+	}
+
+	function handleRedo() {
+		document.execCommand('redo');
+		editorRef?.focus();
+	}
+
+	function handleList() {
+		document.execCommand('insertUnorderedList');
+		editorRef?.focus();
+		handleContentInput();
+	}
+
+	function handleItalic() {
+		document.execCommand('italic');
+		editorRef?.focus();
+		updateFormattingState();
+		handleContentInput();
+	}
+
+	function handleBold() {
+		document.execCommand('bold');
+		editorRef?.focus();
+		updateFormattingState();
+		handleContentInput();
+	}
+
+	function handleToolbarToggle(e) {
+		toolbarExpanded = e.detail.expanded;
+	}
+
+	onMount(() => {
+		if (editorRef && content) {
+			editorRef.innerHTML = content;
+		}
+		if (titleRef && title) {
+			titleRef.textContent = title;
+		}
+	});
 </script>
 
 <svelte:head>
@@ -55,32 +200,81 @@
 
 <main class="notepad-page">
 	<div class="notepad-header">
-		<input
-			type="text"
-			class="title-input"
-			placeholder="Note title..."
-			value={title}
-			on:input={handleTitleChange}
-		/>
-		<div class="notepad-actions">
-			<button class="action-btn" on:click={handleNewNote} aria-label="New note">
-				<img src="/icons/icon-newchat.svg" alt="" class="action-icon" />
-			</button>
-			<button class="action-btn" on:click={handleDownload} aria-label="Download">
-				<img src="/icons/icon-download.svg" alt="" class="action-icon" />
-			</button>
-		</div>
+		<button 
+			class="startover-btn" 
+			on:click={handleStartOver}
+			aria-label="Start over"
+			disabled={!hasContent}
+		>
+			<img src="/icons/icon-startover.svg" alt="" class="startover-icon" />
+		</button>
 	</div>
 
-	<textarea
-		class="content-textarea"
-		placeholder="Start writing..."
-		value={content}
-		on:input={handleContentChange}
-	></textarea>
+	<div class="editor-container">
+		<div
+			bind:this={titleRef}
+			class="title-editor"
+			contenteditable="true"
+			role="textbox"
+			tabindex="0"
+			aria-label="Note title"
+			data-placeholder="Title"
+			on:input={handleTitleInput}
+			on:keydown={handleTitleKeydown}
+		></div>
 
-	<p class="save-indicator">Auto-saved</p>
+		<div
+			bind:this={editorRef}
+			class="content-editor"
+			contenteditable="true"
+			role="textbox"
+			tabindex="0"
+			aria-label="Note content"
+			aria-multiline="true"
+			data-placeholder="Write or paste"
+			on:input={handleContentInput}
+			on:keyup={updateFormattingState}
+			on:mouseup={updateFormattingState}
+		></div>
+	</div>
+
+	{#if hasContent}
+		<div class="content-footer">
+			<span class="word-count">{wordCount} {wordCount === 1 ? 'word' : 'words'}</span>
+			<div class="action-buttons">
+				<button class="action-btn" on:click={handleShare} aria-label="Share">
+					<img src="/icons/icon-share.svg" alt="" class="action-icon" />
+				</button>
+				<button class="action-btn" on:click={handleDownload} aria-label="Download">
+					<img src="/icons/icon-download.svg" alt="" class="action-icon" />
+				</button>
+				<button class="action-btn" on:click={handleCopy} aria-label="Copy">
+					<img src="/icons/icon-copy.svg" alt="" class="action-icon" />
+				</button>
+			</div>
+		</div>
+	{/if}
 </main>
+
+<NotepadToolbar
+	bind:isExpanded={toolbarExpanded}
+	{fontSizeState}
+	{isBoldActive}
+	{isItalicActive}
+	on:toggle={handleToolbarToggle}
+	on:fontsize={handleFontSize}
+	on:undo={handleUndo}
+	on:redo={handleRedo}
+	on:list={handleList}
+	on:italic={handleItalic}
+	on:bold={handleBold}
+/>
+
+<NotepadSelectionMenu {editorRef} />
+
+{#if showToast}
+	<div class="toast">{toastMessage}</div>
+{/if}
 
 <style>
 	.notepad-page {
@@ -90,30 +284,104 @@
 		flex-direction: column;
 		max-width: var(--max-content-width);
 		margin: 0 auto;
+		padding-bottom: 80px;
 	}
 
 	.notepad-header {
 		display: flex;
 		align-items: center;
-		justify-content: space-between;
-		padding: var(--spacing-md);
-		border-bottom: 1px solid var(--color-border-light);
+		justify-content: flex-end;
+		padding: var(--spacing-sm) var(--spacing-md);
 	}
 
-	.title-input {
+	.startover-btn {
+		width: 36px;
+		height: 36px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		border-radius: var(--radius-sm);
+		transition: opacity 0.15s ease;
+	}
+
+	.startover-btn:disabled {
+		opacity: 0.3;
+	}
+
+	.startover-btn:not(:disabled):hover {
+		background-color: var(--color-surface-dark);
+	}
+
+	.startover-icon {
+		width: 20px;
+		height: 20px;
+		opacity: 0.6;
+	}
+
+	.editor-container {
 		flex: 1;
-		font-size: var(--font-size-lg);
-		font-weight: 600;
-		border: none;
-		outline: none;
-		background: transparent;
+		padding: 0 var(--spacing-md);
+		display: flex;
+		flex-direction: column;
 	}
 
-	.title-input::placeholder {
+	.title-editor {
+		font-size: var(--font-size-xl);
+		font-weight: 600;
+		line-height: 1.4;
+		outline: none;
+		min-height: 1.4em;
+		margin-bottom: var(--spacing-md);
+	}
+
+	.title-editor:empty::before {
+		content: attr(data-placeholder);
+		color: var(--color-icon-default);
+		pointer-events: none;
+	}
+
+	.content-editor {
+		flex: 1;
+		font-size: var(--font-size-base);
+		line-height: 1.6;
+		outline: none;
+		min-height: 300px;
+	}
+
+	.content-editor:empty::before {
+		content: attr(data-placeholder);
+		color: var(--color-icon-default);
+		pointer-events: none;
+	}
+
+	.content-editor :global(ul) {
+		margin-left: var(--spacing-lg);
+		list-style-type: disc;
+	}
+
+	.content-editor :global(li) {
+		margin-bottom: var(--spacing-xs);
+	}
+
+	.content-editor::selection,
+	.content-editor :global(::selection) {
+		background-color: #ece4ff;
+	}
+
+	.content-footer {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		padding: var(--spacing-sm) var(--spacing-md);
+		margin-top: var(--spacing-md);
+	}
+
+	.word-count {
+		font-size: var(--font-size-sm);
 		color: var(--color-icon-default);
 	}
 
-	.notepad-actions {
+	.action-buttons {
 		display: flex;
 		gap: var(--spacing-sm);
 	}
@@ -135,33 +403,33 @@
 	.action-icon {
 		width: 20px;
 		height: 20px;
-		opacity: 0.6;
+		filter: brightness(0) saturate(100%) invert(33%);
 	}
 
-	.action-btn:hover .action-icon {
-		opacity: 1;
-	}
-
-	.content-textarea {
-		flex: 1;
-		padding: var(--spacing-md);
-		font-size: var(--font-size-base);
-		line-height: 1.6;
-		border: none;
-		outline: none;
-		resize: none;
-		min-height: 400px;
-	}
-
-	.content-textarea::placeholder {
-		color: var(--color-icon-default);
-	}
-
-	.save-indicator {
+	.toast {
+		position: fixed;
+		bottom: 80px;
+		left: 50%;
+		transform: translateX(-50%);
+		background: var(--color-text);
+		color: var(--color-bg);
 		padding: var(--spacing-sm) var(--spacing-md);
+		border-radius: var(--radius-full);
 		font-size: var(--font-size-sm);
-		color: var(--color-icon-default);
-		text-align: center;
-		border-top: 1px solid var(--color-border-light);
+		font-weight: 500;
+		box-shadow: var(--shadow-lg);
+		animation: fadeInUp 0.2s ease-out;
+		z-index: var(--z-overlay);
+	}
+
+	@keyframes fadeInUp {
+		from {
+			opacity: 0;
+			transform: translateX(-50%) translateY(10px);
+		}
+		to {
+			opacity: 1;
+			transform: translateX(-50%) translateY(0);
+		}
 	}
 </style>

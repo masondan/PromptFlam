@@ -243,7 +243,7 @@ Each phase follows this workflow:
 
 ---
 
-### Phase 6: Edit Page 
+### Phase 6: Notepad Page 
 **Objective**: Build text editor for refining and exporting draft content.
 
 **Deliverables:**

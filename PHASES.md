@@ -15,7 +15,7 @@ Each phase has its own detailed file. This document shows the overall structure.
 | 3 | Real AI Integration | ✓ Complete | Week 3-4 |
 | 4 | Prompt Library Integration | ✓ Complete | Week 4-5 |
 | 5 | Archive Page | **Current** | Week 5-6 |
-| 6 | Notepad Page | Pending | Week 6-7 |
+| 6 | Edit Page | Pending | Week 6-7 |
 | 7 | Advanced Features & Polish | Pending | Week 7-8 |
 | 8 | Deployment & Launch | Pending | Week 8 |
 
@@ -128,14 +128,14 @@ Before proceeding to next phase:
 
 ## Upcoming Phases (Pending)
 
-### Phase 6: Notepad Page
-See `PHASE_6.md` for reference
+### Phase 6: Edit Page
+See `archive/PHASE_6.md` for reference
 
 ### Phase 7: Advanced Features & Polish
-See `PHASE_7.md` for reference
+See `archive/PHASE_7.md` for reference
 
 ### Phase 8: Deployment & Launch
-See `PHASE_8.md` for reference
+See `archive/PHASE_8.md` for reference
 
 ---
 
