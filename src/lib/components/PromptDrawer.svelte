@@ -80,7 +80,7 @@
 		left: 0;
 		right: 0;
 		bottom: 0;
-		background: var(--color-bg);
+		background: var(--bg-main);
 		display: flex;
 		flex-direction: column;
 		overflow: hidden;
@@ -91,7 +91,7 @@
 		align-items: center;
 		gap: var(--spacing-sm);
 		padding: var(--spacing-md);
-		border-bottom: 1px solid var(--color-border-light);
+		border-bottom: 1px solid var(--color-border);
 		flex-shrink: 0;
 	}
 
@@ -110,7 +110,7 @@
 	}
 
 	.drawer-title {
-		font-size: var(--font-size-lg);
+		font-size: var(--font-size-h3);
 		font-weight: 600;
 		margin: 0;
 	}

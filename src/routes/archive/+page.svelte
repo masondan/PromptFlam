@@ -201,7 +201,7 @@
 		align-items: center;
 		justify-content: space-between;
 		padding: var(--spacing-md) var(--spacing-md) 0;
-		border-bottom: 1px solid var(--color-border-light);
+		border-bottom: 1px solid var(--color-border);
 	}
 
 	.tabs {
@@ -251,7 +251,7 @@
 	}
 
 	.bulk-trash-btn:hover {
-		background-color: var(--color-surface-dark);
+		background-color: var(--bg-surface-dark);
 	}
 
 	.bulk-trash-icon {
@@ -286,7 +286,7 @@
 	}
 
 	.select-all-btn:hover {
-		background-color: var(--color-surface-dark);
+		background-color: var(--bg-surface-dark);
 	}
 
 	.select-all-icon {
@@ -320,14 +320,14 @@
 	}
 
 	.empty-state p {
-		color: var(--color-text-secondary);
-		font-size: var(--font-size-lg);
+		color: var(--text-secondary);
+		font-size: var(--font-size-h3);
 		margin: 0;
 	}
 
 	.empty-hint {
 		color: var(--color-icon-default);
-		font-size: var(--font-size-sm) !important;
+		font-size: 0.875rem !important;
 		margin-top: var(--spacing-sm) !important;
 	}
 </style>

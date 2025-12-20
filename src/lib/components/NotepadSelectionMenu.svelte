@@ -178,7 +178,7 @@
 		display: flex;
 		align-items: center;
 		background: #555555;
-		border-radius: var(--radius-md);
+		border-radius: var(--radius);
 		padding: var(--spacing-xs) var(--spacing-sm);
 		box-shadow: var(--shadow-md);
 		transform: translate(-50%, -100%);
@@ -214,7 +214,7 @@
 		font-weight: 600;
 		text-transform: uppercase;
 		color: #ffffff;
-		background: var(--color-primary);
+		background: var(--accent-brand);
 		border-radius: var(--radius-full);
 		white-space: nowrap;
 	}

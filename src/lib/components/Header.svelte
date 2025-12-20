@@ -53,7 +53,7 @@
 		left: 0;
 		right: 0;
 		height: var(--header-height);
-		background: var(--color-bg);
+		background: var(--bg-main);
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
@@ -69,7 +69,7 @@
 		left: 0;
 		right: 0;
 		height: 16px;
-		background: linear-gradient(to bottom, var(--color-bg), transparent);
+		background: linear-gradient(to bottom, var(--bg-main), transparent);
 		pointer-events: none;
 	}
 

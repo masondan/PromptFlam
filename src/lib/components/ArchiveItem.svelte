@@ -241,7 +241,7 @@
 	.item-title {
 		font-size: var(--font-size-base);
 		font-weight: 600;
-		color: var(--color-text);
+		color: var(--text-primary);
 		line-height: 1.4;
 		display: -webkit-box;
 		-webkit-line-clamp: 2;
@@ -277,7 +277,7 @@
 		display: flex;
 		align-items: center;
 		gap: var(--spacing-xs);
-		background: var(--color-surface-dark);
+		background: var(--bg-surface-dark);
 		border-radius: var(--radius-full);
 		padding: var(--spacing-xs) var(--spacing-sm);
 		margin-top: var(--spacing-sm);
@@ -348,8 +348,8 @@
 	}
 
 	.item-preview {
-		font-size: var(--font-size-sm);
-		color: var(--color-text-secondary);
+		font-size: 0.875rem;
+		color: var(--text-secondary);
 		line-height: 1.4;
 		display: -webkit-box;
 		-webkit-line-clamp: 2;
@@ -364,7 +364,7 @@
 		gap: var(--spacing-xs);
 		margin-top: var(--spacing-sm);
 		color: var(--color-icon-default);
-		font-size: var(--font-size-sm);
+		font-size: 0.875rem;
 	}
 
 	.time-icon {

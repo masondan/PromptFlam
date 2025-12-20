@@ -131,7 +131,7 @@
 		width: 44px;
 		height: 44px;
 		border-radius: 50%;
-		background: var(--color-surface-dark);
+		background: var(--bg-surface-dark);
 		display: flex;
 		align-items: center;
 		justify-content: center;
@@ -156,7 +156,7 @@
 		display: flex;
 		align-items: center;
 		gap: var(--spacing-sm);
-		background: var(--color-surface-dark);
+		background: var(--bg-surface-dark);
 		border-radius: var(--radius-full);
 		padding: var(--spacing-xs) var(--spacing-sm);
 		animation: slideIn 0.2s ease-out;

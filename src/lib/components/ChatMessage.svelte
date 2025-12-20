@@ -78,7 +78,7 @@
 	{:else if showSourcesLink && sources.length > 0}
 		<button class="sources-link" on:click={handleSources}>
 			{sources.length} sources
-			<Icon name="sources" size={14} color="#999999" />
+			<Icon name="sources" size={14} />
 		</button>
 	{/if}
 	
@@ -123,8 +123,8 @@
 		display: inline-flex;
 		align-items: center;
 		gap: 6px;
-		color: #999999;
-		font-size: var(--font-size-sm);
+		color: var(--text-secondary);
+		font-size: 0.875rem; /* Equivalent to old --font-size-sm */
 		font-weight: 400;
 		background: transparent;
 		border: none;
@@ -135,7 +135,7 @@
 	}
 
 	.sources-link:hover {
-		color: var(--color-text-secondary);
+		color: var(--text-primary);
 	}
 
 	.streaming-indicator {
@@ -150,7 +150,7 @@
 	.streaming-indicator .dot {
 		width: 6px;
 		height: 6px;
-		background-color: #999999;
+		background-color: var(--text-secondary);
 		border-radius: 50%;
 		animation: pulse 1.4s ease-in-out infinite;
 	}
@@ -181,7 +181,7 @@
 	.message-content {
 		font-size: var(--font-size-base);
 		line-height: 1.7;
-		color: var(--color-text);
+		color: var(--text-primary);
 	}
 
 	.message-content :global(h1),
@@ -190,21 +190,21 @@
 		font-weight: 700;
 		margin-top: var(--spacing-xl);
 		margin-bottom: var(--spacing-sm);
-		color: var(--color-text);
+		color: var(--text-primary);
 		line-height: 1.3;
 	}
 
 	.message-content :global(h1) {
-		font-size: 1.5rem;
+		font-size: var(--font-size-h1);
 	}
 
 	.message-content :global(h2) {
-		font-size: 1.25rem;
+		font-size: var(--font-size-h2);
 		margin-top: var(--spacing-lg);
 	}
 
 	.message-content :global(h3) {
-		font-size: 1.125rem;
+		font-size: var(--font-size-h3);
 		margin-top: var(--spacing-md);
 	}
 
@@ -218,7 +218,7 @@
 
 	.message-content :global(strong) {
 		font-weight: 600;
-		color: var(--color-text);
+		color: var(--text-primary);
 	}
 
 	.message-content :global(ul),
@@ -236,10 +236,10 @@
 	}
 
 	.message-content :global(blockquote) {
-		border-left: 3px solid var(--color-primary);
+		border-left: 3px solid var(--accent-brand);
 		padding-left: var(--spacing-md);
 		margin: var(--spacing-md) 0;
-		color: var(--color-text-secondary);
+		color: var(--text-secondary);
 	}
 
 	.message-content :global(.citation) {
@@ -250,7 +250,7 @@
 		height: 18px;
 		padding: 0 4px;
 		margin: 0 2px;
-		background: var(--color-surface-dark);
+		background: var(--bg-surface-dark);
 		color: var(--color-icon-active);
 		font-size: 11px;
 		font-weight: 600;
@@ -262,13 +262,13 @@
 	}
 
 	.message-content :global(.citation:hover) {
-		background: var(--color-border);
+		background: var(--bg-surface-dark);
 	}
 
 	.cursor {
 		display: inline-block;
 		animation: blink 1s step-end infinite;
-		color: var(--color-primary);
+		color: var(--accent-brand);
 	}
 
 	@keyframes blink {
@@ -286,9 +286,9 @@
 	}
 
 	.word-count {
-		font-size: var(--font-size-sm);
+		font-size: 0.875rem; /* Equivalent to old --font-size-sm */
 		font-weight: 700;
-		color: #999999;
+		color: var(--text-secondary);
 		margin-right: auto;
 	}
 

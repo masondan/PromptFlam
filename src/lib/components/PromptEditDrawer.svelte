@@ -150,7 +150,7 @@
 		left: 0;
 		right: 0;
 		bottom: 0;
-		background: var(--color-bg);
+		background: var(--bg-main);
 		display: flex;
 		flex-direction: column;
 		padding: var(--spacing-md);
@@ -183,7 +183,7 @@
 	}
 
 	.icon-btn.copied {
-		color: var(--color-primary);
+		color: var(--accent-brand);
 		animation: pulse 0.4s ease-in-out;
 	}
 
@@ -199,10 +199,10 @@
 		font-size: 16px;
 		line-height: 1.6;
 		font-family: inherit;
-		color: var(--color-text);
-		background: var(--color-bg);
-		border: 1px solid var(--color-border-light);
-		border-radius: var(--radius-md);
+		color: var(--text-primary);
+		background: var(--bg-main);
+		border: 1px solid var(--color-border);
+		border-radius: var(--radius);
 		resize: none;
 	}
 

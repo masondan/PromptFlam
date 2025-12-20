@@ -1,58 +1,49 @@
-/* PromptFlam Global Styles */
+/* PromptFlam Global Styles - Unified Design System */
 
 :root {
-	/* Colors from design brief */
-	--color-bg: #ffffff;
-	--color-text: #1a1a1a;
-	--color-text-secondary: #555555;
-	--color-text-muted: #777777;
-	--color-icon-default: #999999;
-	--color-icon-active: #5422B0;
-	--color-border: #b4b4b4;
-	--color-border-light: #e0e0e0;
-	--color-surface: #f8f8f8;
-	--color-surface-dark: #efefef;
-	--color-highlight: #ede3ff;
-	--color-overlay: rgba(85, 85, 85, 0.1);
-	--color-separator: #999999;
-	
-	/* Primary/accent colors */
-	--color-primary: #6a0dad;
-	--color-primary-light: #8b5cf6;
-	
-	/* Typography */
-	--font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
-	--font-size-sm: 0.875rem;
-	--font-size-base: 1rem;
-	--font-size-lg: 1.125rem;
-	--font-size-xl: 1.25rem;
-	--line-height: 1.5;
-	
-	/* Spacing */
+	/* 1. COLORS - Inspired by Gemini and user palette */
+	--bg-main: #ffffff;
+	--bg-surface: #f8f8f8; /* Kept from old system for UI elements */
+	--bg-surface-dark: #efefef;
+	--text-primary: #1f1f1f;
+	--text-secondary: #777777;
+	--accent-brand: #5422b0;
+	--color-border: #e0e0e0;
+	--color-highlight: #F0E6F7;
+	--color-overlay: rgba(31, 31, 31, 0.1);
+	--color-icon-default: #777777;
+	--color-icon-active: #5422b0;
+	--color-separator: #e0e0e0;
+
+	/* 2. TYPOGRAPHY - System fonts, simple hierarchy */
+	--font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+	--font-size-base: 1rem;      /* 16px */
+	--font-size-h3:   1.125rem;  /* 18px */
+	--font-size-h2:   1.25rem;   /* 20px */
+	--font-size-h1:   1.5rem;    /* 24px */
+	--line-height: 1.6;
+
+	/* 3. SPACING & RADIUS */
 	--spacing-xs: 4px;
 	--spacing-sm: 8px;
 	--spacing-md: 16px;
 	--spacing-lg: 24px;
 	--spacing-xl: 32px;
-	
-	/* Border radius */
-	--radius-sm: 4px;
-	--radius-md: 8px;
+	--radius: 12px;
+	--radius-sm: 6px; /* half of main radius */
 	--radius-lg: 16px;
 	--radius-full: 9999px;
-	
-	/* Shadows */
+
+	/* 4. SHADOWS & LAYOUT */
 	--shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
 	--shadow-md: 0 4px 6px rgba(0, 0, 0, 0.07);
 	--shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
 	--shadow-input: 0 -4px 12px rgba(0, 0, 0, 0.05);
-	
-	/* Layout */
 	--header-height: 56px;
 	--input-drawer-min-height: 80px;
-	--max-content-width: 600px;
-	
-	/* Z-index layers */
+	--max-content-width: 650px; /* Increased for better line length */
+
+	/* 5. Z-INDEX LAYERS */
 	--z-header: 100;
 	--z-input-drawer: 90;
 	--z-overlay: 200;
@@ -60,8 +51,10 @@
 	--z-selection-menu: 220;
 }
 
-/* Reset */
-*, *::before, *::after {
+/* BASE & RESET */
+*,
+*::before,
+*::after {
 	box-sizing: border-box;
 	margin: 0;
 	padding: 0;
@@ -76,30 +69,51 @@ body {
 	font-family: var(--font-family);
 	font-size: var(--font-size-base);
 	line-height: var(--line-height);
-	background-color: var(--color-bg);
-	color: var(--color-text);
+	background-color: var(--bg-main);
+	color: var(--text-primary);
 	min-height: 100%;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
 	overflow-x: hidden;
 }
 
-/* Typography */
-h1, h2, h3, h4, h5, h6 {
-	font-weight: 600;
-	line-height: 1.3;
+/* TYPOGRAPHY HIERARCHY */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	font-weight: 700;
+	line-height: 1.2;
+	margin-bottom: 0.75rem;
+	margin-top: 1.5rem;
+}
+
+h1 { font-size: var(--font-size-h1); } /* 24px */
+h2 { font-size: var(--font-size-h2); } /* 20px */
+h3 { font-size: var(--font-size-h3); } /* 18px */
+
+p,
+li {
+	font-size: var(--font-size-base); /* 16px */
+	font-weight: 400;
+	margin-bottom: 1.25rem;
+}
+
+strong {
+	font-weight: 700;
 }
 
 a {
-	color: var(--color-primary);
+	color: var(--accent-brand);
 	text-decoration: none;
 }
-
 a:hover {
 	text-decoration: underline;
 }
 
-/* Button reset */
+/* UI & FORM RESETS */
 button {
 	font-family: inherit;
 	font-size: inherit;
@@ -109,14 +123,13 @@ button {
 	color: inherit;
 	padding: 0;
 }
-
 button:disabled {
 	cursor: not-allowed;
 	opacity: 0.5;
 }
 
-/* Input reset */
-input, textarea {
+input,
+textarea {
 	font-family: inherit;
 	font-size: inherit;
 	border: none;
@@ -129,26 +142,25 @@ textarea {
 	resize: none;
 }
 
-/* Scrollbar styling for mobile-like feel */
+/* SCROLLBAR & SELECTION */
 ::-webkit-scrollbar {
-	width: 4px;
+	width: 6px;
+	height: 6px;
 }
-
 ::-webkit-scrollbar-track {
 	background: transparent;
 }
-
 ::-webkit-scrollbar-thumb {
-	background: var(--color-border);
+	background: var(--bg-surface-dark);
 	border-radius: var(--radius-full);
 }
 
-/* Selection highlight color */
 ::selection {
 	background-color: var(--color-highlight);
+	color: var(--text-primary);
 }
 
-/* Utility classes */
+/* UTILITY CLASSES */
 .visually-hidden {
 	position: absolute;
 	width: 1px;

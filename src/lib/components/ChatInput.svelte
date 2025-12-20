@@ -146,7 +146,7 @@
 		bottom: 0;
 		left: 0;
 		right: 0;
-		background: var(--color-bg);
+		background: var(--bg-main);
 		padding: var(--spacing-md);
 		padding-bottom: calc(var(--spacing-md) + env(safe-area-inset-bottom, 0px));
 		z-index: var(--z-input-drawer);
@@ -156,7 +156,7 @@
 		display: flex;
 		align-items: flex-end;
 		gap: var(--spacing-sm);
-		background: var(--color-bg);
+		background: var(--bg-main);
 		border: 1px solid var(--color-border);
 		border-radius: var(--radius-lg);
 		padding: var(--spacing-sm) var(--spacing-md);
@@ -188,7 +188,7 @@
 	}
 
 	textarea::placeholder {
-		color: var(--color-border);
+		color: var(--text-secondary);
 	}
 
 	.send-button {

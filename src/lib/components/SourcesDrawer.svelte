@@ -180,7 +180,7 @@
 	.drawer {
 		width: 100%;
 		max-height: calc(100vh - var(--header-height) - 20px);
-		background: var(--color-bg);
+		background: var(--bg-main);
 		border-top-left-radius: var(--radius-lg);
 		border-top-right-radius: var(--radius-lg);
 		border-top: 1px solid var(--color-border);
@@ -195,7 +195,7 @@
 		align-items: center;
 		gap: var(--spacing-sm);
 		padding: var(--spacing-md);
-		background: var(--color-bg);
+		background: var(--bg-main);
 		position: sticky;
 		top: 0;
 		z-index: 1;
@@ -216,7 +216,7 @@
 	}
 
 	.drawer-title {
-		font-size: var(--font-size-lg);
+		font-size: var(--font-size-h3);
 		font-weight: 600;
 	}
 
@@ -224,7 +224,7 @@
 		width: 16px;
 		height: 16px;
 		border: 2px solid var(--color-border);
-		border-top-color: var(--color-primary);
+		border-top-color: var(--accent-brand);
 		border-radius: 50%;
 		animation: spin 0.8s linear infinite;
 	}
@@ -252,7 +252,7 @@
 	}
 
 	.source-card:hover {
-		background: var(--color-surface);
+		background: var(--bg-surface);
 	}
 
 	.source-card.highlighted {
@@ -263,7 +263,7 @@
 		flex-shrink: 0;
 		font-weight: 600;
 		font-size: var(--font-size-base);
-		color: var(--color-text-secondary);
+		color: var(--text-secondary);
 		min-width: 20px;
 	}
 
@@ -278,7 +278,7 @@
 	.source-title {
 		font-size: var(--font-size-base);
 		font-weight: 600;
-		color: var(--color-primary);
+		color: var(--accent-brand);
 		line-height: 1.4;
 		display: -webkit-box;
 		-webkit-line-clamp: 2;
@@ -287,8 +287,8 @@
 	}
 
 	.source-excerpt {
-		font-size: var(--font-size-sm);
-		color: var(--color-text-secondary);
+		font-size: 0.875rem;
+		color: var(--text-secondary);
 		line-height: 1.5;
 		margin: 0;
 		display: -webkit-box;
@@ -298,8 +298,8 @@
 	}
 
 	.source-domain {
-		font-size: var(--font-size-sm);
-		color: var(--color-text-muted);
+		font-size: 0.875rem;
+		color: var(--text-secondary);
 	}
 
 	.separator {

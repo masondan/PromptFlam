@@ -155,7 +155,7 @@
 		position: fixed;
 		display: flex;
 		align-items: center;
-		background: var(--color-surface-dark);
+		background: var(--bg-surface-dark);
 		border-radius: var(--radius-full);
 		padding: var(--spacing-xs) var(--spacing-sm);
 		box-shadow: var(--shadow-md);
@@ -169,7 +169,7 @@
 		font-size: 12px;
 		font-weight: 700;
 		text-transform: uppercase;
-		color: var(--color-text-muted);
+		color: var(--text-secondary);
 		background: transparent;
 		border-radius: var(--radius-sm);
 		transition: color 0.15s;
@@ -177,6 +177,6 @@
 	}
 
 	.menu-button:hover {
-		color: var(--color-text);
+		color: var(--text-primary);
 	}
 </style>

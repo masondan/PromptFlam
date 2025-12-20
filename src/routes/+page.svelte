@@ -320,7 +320,7 @@
 	.error-message {
 		background: #fef2f2;
 		border: 1px solid #fecaca;
-		border-radius: var(--radius-md);
+		border-radius: var(--radius);
 		padding: var(--spacing-md);
 		margin-top: var(--spacing-md);
 		display: flex;
@@ -332,13 +332,13 @@
 	.error-message p {
 		color: #dc2626;
 		margin: 0;
-		font-size: var(--font-size-sm);
+		font-size: 0.875rem;
 	}
 
 	.error-message button {
 		background: transparent;
 		color: #dc2626;
-		font-size: var(--font-size-sm);
+		font-size: 0.875rem;
 		padding: var(--spacing-xs) var(--spacing-sm);
 		border-radius: var(--radius-sm);
 	}

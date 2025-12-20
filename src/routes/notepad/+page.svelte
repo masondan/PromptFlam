@@ -309,7 +309,7 @@
 	}
 
 	.startover-btn:not(:disabled):hover {
-		background-color: var(--color-surface-dark);
+		background-color: var(--bg-surface-dark);
 	}
 
 	.startover-icon {
@@ -326,7 +326,7 @@
 	}
 
 	.title-editor {
-		font-size: var(--font-size-xl);
+		font-size: var(--font-size-h2);
 		font-weight: 600;
 		line-height: 1.4;
 		outline: none;
@@ -377,7 +377,7 @@
 	}
 
 	.word-count {
-		font-size: var(--font-size-sm);
+		font-size: 0.875rem;
 		color: var(--color-icon-default);
 	}
 
@@ -397,7 +397,7 @@
 	}
 
 	.action-btn:hover {
-		background-color: var(--color-surface-dark);
+		background-color: var(--bg-surface-dark);
 	}
 
 	.action-icon {
@@ -411,11 +411,11 @@
 		bottom: 80px;
 		left: 50%;
 		transform: translateX(-50%);
-		background: var(--color-text);
-		color: var(--color-bg);
+		background: var(--text-primary);
+		color: var(--bg-main);
 		padding: var(--spacing-sm) var(--spacing-md);
 		border-radius: var(--radius-full);
-		font-size: var(--font-size-sm);
+		font-size: 0.875rem;
 		font-weight: 500;
 		box-shadow: var(--shadow-lg);
 		animation: fadeInUp 0.2s ease-out;

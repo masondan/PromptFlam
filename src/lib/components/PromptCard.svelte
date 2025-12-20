@@ -101,8 +101,8 @@
 
 	.prompt-card {
 		position: relative;
-		background: var(--color-surface);
-		border-radius: var(--radius-md);
+		background: var(--bg-surface);
+		border-radius: var(--radius);
 		padding: var(--spacing-md);
 		padding-right: calc(var(--spacing-md) + 24px);
 		max-width: 100%;
@@ -129,7 +129,7 @@
 		justify-content: center;
 		width: 24px;
 		height: 24px;
-		color: var(--color-text-muted);
+		color: var(--text-secondary);
 		transition: color 0.15s;
 	}
 
