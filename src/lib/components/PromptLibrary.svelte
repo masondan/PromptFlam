@@ -82,6 +82,10 @@
 		return (temp.innerText || temp.textContent || '').trim();
 	}
 
+	function toTitleCase(str) {
+		return str.toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
+	}
+
 	function handleTabClick(tab) {
 		activeTab = tab;
 		if (tab === 'favorites') {
@@ -194,17 +198,6 @@
 		</button>
 	</div>
 
-	{#if activeTab === 'search'}
-		<div class="search-bar">
-			<input
-				type="text"
-				bind:value={searchQuery}
-				placeholder="Search prompts..."
-				class="search-input"
-			/>
-		</div>
-	{/if}
-
 	{#if selectedCategory !== 'all' && subcategories.length > 0}
 		<div class="filters">
 			<div class="dropdown subcategory-dropdown" class:open={subcategoryDropdownOpen}>
@@ -234,6 +227,17 @@
 		</div>
 	{/if}
 
+	{#if activeTab === 'search'}
+		<div class="search-bar">
+			<input
+				type="text"
+				bind:value={searchQuery}
+				placeholder="Search prompts..."
+				class="search-input"
+			/>
+		</div>
+	{/if}
+
 	{#if loading}
 		<div class="loading">Loading prompts...</div>
 	{:else if error}
@@ -244,25 +248,16 @@
 		<div class="prompt-list">
 			{#each Object.entries(groupedPrompts) as [category, subcats]}
 				<div class="category-group">
-					<h2 class="category-title">{category}</h2>
 					{#each Object.entries(subcats) as [subCategory, tasks]}
 						{@const isFav = isFavorite(category, subCategory, $favorites)}
 						<div class="subcategory-card">
 							<div class="subcategory-header">
-								<h3 class="subcategory-title">{subCategory}</h3>
-								<button
-									class="favorite-btn"
-									class:active={isFav}
-									on:click={() => handleFavoriteToggle(category, subCategory)}
-									aria-label={isFav ? 'Remove from favourites' : 'Add to favourites'}
-								>
-									<Icon name={isFav ? 'heart-fill' : 'heart'} size={24} />
-								</button>
+								<h2 class="subcategory-title">{subCategory}</h2>
 							</div>
 							{#each tasks as prompt}
 								<div class="task-item">
 									{#if prompt.task}
-										<strong class="task-label">{prompt.task}</strong>
+										<h3 class="task-label">{toTitleCase(prompt.task)}</h3>
 									{/if}
 									<p class="prompt-text">{stripHtml(prompt.prompt)}</p>
 									<div class="action-buttons">
@@ -289,6 +284,14 @@
 											aria-label="Copy prompt"
 										>
 											<Icon name="copy" size={20} />
+										</button>
+										<button
+											class="action-btn favorite-btn"
+											class:active={isFav}
+											on:click={() => handleFavoriteToggle(category, subCategory)}
+											aria-label={isFav ? 'Remove from favourites' : 'Add to favourites'}
+										>
+											<Icon name={isFav ? 'heart-fill' : 'heart'} size={20} />
 										</button>
 										<button
 											class="action-btn"
@@ -342,21 +345,17 @@
 	}
 
 	.icon-btn.active {
-		background: #DC143C;
-		border-color: #DC143C;
-		color: #ffffff;
-	}
-
-	.search-bar {
-		margin-top: var(--spacing-sm);
+		background: #EFEFEF;
+		border-color: var(--color-border);
+		color: var(--accent-brand);
 	}
 
 	.search-input {
 		width: 100%;
-		padding: var(--spacing-sm) var(--spacing-md);
+		padding: 0.75rem;
 		border: 1px solid var(--color-border);
 		border-radius: var(--radius);
-		font-size: var(--font-size-base);
+		font-size: 1rem;
 		background: #fff;
 	}
 
@@ -399,8 +398,12 @@
 		cursor: pointer;
 	}
 
+	.dropdown-trigger :global(svg) {
+		color: #777777;
+	}
+
 	.dropdown-trigger:hover {
-		background: #f5f5f5;
+		background: var(--color-highlight);
 	}
 
 	.dropdown.open .dropdown-trigger {
@@ -440,7 +443,7 @@
 	}
 
 	.dropdown-item:hover {
-		background: #f0f0f0;
+		background: var(--color-highlight);
 	}
 
 	.loading,
@@ -464,52 +467,26 @@
 	.category-group {
 		display: flex;
 		flex-direction: column;
-		gap: var(--spacing-md);
-	}
-
-	.category-title {
-		font-size: var(--font-size-h2);
-		font-weight: 700;
-		color: var(--text-secondary);
-		text-align: center;
-		margin: 0;
+		gap: var(--spacing-lg);
 	}
 
 	.subcategory-card {
 		background: var(--bg-main);
-		border: 1px solid var(--color-border);
-		border-radius: var(--radius);
-		padding: var(--spacing-md);
+		padding: 0;
 	}
 
 	.subcategory-header {
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-		padding-bottom: var(--spacing-sm);
-		border-bottom: 1px solid var(--color-border);
 		margin-bottom: var(--spacing-md);
 	}
 
 	.subcategory-title {
-		font-size: var(--font-size-h3);
+		font-size: var(--font-size-h2);
 		font-weight: 600;
-		color: var(--text-secondary);
+		color: #5422B0;
 		margin: 0;
-	}
-
-	.favorite-btn {
-		color: var(--color-icon-default);
-		padding: var(--spacing-xs);
-		transition: color 0.15s, transform 0.15s;
-	}
-
-	.favorite-btn:hover {
-		transform: scale(1.1);
-	}
-
-	.favorite-btn.active {
-		color: #DC143C;
+		padding-bottom: var(--spacing-xs);
+		border-bottom: 2px solid #5422B0;
+		display: inline-block;
 	}
 
 	.task-item {
@@ -524,13 +501,15 @@
 
 	.task-label {
 		display: block;
+		font-size: var(--font-size-h3);
 		font-weight: 600;
-		color: var(--text-primary);
-		margin-bottom: var(--spacing-xs);
+		color: #777777;
+		margin: 0 0 var(--spacing-xs) 0;
+		text-transform: none;
 	}
 
 	.prompt-text {
-		color: var(--text-secondary);
+		color: var(--text-primary);
 		white-space: pre-wrap;
 		margin: 0 0 var(--spacing-md) 0;
 		line-height: 1.6;
@@ -555,5 +534,13 @@
 
 	.action-btn.insert-btn {
 		color: var(--accent-brand);
+	}
+
+	.action-btn.favorite-btn.active {
+		color: #DC143C;
+	}
+
+	.action-btn.favorite-btn.active:hover {
+		color: #DC143C;
 	}
 </style>

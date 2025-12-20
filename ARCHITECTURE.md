@@ -353,31 +353,52 @@ Pattern for all reusable components:
 
 ### CSS Organization
 
-**Global styles** (`src/app.css`):
+**Global styles** (`src/app.css`) — Unified Design System:
 ```css
-/* Root variables */
 :root {
-  --bg-primary: #f9f9f9;
-  --bg-secondary: #fff;
-  --text-primary: #333;
-  --text-secondary: #666;
+  /* Colors */
+  --bg-main: #ffffff;
+  --bg-surface: #f8f8f8;
+  --bg-surface-dark: #efefef;
+  --text-primary: #1f1f1f;
+  --text-secondary: #777777;
+  --accent-brand: #5422b0;
+  --color-border: #e0e0e0;
+  --color-highlight: #F0E6F7;
+  --color-icon-default: #777777;
+  --color-icon-active: #5422b0;
+
+  /* Typography */
+  --font-size-base: 1rem;      /* 16px */
+  --font-size-h3: 1.125rem;    /* 18px */
+  --font-size-h2: 1.25rem;     /* 20px */
+  --font-size-h1: 1.5rem;      /* 24px */
+
+  /* Spacing & Radius */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+  --radius: 12px;
+  --radius-sm: 6px;
+  --radius-lg: 16px;
+
+  /* Shadows & Layout */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.07);
+  --header-height: 56px;
+  --max-content-width: 650px;
 }
-
-/* Base elements */
-body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
-button { cursor: pointer; border: none; border-radius: 8px; }
-
-/* Layout utilities */
-.container { max-width: 600px; margin: 0 auto; padding: 1rem; }
 ```
 
 **Component styles** (in `<style>` blocks):
 ```css
 /* Scoped to component only */
 .button {
-  background: var(--bg-secondary);
-  border-radius: 8px;
-  padding: 0.75rem 1.5rem;
+  background: var(--bg-surface);
+  border-radius: var(--radius);
+  padding: var(--spacing-sm) var(--spacing-md);
 }
 ```
 
