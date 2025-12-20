@@ -17,6 +17,7 @@
 	let shareTapped = false;
 	let downloadTapped = false;
 	let copyTapped = false;
+	let fontSizeState = 0;
 
 	$: title = $currentNoteTitle;
 	$: content = $currentNoteContent;
@@ -202,8 +203,8 @@
 		handleContentInput();
 	}
 
-	function handleToolbarToggle(e) {
-		toolbarExpanded = e.detail.expanded;
+	function updateFormattingState() {
+		// Placeholder for formatting state tracking
 	}
 
 	onMount(() => {
