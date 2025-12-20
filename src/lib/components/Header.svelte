@@ -93,7 +93,7 @@
 	}
 
 	.nav-button:hover {
-		border-color: var(--color-icon-active);
+		border: 2px solid var(--color-icon-active);
 		color: var(--color-icon-active);
 		text-decoration: none;
 	}
@@ -110,13 +110,13 @@
 		width: 40px;
 		height: 40px;
 		border-radius: 50%;
-		border: 1px solid var(--color-icon-default);
-		color: var(--color-icon-default);
-		transition: border-color 0.15s, color 0.15s;
+		border: none;
+		background: var(--accent-brand);
+		color: #ffffff;
+		transition: background-color 0.15s;
 	}
 
 	.new-chat-button:hover {
-		border-color: var(--color-icon-active);
-		color: var(--color-icon-active);
+		background: #4a1e9e;
 	}
 </style>

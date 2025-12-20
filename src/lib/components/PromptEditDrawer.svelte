@@ -106,32 +106,35 @@
 		transition:fade={{ duration: 150 }}
 	>
 		<div class="drawer" transition:fly={{ y: '100%', duration: 250 }}>
-			<div class="drawer-actions">
-				<button class="icon-btn" on:click={close} aria-label="Close">
+			<div class="drawer-header">
+				<button class="close-btn" on:click={close} aria-label="Close">
 					<Icon name="close" size={24} />
 				</button>
-				<div class="actions-right">
-					<button class="icon-btn" on:click={handleShare} aria-label="Share">
-						<Icon name="share" size={24} />
+			</div>
+			
+			<div class="content-area">
+				<textarea
+					bind:this={textareaEl}
+					bind:value={editedText}
+					on:click={handleTextareaClick}
+					class="edit-textarea"
+					placeholder="Edit your prompt..."
+				></textarea>
+
+				<div class="action-buttons">
+					<button class="action-btn" on:click={handleShare} aria-label="Share">
+						<Icon name="share" size={20} />
 					</button>
 					<button 
-						class="icon-btn" 
+						class="action-btn" 
 						class:copied 
 						on:click={handleCopy} 
 						aria-label="Copy"
 					>
-						<Icon name="copy" size={24} />
+						<Icon name="copy" size={20} />
 					</button>
 				</div>
 			</div>
-			
-			<textarea
-				bind:this={textareaEl}
-				bind:value={editedText}
-				on:click={handleTextareaClick}
-				class="edit-textarea"
-				placeholder="Edit your prompt..."
-			></textarea>
 		</div>
 	</div>
 {/if}
@@ -140,13 +143,13 @@
 	.overlay {
 		position: fixed;
 		inset: 0;
-		background: var(--color-overlay);
+		background: var(--bg-main);
 		z-index: var(--z-overlay);
 	}
 
 	.drawer {
 		position: absolute;
-		top: var(--header-height);
+		top: 0;
 		left: 0;
 		right: 0;
 		bottom: 0;
@@ -154,35 +157,80 @@
 		display: flex;
 		flex-direction: column;
 		padding: var(--spacing-md);
-		gap: var(--spacing-md);
 	}
 
-	.drawer-actions {
+	.drawer-header {
 		display: flex;
-		justify-content: space-between;
 		align-items: center;
+		flex-shrink: 0;
 	}
 
-	.actions-right {
-		display: flex;
-		gap: var(--spacing-md);
-	}
-
-	.icon-btn {
+	.close-btn {
 		display: flex;
 		align-items: center;
 		justify-content: center;
 		padding: var(--spacing-xs);
-		color: var(--color-icon-default);
+		color: #777777;
 		transition: color 0.15s, transform 0.15s;
 	}
 
-	.icon-btn:hover {
+	.close-btn:hover {
 		color: var(--color-icon-active);
 		transform: scale(1.1);
 	}
 
-	.icon-btn.copied {
+	.content-area {
+		flex: 1;
+		overflow-y: auto;
+		display: flex;
+		flex-direction: column;
+		padding-top: var(--spacing-md);
+	}
+
+	.edit-textarea {
+		width: 100%;
+		min-height: 200px;
+		padding: 0;
+		font-size: var(--font-size-base);
+		line-height: var(--line-height);
+		font-family: inherit;
+		color: var(--text-primary);
+		background: var(--bg-main);
+		border: none;
+		resize: none;
+		field-sizing: content;
+	}
+
+	.edit-textarea:focus {
+		outline: none;
+	}
+
+	.edit-textarea::selection {
+		background-color: var(--color-highlight);
+	}
+
+	.action-buttons {
+		display: flex;
+		justify-content: center;
+		gap: var(--spacing-md);
+		padding-top: var(--spacing-md);
+	}
+
+	.action-btn {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		padding: var(--spacing-xs);
+		color: #777777;
+		transition: color 0.15s, transform 0.15s;
+	}
+
+	.action-btn:hover {
+		color: var(--color-icon-active);
+		transform: scale(1.1);
+	}
+
+	.action-btn.copied {
 		color: var(--accent-brand);
 		animation: pulse 0.4s ease-in-out;
 	}
@@ -191,27 +239,5 @@
 		0% { transform: scale(1); }
 		50% { transform: scale(1.2); }
 		100% { transform: scale(1); }
-	}
-
-	.edit-textarea {
-		flex: 1;
-		padding: var(--spacing-md);
-		font-size: 16px;
-		line-height: 1.6;
-		font-family: inherit;
-		color: var(--text-primary);
-		background: var(--bg-main);
-		border: 1px solid var(--color-border);
-		border-radius: var(--radius);
-		resize: none;
-	}
-
-	.edit-textarea:focus {
-		border-color: var(--color-border);
-		outline: none;
-	}
-
-	.edit-textarea::selection {
-		background-color: var(--color-highlight);
 	}
 </style>

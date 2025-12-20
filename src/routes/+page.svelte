@@ -1,4 +1,5 @@
 <script>
+	import { tick } from 'svelte';
 	import { 
 		Header, 
 		ChatInput, 
@@ -22,6 +23,7 @@
 	let currentSources = [];
 	let highlightedSourceIndex = -1;
 	let chatContentRef;
+	let abortController = null;
 
 	$: hasMessages = $chatMessages.length > 0;
 
@@ -35,15 +37,29 @@
 		isLoading = true;
 		isStreaming = false;
 		streamingContent = '';
+		abortController = new AbortController();
+
+		// Scroll to show the new prompt at the top of the visible area (just under header)
+		await tick();
+		const lastPromptIndex = $chatMessages.length - 1;
+		const lastPromptEl = chatContentRef?.querySelector(`[data-prompt-index="${lastPromptIndex}"]`);
+		if (lastPromptEl) {
+			// Calculate the offset to position the prompt just below the header
+			const headerHeight = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--header-height')) || 60;
+			const promptTop = lastPromptEl.getBoundingClientRect().top + window.scrollY;
+			window.scrollTo({ top: promptTop - headerHeight - 16, behavior: 'smooth' });
+		}
 
 		try {
-			// Prepare messages for API (convert to simple format)
-			const apiMessages = $chatMessages.map(m => ({
-				role: m.role,
-				content: m.content
-			}));
+			// Prepare messages for API (convert to simple format, filter out non-API roles)
+			const apiMessages = $chatMessages
+				.filter(m => m.role === 'user' || m.role === 'assistant')
+				.map(m => ({
+					role: m.role,
+					content: m.content
+				}));
 
-			const { content, sources } = await callPerplexity(apiMessages, (chunk, fullContent) => {
+			const { content, sources, aborted } = await callPerplexity(apiMessages, (chunk, fullContent) => {
 				// On first chunk, switch from thinking dots to streaming
 				if (!isStreaming) {
 					isStreaming = true;
@@ -52,24 +68,50 @@
 				// Update streaming content as chunks arrive
 				streamingContent = fullContent;
 				updateLastMessage(fullContent);
-			});
+			}, abortController.signal);
 
-			// Final update with complete content and sources
-			updateLastMessage(content, sources);
-			
-			// Auto-save to archive after each AI response
-			autoSaveChat();
+			if (aborted) {
+				// User stopped the generation
+				if (!isStreaming || !content) {
+					// No response was generated - remove empty assistant message if it exists
+					chatMessages.update(msgs => {
+						const lastMsg = msgs[msgs.length - 1];
+						if (lastMsg && lastMsg.role === 'assistant' && !lastMsg.content) {
+							return msgs.slice(0, -1);
+						}
+						return msgs;
+					});
+				} else {
+					// Partial response exists - keep it with whatever was generated
+					updateLastMessage(content, sources);
+				}
+				// Add the stopped message
+				addChatMessage('stopped', 'You stopped the prompt.');
+			} else {
+				// Final update with complete content and sources
+				updateLastMessage(content, sources);
+				
+				// Auto-save to archive after each AI response
+				autoSaveChat();
+			}
 			
 		} catch (error) {
-			console.error('Chat error:', error);
-			errorMessage = error.message || 'Failed to get response. Please try again.';
-			
-			// Remove the placeholder message on error
-			chatMessages.update(msgs => msgs.slice(0, -1));
+			// Ignore abort errors since we handle them above
+			if (error.name === 'AbortError') {
+				// Add stopped message for abort during initial fetch
+				addChatMessage('stopped', 'You stopped the prompt.');
+			} else {
+				console.error('Chat error:', error);
+				errorMessage = error.message || 'Failed to get response. Please try again.';
+				
+				// Remove the placeholder message on error
+				chatMessages.update(msgs => msgs.slice(0, -1));
+			}
 		} finally {
 			isLoading = false;
 			isStreaming = false;
 			streamingContent = '';
+			abortController = null;
 		}
 	}
 
@@ -185,21 +227,9 @@
 	}
 
 	function handleStop() {
-		isLoading = false;
-	}
-
-	async function handleSelectionRewrite(e) {
-		// TODO: Inline rewrite disabled - text selection from rendered HTML doesn't match 
-		// raw markdown content (e.g. "**bold**" renders as "bold"). Need different approach.
-		// For now, users can use the full message rewrite button instead.
-		console.log('Inline rewrite not yet implemented - use full message rewrite button');
-		return;
-	}
-
-	function handleSelectionSource(e) {
-		// Use the filtered sources from the selection menu
-		currentSources = e.detail.sources || [];
-		showSourcesDrawer = true;
+		if (abortController) {
+			abortController.abort();
+		}
 	}
 
 	function handleSelectionCopy(e) {
@@ -226,10 +256,16 @@
 		<div class="chat-content" bind:this={chatContentRef}>
 			{#each $chatMessages as message, index}
 				{#if message.role === 'user'}
-					<PromptCard content={message.content} timestamp={message.timestamp} />
+					<div class="prompt-wrapper" data-prompt-index={index}>
+						<PromptCard content={message.content} timestamp={message.timestamp} />
+					</div>
 					{#if index === $chatMessages.length - 1 && isLoading && !isStreaming}
 						<ThinkingDots />
 					{/if}
+				{:else if message.role === 'stopped'}
+					<div class="stopped-message">
+						{message.content}
+					</div>
 				{:else}
 					{@const isCurrentlyStreaming = isStreaming && index === $chatMessages.length - 1}
 					{@const isComplete = !isCurrentlyStreaming && message.content}
@@ -258,8 +294,6 @@
 		<TextSelectionMenu 
 			containerRef={chatContentRef}
 			messages={$chatMessages}
-			on:rewrite={handleSelectionRewrite}
-			on:source={handleSelectionSource}
 			on:copy={handleSelectionCopy}
 		/>
 	{/if}
@@ -345,5 +379,15 @@
 
 	.error-message button:hover {
 		background: #fee2e2;
+	}
+
+	.stopped-message {
+		display: inline-block;
+		background: #efefef;
+		padding: var(--spacing-sm) var(--spacing-md);
+		border-radius: var(--radius);
+		font-size: var(--font-size-base);
+		color: var(--text-primary);
+		margin-top: var(--spacing-sm);
 	}
 </style>

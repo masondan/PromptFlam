@@ -10,8 +10,19 @@
 	let selectedText = '';
 	let position = { x: 0, y: 0 };
 	let selectedMessageIndex = -1;
+	let copyTapped = false;
+	let selectAllTapped = false;
+	let isSelectAllMode = false;
+	let fullMessageText = '';
+	let currentMessageElement = null;
+
+	function stripCitations(text) {
+		return text.replace(/\[\d+\]/g, '').replace(/\s+/g, ' ').trim();
+	}
 
 	function handleSelectionChange() {
+		if (isSelectAllMode) return;
+		
 		const selection = window.getSelection();
 		const text = selection?.toString().trim();
 
@@ -24,18 +35,18 @@
 				rangeRect.top >= containerRect.top &&
 				rangeRect.bottom <= containerRect.bottom
 			) {
-				selectedText = text;
+				selectedText = stripCitations(text);
 				position = {
 					x: rangeRect.left + rangeRect.width / 2,
 					y: rangeRect.top - 8
 				};
 				
-				// Find which message the selection is in
 				const messageElements = containerRef.querySelectorAll('.message-content');
 				selectedMessageIndex = -1;
+				currentMessageElement = null;
 				for (let i = 0; i < messageElements.length; i++) {
 					if (messageElements[i].contains(range.commonAncestorContainer)) {
-						// Map to actual message index (assistant messages only)
+						currentMessageElement = messageElements[i];
 						let assistantCount = 0;
 						for (let j = 0; j < messages.length; j++) {
 							if (messages[j].role === 'assistant') {
@@ -65,63 +76,61 @@
 
 	function handleClick(e) {
 		if (!e.target.closest('.selection-menu')) {
-			isVisible = false;
+			if (isSelectAllMode) {
+				clearSelection();
+			} else {
+				isVisible = false;
+			}
 		}
 	}
 
-	function handleRewrite() {
-		dispatch('rewrite', { 
-			text: selectedText, 
-			messageIndex: selectedMessageIndex 
-		});
-		clearSelection();
-	}
-
-	function handleSource() {
-		// Get sources from the selected message
+	function handleSelectAll() {
 		const message = messages[selectedMessageIndex];
-		const allSources = message?.sources || [];
-		
-		// Extract citation numbers - could be [1] format or just standalone numbers (from rendered buttons)
-		// Match: [1], [2] OR standalone single/double digit numbers that appear after punctuation or whitespace
-		const bracketMatches = selectedText.match(/\[(\d+)\]/g) || [];
-		const bracketIndices = bracketMatches.map(m => parseInt(m.slice(1, -1), 10) - 1);
-		
-		// Also match standalone numbers (1-2 digits) that are likely citation buttons
-		// These appear as just "1" or "12" in the selected text
-		const standaloneMatches = selectedText.match(/(?:^|[\s.!?,;:])(\d{1,2})(?=[\s.!?,;:]|$)/g) || [];
-		const standaloneIndices = standaloneMatches
-			.map(m => parseInt(m.trim().replace(/[^\d]/g, ''), 10) - 1)
-			.filter(i => i >= 0 && i < allSources.length); // Only valid source indices
-		
-		const citationIndices = [...new Set([...bracketIndices, ...standaloneIndices])];
-		
-		// Filter to only sources referenced in selection
-		let filteredSources = allSources;
-		if (citationIndices.length > 0) {
-			filteredSources = citationIndices
-				.filter(i => i >= 0 && i < allSources.length)
-				.map(i => allSources[i]);
+		if (message && message.role === 'assistant' && currentMessageElement) {
+			fullMessageText = stripCitations(message.content || '');
+			
+			selectAllTapped = true;
+			setTimeout(() => {
+				selectAllTapped = false;
+				
+				const range = document.createRange();
+				range.selectNodeContents(currentMessageElement);
+				const selection = window.getSelection();
+				selection.removeAllRanges();
+				selection.addRange(range);
+				
+				const rangeRect = range.getBoundingClientRect();
+				position = {
+					x: rangeRect.left + rangeRect.width / 2,
+					y: rangeRect.top - 8
+				};
+				
+				isSelectAllMode = true;
+			}, 150);
+			return;
 		}
-		
-		dispatch('source', { 
-			text: selectedText, 
-			sources: filteredSources.length > 0 ? filteredSources : allSources,
-			messageIndex: selectedMessageIndex 
-		});
 		clearSelection();
 	}
 
 	function handleCopy() {
-		navigator.clipboard.writeText(selectedText);
-		dispatch('copy', { text: selectedText });
-		clearSelection();
+		copyTapped = true;
+		setTimeout(() => {
+			const textToCopy = isSelectAllMode ? fullMessageText : selectedText;
+			navigator.clipboard.writeText(textToCopy);
+			dispatch('copy', { text: textToCopy });
+			clearSelection();
+		}, 150);
 	}
 
 	function clearSelection() {
 		window.getSelection()?.removeAllRanges();
 		isVisible = false;
 		selectedText = '';
+		fullMessageText = '';
+		copyTapped = false;
+		selectAllTapped = false;
+		isSelectAllMode = false;
+		currentMessageElement = null;
 	}
 
 	onMount(() => {
@@ -144,9 +153,19 @@
 		role="toolbar"
 		aria-label="Text selection actions"
 	>
-		<button class="menu-button" on:click={handleRewrite}>REWRITE</button>
-		<button class="menu-button" on:click={handleSource}>SOURCE</button>
-		<button class="menu-button" on:click={handleCopy}>COPY</button>
+		<button 
+			class="menu-button" 
+			class:tapped={copyTapped}
+			on:click={handleCopy}
+		>Copy</button>
+		{#if !isSelectAllMode}
+			<span class="separator"></span>
+			<button 
+				class="menu-button" 
+				class:tapped={selectAllTapped}
+				on:click={handleSelectAll}
+			>Select all</button>
+		{/if}
 	</div>
 {/if}
 
@@ -155,28 +174,33 @@
 		position: fixed;
 		display: flex;
 		align-items: center;
-		background: var(--bg-surface-dark);
+		background: var(--accent-brand);
 		border-radius: var(--radius-full);
 		padding: var(--spacing-xs) var(--spacing-sm);
 		box-shadow: var(--shadow-md);
 		transform: translate(-50%, -100%);
 		z-index: var(--z-selection-menu);
-		gap: var(--spacing-xs);
+		gap: 0;
 	}
 
 	.menu-button {
 		padding: var(--spacing-xs) var(--spacing-sm);
-		font-size: 12px;
-		font-weight: 700;
-		text-transform: uppercase;
-		color: var(--text-secondary);
+		font-size: 14px;
+		font-weight: 400;
+		color: #ffffff;
 		background: transparent;
 		border-radius: var(--radius-sm);
-		transition: color 0.15s;
+		transition: transform 0.15s ease;
 		white-space: nowrap;
 	}
 
-	.menu-button:hover {
-		color: var(--text-primary);
+	.menu-button.tapped {
+		transform: scale(1.15);
+	}
+
+	.separator {
+		width: 1px;
+		height: 16px;
+		background: rgba(255, 255, 255, 0.4);
 	}
 </style>

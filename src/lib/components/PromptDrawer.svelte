@@ -49,10 +49,9 @@
 	>
 		<div class="drawer" transition:fly={{ y: '100%', duration: 250 }}>
 			<div class="drawer-header">
-				<button class="close-button" on:click={close} aria-label="Close">
-					<Icon name="close" size={20} />
+				<button class="close-btn" on:click={close} aria-label="Close">
+					<Icon name="close" size={24} />
 				</button>
-				<h2 class="drawer-title">Prompt Library</h2>
 			</div>
 			
 			<div class="drawer-content">
@@ -70,13 +69,13 @@
 	.overlay {
 		position: fixed;
 		inset: 0;
-		background: var(--color-overlay);
+		background: var(--bg-main);
 		z-index: var(--z-overlay);
 	}
 
 	.drawer {
 		position: absolute;
-		top: var(--header-height);
+		top: 0;
 		left: 0;
 		right: 0;
 		bottom: 0;
@@ -84,40 +83,32 @@
 		display: flex;
 		flex-direction: column;
 		overflow: hidden;
+		padding: var(--spacing-md);
 	}
 
 	.drawer-header {
 		display: flex;
 		align-items: center;
-		gap: var(--spacing-sm);
-		padding: var(--spacing-md);
-		border-bottom: 1px solid var(--color-border);
 		flex-shrink: 0;
 	}
 
-	.close-button {
+	.close-btn {
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		width: 32px;
-		height: 32px;
-		color: var(--color-icon-default);
-		transition: color 0.15s;
+		padding: var(--spacing-xs);
+		color: #777777;
+		transition: color 0.15s, transform 0.15s;
 	}
 
-	.close-button:hover {
+	.close-btn:hover {
 		color: var(--color-icon-active);
-	}
-
-	.drawer-title {
-		font-size: var(--font-size-h3);
-		font-weight: 600;
-		margin: 0;
+		transform: scale(1.1);
 	}
 
 	.drawer-content {
 		flex: 1;
 		overflow-y: auto;
-		padding: var(--spacing-md);
+		padding-top: var(--spacing-md);
 	}
 </style>

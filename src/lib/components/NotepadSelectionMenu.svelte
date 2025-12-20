@@ -7,10 +7,14 @@
 	const dispatch = createEventDispatcher();
 
 	let isVisible = false;
-	let menuMode = 'selection'; // 'selection' = CUT/COPY/SELECT ALL, 'paste' = PASTE/SELECT ALL
+	let menuMode = 'selection'; // 'selection' = BOLD/CUT/COPY/SELECT ALL, 'paste' = PASTE/SELECT ALL
 	let selectedText = '';
 	let position = { x: 0, y: 0 };
-	let copyConfirmed = false;
+	let boldTapped = false;
+	let cutTapped = false;
+	let copyTapped = false;
+	let selectAllTapped = false;
+	let pasteTapped = false;
 
 	function handleSelectionChange() {
 		if (!editorRef) return;
@@ -30,7 +34,7 @@
 					x: rangeRect.left + rangeRect.width / 2,
 					y: rangeRect.top - 8
 				};
-				copyConfirmed = false;
+				resetTappedStates();
 				isVisible = true;
 			} else {
 				isVisible = false;
@@ -40,7 +44,7 @@
 		}
 	}
 
-	function handleContextMenu(e) {
+	function handleLongPress(e) {
 		if (!editorRef || !editorRef.contains(e.target)) return;
 		
 		e.preventDefault();
@@ -54,7 +58,7 @@
 				x: e.clientX,
 				y: e.clientY - 8
 			};
-			copyConfirmed = false;
+			resetTappedStates();
 			isVisible = true;
 		}
 	}
@@ -66,66 +70,156 @@
 	function handleClick(e) {
 		if (!e.target.closest('.notepad-selection-menu')) {
 			isVisible = false;
-			copyConfirmed = false;
 		}
+	}
+
+	function handleBold() {
+		boldTapped = true;
+		setTimeout(() => {
+			document.execCommand('bold');
+			editorRef?.focus();
+			clearSelection();
+		}, 150);
 	}
 
 	function handleCut() {
-		if (selectedText) {
-			navigator.clipboard.writeText(selectedText);
-			document.execCommand('delete');
-			dispatch('cut', { text: selectedText });
-		}
-		clearSelection();
+		cutTapped = true;
+		setTimeout(() => {
+			if (selectedText) {
+				navigator.clipboard.writeText(selectedText);
+				document.execCommand('delete');
+				dispatch('cut', { text: selectedText });
+			}
+			clearSelection();
+		}, 150);
 	}
 
 	function handleCopy() {
-		if (selectedText) {
-			navigator.clipboard.writeText(selectedText);
-			copyConfirmed = true;
-			dispatch('copy', { text: selectedText });
-			setTimeout(() => {
-				clearSelection();
-			}, 1000);
-		}
+		copyTapped = true;
+		setTimeout(() => {
+			if (selectedText) {
+				navigator.clipboard.writeText(selectedText);
+				dispatch('copy', { text: selectedText });
+			}
+			clearSelection();
+		}, 150);
 	}
 
 	function handleSelectAll() {
-		if (editorRef) {
-			const range = document.createRange();
-			range.selectNodeContents(editorRef);
-			const selection = window.getSelection();
-			selection.removeAllRanges();
-			selection.addRange(range);
-			selectedText = selection.toString();
-			menuMode = 'selection';
-			
-			const rangeRect = range.getBoundingClientRect();
-			position = {
-				x: rangeRect.left + rangeRect.width / 2,
-				y: rangeRect.top - 8
-			};
-		}
+		selectAllTapped = true;
+		setTimeout(() => {
+			if (editorRef) {
+				const range = document.createRange();
+				range.selectNodeContents(editorRef);
+				const selection = window.getSelection();
+				selection.removeAllRanges();
+				selection.addRange(range);
+				selectedText = selection.toString();
+				menuMode = 'selection';
+				
+				const rangeRect = range.getBoundingClientRect();
+				position = {
+					x: rangeRect.left + rangeRect.width / 2,
+					y: rangeRect.top - 8
+				};
+			}
+		}, 150);
 	}
 
 	async function handlePaste() {
-		try {
-			const text = await navigator.clipboard.readText();
-			if (text) {
-				document.execCommand('insertText', false, text);
-				dispatch('paste', { text });
+		pasteTapped = true;
+		setTimeout(async () => {
+			try {
+				const html = await navigator.clipboard.read?.();
+				if (html && html[0]?.types?.includes('text/html')) {
+					const blob = await html[0].getType('text/html');
+					const htmlText = await blob.text();
+					insertFormattedPaste(htmlText);
+				} else {
+					// Fallback to plain text
+					const text = await navigator.clipboard.readText();
+					if (text) {
+						insertFormattedPaste(text);
+					}
+				}
+				dispatch('paste');
+			} catch (err) {
+				console.error('Paste failed:', err);
 			}
-		} catch (err) {
-			console.error('Paste failed:', err);
-		}
-		clearSelection();
+			clearSelection();
+		}, 150);
+	}
+
+	function insertFormattedPaste(content) {
+		if (!editorRef) return;
+
+		// Simple HTML to formatted text conversion
+		let formattedHtml = content
+			// Convert h1-h3 to bold with line breaks
+			.replace(/<h[1-3][^>]*>([^<]+)<\/h[1-3]>/gi, '<div><strong>$1</strong></div>')
+			// Preserve line breaks and paragraphs
+			.replace(/<p[^>]*>([^<]*)<\/p>/gi, '<div>$1</div>')
+			// Keep strong/bold
+			.replace(/<strong[^>]*>([^<]+)<\/strong>/gi, '<strong>$1</strong>')
+			.replace(/<b[^>]*>([^<]+)<\/b>/gi, '<strong>$1</strong>')
+			// Convert lists to markdown dashes
+			.replace(/<(?:ul|ol)[^>]*>([\s\S]*?)<\/(?:ul|ol)>/gi, (match, content) => {
+				const items = content.match(/<li[^>]*>([^<]*)<\/li>/gi) || [];
+				return items
+					.map(item => item.replace(/<li[^>]*>([^<]*)<\/li>/i, '- $1'))
+					.join('\n');
+			})
+			// Remove citation patterns [1], [2], etc.
+			.replace(/\[\d+\]/g, '')
+			// Remove other HTML tags
+			.replace(/<[^>]+>/g, '\n')
+			// Clean up multiple line breaks
+			.replace(/\n\n+/g, '\n\n');
+
+		document.execCommand('insertHTML', false, formattedHtml);
+	}
+
+	function resetTappedStates() {
+		boldTapped = false;
+		cutTapped = false;
+		copyTapped = false;
+		selectAllTapped = false;
+		pasteTapped = false;
 	}
 
 	function clearSelection() {
 		window.getSelection()?.removeAllRanges();
 		isVisible = false;
 		selectedText = '';
-		copyConfirmed = false;
+		resetTappedStates();
+	}
+
+	let touchStartTime = 0;
+	let touchStartX = 0;
+	let touchStartY = 0;
+
+	function handleTouchStart(e) {
+		touchStartTime = Date.now();
+		touchStartX = e.touches[0].clientX;
+		touchStartY = e.touches[0].clientY;
+	}
+
+	function handleTouchEnd(e) {
+		const touchDuration = Date.now() - touchStartTime;
+		const touchDistance = Math.sqrt(
+			Math.pow(e.changedTouches[0].clientX - touchStartX, 2) +
+			Math.pow(e.changedTouches[0].clientY - touchStartY, 2)
+		);
+
+		// Long press: 500ms+ and minimal movement
+		if (touchDuration >= 500 && touchDistance < 10) {
+			handleLongPress({
+				preventDefault: () => {},
+				target: e.target,
+				clientX: e.changedTouches[0].clientX,
+				clientY: e.changedTouches[0].clientY
+			});
+		}
 	}
 
 	onMount(() => {
@@ -133,7 +227,9 @@
 			document.addEventListener('mouseup', handleMouseUp);
 			document.addEventListener('touchend', handleMouseUp);
 			document.addEventListener('click', handleClick);
-			document.addEventListener('contextmenu', handleContextMenu);
+			document.addEventListener('contextmenu', handleLongPress);
+			editorRef?.addEventListener('touchstart', handleTouchStart);
+			editorRef?.addEventListener('touchend', handleTouchEnd);
 		}
 	});
 
@@ -142,7 +238,9 @@
 			document.removeEventListener('mouseup', handleMouseUp);
 			document.removeEventListener('touchend', handleMouseUp);
 			document.removeEventListener('click', handleClick);
-			document.removeEventListener('contextmenu', handleContextMenu);
+			document.removeEventListener('contextmenu', handleLongPress);
+			editorRef?.removeEventListener('touchstart', handleTouchStart);
+			editorRef?.removeEventListener('touchend', handleTouchEnd);
 		}
 	});
 </script>
@@ -155,19 +253,47 @@
 		aria-label="Text actions"
 	>
 		{#if menuMode === 'selection'}
-			<button class="menu-button" on:click={handleCut}>CUT</button>
-			<span class="divider"></span>
-			{#if copyConfirmed}
-				<span class="copied-badge">COPIED</span>
-			{:else}
-				<button class="menu-button" on:click={handleCopy}>COPY</button>
-			{/if}
-			<span class="divider"></span>
-			<button class="menu-button" on:click={handleSelectAll}>SELECT ALL</button>
+			<button 
+				class="menu-button" 
+				class:tapped={boldTapped}
+				on:click={handleBold}
+				aria-label="Bold"
+			>Bold</button>
+			<span class="separator"></span>
+			<button 
+				class="menu-button" 
+				class:tapped={cutTapped}
+				on:click={handleCut}
+				aria-label="Cut"
+			>Cut</button>
+			<span class="separator"></span>
+			<button 
+				class="menu-button" 
+				class:tapped={copyTapped}
+				on:click={handleCopy}
+				aria-label="Copy"
+			>Copy</button>
+			<span class="separator"></span>
+			<button 
+				class="menu-button" 
+				class:tapped={selectAllTapped}
+				on:click={handleSelectAll}
+				aria-label="Select all"
+			>Select all</button>
 		{:else}
-			<button class="menu-button" on:click={handlePaste}>PASTE</button>
-			<span class="divider"></span>
-			<button class="menu-button" on:click={handleSelectAll}>SELECT ALL</button>
+			<button 
+				class="menu-button" 
+				class:tapped={pasteTapped}
+				on:click={handlePaste}
+				aria-label="Paste"
+			>Paste</button>
+			<span class="separator"></span>
+			<button 
+				class="menu-button" 
+				class:tapped={selectAllTapped}
+				on:click={handleSelectAll}
+				aria-label="Select all"
+			>Select all</button>
 		{/if}
 	</div>
 {/if}
@@ -177,45 +303,45 @@
 		position: fixed;
 		display: flex;
 		align-items: center;
-		background: #555555;
-		border-radius: var(--radius);
+		background: var(--accent-brand);
+		border-radius: var(--radius-full);
 		padding: var(--spacing-xs) var(--spacing-sm);
 		box-shadow: var(--shadow-md);
 		transform: translate(-50%, -100%);
 		z-index: var(--z-selection-menu);
-		gap: var(--spacing-xs);
+		gap: 0;
+		animation: slideUpFade 0.2s ease-out;
+	}
+
+	@keyframes slideUpFade {
+		from {
+			opacity: 0;
+			transform: translate(-50%, -90%);
+		}
+		to {
+			opacity: 1;
+			transform: translate(-50%, -100%);
+		}
 	}
 
 	.menu-button {
 		padding: var(--spacing-xs) var(--spacing-sm);
-		font-size: 12px;
-		font-weight: 600;
-		text-transform: uppercase;
+		font-size: 14px;
+		font-weight: 400;
 		color: #ffffff;
 		background: transparent;
 		border-radius: var(--radius-sm);
-		transition: opacity 0.15s;
+		transition: transform 0.15s ease;
 		white-space: nowrap;
 	}
 
-	.menu-button:hover {
-		opacity: 0.8;
+	.menu-button.tapped {
+		transform: scale(1.15);
 	}
 
-	.divider {
+	.separator {
 		width: 1px;
 		height: 16px;
-		background: rgba(255, 255, 255, 0.3);
-	}
-
-	.copied-badge {
-		padding: var(--spacing-xs) var(--spacing-sm);
-		font-size: 12px;
-		font-weight: 600;
-		text-transform: uppercase;
-		color: #ffffff;
-		background: var(--accent-brand);
-		border-radius: var(--radius-full);
-		white-space: nowrap;
+		background: rgba(255, 255, 255, 0.4);
 	}
 </style>

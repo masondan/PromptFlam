@@ -131,11 +131,12 @@
 		padding: 0;
 		margin-bottom: var(--spacing-sm);
 		cursor: pointer;
-		transition: color 0.15s;
+		transition: color 0.15s, transform 0.15s;
 	}
 
 	.sources-link:hover {
-		color: var(--text-primary);
+		color: var(--color-icon-active);
+		transform: scale(1.05);
 	}
 
 	.streaming-indicator {
@@ -180,7 +181,7 @@
 
 	.message-content {
 		font-size: var(--font-size-base);
-		line-height: 1.7;
+		line-height: var(--line-height);
 		color: var(--text-primary);
 	}
 
@@ -188,28 +189,15 @@
 	.message-content :global(h2),
 	.message-content :global(h3) {
 		font-weight: 700;
-		margin-top: var(--spacing-xl);
+		font-size: var(--font-size-h3);
+		margin-top: var(--spacing-lg);
 		margin-bottom: var(--spacing-sm);
 		color: var(--text-primary);
 		line-height: 1.3;
 	}
 
-	.message-content :global(h1) {
-		font-size: var(--font-size-h1);
-	}
-
-	.message-content :global(h2) {
-		font-size: var(--font-size-h2);
-		margin-top: var(--spacing-lg);
-	}
-
-	.message-content :global(h3) {
-		font-size: var(--font-size-h3);
-		margin-top: var(--spacing-md);
-	}
-
 	.message-content :global(p) {
-		margin-bottom: var(--spacing-md);
+		margin-bottom: var(--spacing-sm);
 	}
 
 	.message-content :global(p:first-child) {
@@ -299,10 +287,11 @@
 		width: 32px;
 		height: 32px;
 		color: var(--color-icon-default);
-		transition: color 0.15s;
+		transition: color 0.15s, transform 0.15s;
 	}
 
 	.action-button:hover {
 		color: var(--color-icon-active);
+		transform: scale(1.1);
 	}
 </style>

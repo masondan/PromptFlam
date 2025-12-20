@@ -132,10 +132,9 @@
 	>
 		<div class="drawer" transition:fly={{ y: 300, duration: 200 }}>
 			<div class="drawer-header">
-				<button class="close-button" on:click={close} aria-label="Close">
-					<Icon name="close" size={20} />
+				<button class="close-btn" on:click={close} aria-label="Close">
+					<Icon name="close" size={24} />
 				</button>
-				<h2 class="drawer-title">Sources</h2>
 				{#if isLoading}
 					<span class="loading-indicator"></span>
 				{/if}
@@ -149,9 +148,11 @@
 						on:click={() => openSource(source.url)}
 						type="button"
 					>
-						<div class="source-number">{index + 1}.</div>
 						<div class="source-content">
-							<h3 class="source-title">{getDisplayTitle(source)}</h3>
+							<div class="source-title-row">
+								<span class="source-number">{index + 1}.</span>
+								<h3 class="source-title">{getDisplayTitle(source)}</h3>
+							</div>
 							{#if hasRichContent(source)}
 								<p class="source-excerpt">{source.excerpt}</p>
 							{/if}
@@ -188,36 +189,27 @@
 		display: flex;
 		flex-direction: column;
 		overflow: hidden;
+		padding: var(--spacing-md);
 	}
 
 	.drawer-header {
 		display: flex;
 		align-items: center;
-		gap: var(--spacing-sm);
-		padding: var(--spacing-md);
-		background: var(--bg-main);
-		position: sticky;
-		top: 0;
-		z-index: 1;
+		flex-shrink: 0;
 	}
 
-	.close-button {
+	.close-btn {
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		width: 32px;
-		height: 32px;
-		color: var(--color-icon-default);
-		transition: color 0.15s;
+		padding: var(--spacing-xs);
+		color: #777777;
+		transition: color 0.15s, transform 0.15s;
 	}
 
-	.close-button:hover {
+	.close-btn:hover {
 		color: var(--color-icon-active);
-	}
-
-	.drawer-title {
-		font-size: var(--font-size-h3);
-		font-weight: 600;
+		transform: scale(1.1);
 	}
 
 	.loading-indicator {
@@ -227,6 +219,7 @@
 		border-top-color: var(--accent-brand);
 		border-radius: 50%;
 		animation: spin 0.8s linear infinite;
+		margin-left: var(--spacing-sm);
 	}
 
 	@keyframes spin {
@@ -236,35 +229,20 @@
 	.sources-list {
 		flex: 1;
 		overflow-y: auto;
-		padding: 0 var(--spacing-md) var(--spacing-md);
+		padding-top: var(--spacing-md);
 	}
 
 	.source-card {
 		display: flex;
-		gap: var(--spacing-md);
 		width: 100%;
-		padding: var(--spacing-md) var(--spacing-sm);
+		padding: var(--spacing-md) 0;
 		text-align: left;
 		background: transparent;
 		cursor: pointer;
-		transition: background-color 0.15s;
-		border-radius: var(--radius-sm);
-	}
-
-	.source-card:hover {
-		background: var(--bg-surface);
 	}
 
 	.source-card.highlighted {
 		background: var(--color-highlight);
-	}
-
-	.source-number {
-		flex-shrink: 0;
-		font-weight: 600;
-		font-size: var(--font-size-base);
-		color: var(--text-secondary);
-		min-width: 20px;
 	}
 
 	.source-content {
@@ -272,25 +250,50 @@
 		min-width: 0;
 		display: flex;
 		flex-direction: column;
+	}
+
+	.source-title-row {
+		display: flex;
+		align-items: baseline;
 		gap: var(--spacing-xs);
+	}
+
+	.source-number {
+		flex-shrink: 0;
+		font-weight: 600;
+		font-size: var(--font-size-base);
+		color: #1F1F1F;
+		line-height: 1.4;
+		transition: color 0.15s;
+	}
+
+	.source-card:hover .source-number {
+		color: var(--accent-brand);
 	}
 
 	.source-title {
 		font-size: var(--font-size-base);
 		font-weight: 600;
-		color: var(--accent-brand);
+		color: #1F1F1F;
 		line-height: 1.4;
 		display: -webkit-box;
 		-webkit-line-clamp: 2;
 		-webkit-box-orient: vertical;
 		overflow: hidden;
+		margin: 0;
+		transition: color 0.15s;
+	}
+
+	.source-card:hover .source-title {
+		color: var(--accent-brand);
 	}
 
 	.source-excerpt {
 		font-size: 0.875rem;
 		color: var(--text-secondary);
-		line-height: 1.5;
-		margin: 0;
+		line-height: 1.4;
+		margin: var(--spacing-xs) 0 0 0;
+		padding-left: 22px;
 		display: -webkit-box;
 		-webkit-line-clamp: 2;
 		-webkit-box-orient: vertical;
@@ -300,11 +303,12 @@
 	.source-domain {
 		font-size: 0.875rem;
 		color: var(--text-secondary);
+		text-align: right;
+		margin-top: var(--spacing-sm);
 	}
 
 	.separator {
 		height: 1px;
-		background: var(--color-border);
-		margin: 0 var(--spacing-sm);
+		background: var(--color-separator);
 	}
 </style>

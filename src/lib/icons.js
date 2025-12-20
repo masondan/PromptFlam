@@ -23,6 +23,7 @@ import IconSendFill from '../../static/icons/icon-send-fill.svg?raw';
 import IconClose from '../../static/icons/icon-close.svg?raw';
 import IconNewchat from '../../static/icons/icon-newchat.svg?raw';
 import IconBusyFill from '../../static/icons/icon-busy-fill.svg?raw';
+import IconStopFill from '../../static/icons/icon-stop-fill.svg?raw';
 import IconExpand from '../../static/icons/icon-expand.svg?raw';
 import IconCollapse from '../../static/icons/icon-collapse.svg?raw';
 import IconCopy from '../../static/icons/icon-copy.svg?raw';
@@ -50,6 +51,7 @@ export const iconMap = {
 	close: IconClose,
 	newchat: IconNewchat,
 	'busy-fill': IconBusyFill,
+	'stop-fill': IconStopFill,
 	
 	// Prompt card icons
 	expand: IconExpand,

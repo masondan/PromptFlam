@@ -17,6 +17,7 @@
 	let selectedSubcategory = 'all';
 	let categoryDropdownOpen = false;
 	let subcategoryDropdownOpen = false;
+	let expandedPromptId = null;
 
 	const categoryOrder = ['Text', 'Audio', 'Video', 'Social Media', 'Website', 'Strategy', 'Co-pilot', 'Image Gen'];
 
@@ -130,6 +131,14 @@
 
 	function handleBackToTop() {
 		window.scrollTo({ top: 0, behavior: 'smooth' });
+	}
+
+	function togglePromptExpand(promptId) {
+		expandedPromptId = expandedPromptId === promptId ? null : promptId;
+	}
+
+	function getPromptId(category, subCategory, task) {
+		return `${category}-${subCategory}-${task}`;
 	}
 
 	function closeDropdowns(e) {
@@ -255,11 +264,18 @@
 								<h2 class="subcategory-title">{subCategory}</h2>
 							</div>
 							{#each tasks as prompt}
+								{@const promptId = getPromptId(category, subCategory, prompt.task)}
+								{@const isExpanded = expandedPromptId === promptId}
 								<div class="task-item">
-									{#if prompt.task}
-										<h3 class="task-label">{toTitleCase(prompt.task)}</h3>
-									{/if}
-									<p class="prompt-text">{stripHtml(prompt.prompt)}</p>
+									<div class="task-header" on:click={() => togglePromptExpand(promptId)}>
+										{#if prompt.task}
+											<h3 class="task-label">{toTitleCase(prompt.task)}</h3>
+										{/if}
+										<button class="expand-btn" aria-label={isExpanded ? 'Collapse' : 'Expand'}>
+											<Icon name={isExpanded ? 'collapse' : 'expand'} size={16} />
+										</button>
+									</div>
+									<p class="prompt-text" class:collapsed={!isExpanded}>{stripHtml(prompt.prompt)}</p>
 									<div class="action-buttons">
 										{#if mode === 'page'}
 											<button
@@ -462,6 +478,7 @@
 		display: flex;
 		flex-direction: column;
 		gap: var(--spacing-xl);
+		margin-top: var(--spacing-md);
 	}
 
 	.category-group {
@@ -499,13 +516,31 @@
 		padding-top: var(--spacing-md);
 	}
 
+	.task-header {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		cursor: pointer;
+		margin-bottom: var(--spacing-xs);
+	}
+
 	.task-label {
 		display: block;
 		font-size: var(--font-size-h3);
 		font-weight: 600;
 		color: #777777;
-		margin: 0 0 var(--spacing-xs) 0;
+		margin: 0;
 		text-transform: none;
+	}
+
+	.expand-btn {
+		color: #777777;
+		padding: var(--spacing-xs);
+		flex-shrink: 0;
+	}
+
+	.expand-btn:hover {
+		color: var(--accent-brand);
 	}
 
 	.prompt-text {
@@ -513,6 +548,14 @@
 		white-space: pre-wrap;
 		margin: 0 0 var(--spacing-md) 0;
 		line-height: 1.6;
+	}
+
+	.prompt-text.collapsed {
+		display: -webkit-box;
+		-webkit-line-clamp: 3;
+		-webkit-box-orient: vertical;
+		overflow: hidden;
+		text-overflow: ellipsis;
 	}
 
 	.action-buttons {
@@ -537,10 +580,10 @@
 	}
 
 	.action-btn.favorite-btn.active {
-		color: #DC143C;
+		color: var(--accent-brand);
 	}
 
 	.action-btn.favorite-btn.active:hover {
-		color: #DC143C;
+		color: var(--accent-brand);
 	}
 </style>

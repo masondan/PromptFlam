@@ -96,15 +96,6 @@
 
 <div class="input-drawer">
 	<div class="input-container">
-		<button
-			class="prompt-button"
-			on:click={handlePromptDrawer}
-			aria-label="Open prompt library"
-			type="button"
-		>
-			<Icon name="prompts" size={22} />
-		</button>
-		
 		<textarea
 			bind:this={textareaEl}
 			{value}
@@ -116,27 +107,38 @@
 			aria-label="Message input"
 		></textarea>
 		
-		{#if isLoading}
+		<div class="button-row">
 			<button
-				class="send-button busy"
-				on:click={handleStop}
-				aria-label="Stop generating"
+				class="prompt-button"
+				on:click={handlePromptDrawer}
+				aria-label="Open prompt library"
 				type="button"
 			>
-				<Icon name="busy-fill" size={22} />
+				<Icon name="prompts" size={20} />
 			</button>
-		{:else}
-			<button
-				class="send-button"
-				class:active={canSend}
-				on:click={handleSend}
-				disabled={!canSend}
-				aria-label="Send message"
-				type="button"
-			>
-				<Icon name={canSend ? 'send-fill' : 'send'} size={22} />
-			</button>
-		{/if}
+			
+			{#if isLoading}
+				<button
+					class="action-button stop"
+					on:click={handleStop}
+					aria-label="Stop generating"
+					type="button"
+				>
+					<Icon name="stop-fill" size={20} />
+				</button>
+			{:else}
+				<button
+					class="action-button send"
+					class:active={canSend}
+					on:click={handleSend}
+					disabled={!canSend}
+					aria-label="Send message"
+					type="button"
+				>
+					<Icon name={canSend ? 'send-fill' : 'send'} size={20} />
+				</button>
+			{/if}
+		</div>
 	</div>
 </div>
 
@@ -146,25 +148,44 @@
 		bottom: 0;
 		left: 0;
 		right: 0;
-		background: var(--bg-main);
-		padding: var(--spacing-md);
-		padding-bottom: calc(var(--spacing-md) + env(safe-area-inset-bottom, 0px));
 		z-index: var(--z-input-drawer);
 	}
 
 	.input-container {
 		display: flex;
-		align-items: flex-end;
+		flex-direction: column;
 		gap: var(--spacing-sm);
 		background: var(--bg-main);
-		border: 1px solid var(--color-border);
-		border-radius: var(--radius-lg);
-		padding: var(--spacing-sm) var(--spacing-md);
-		box-shadow: var(--shadow-input);
+		border-top-left-radius: var(--radius-lg);
+		border-top-right-radius: var(--radius-lg);
+		padding: var(--spacing-md);
+		padding-bottom: calc(var(--spacing-md) + env(safe-area-inset-bottom, 0px));
+		box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.08);
+	}
+
+	textarea {
+		width: 100%;
+		min-height: 24px;
+		max-height: 40vh;
+		line-height: 1.5;
+		padding: 0;
+		overflow-y: auto;
+		font-size: var(--font-size-base);
+	}
+
+	textarea::placeholder {
+		color: #999999;
+	}
+
+	.button-row {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		margin-left: -8px;
+		margin-right: -8px;
 	}
 
 	.prompt-button {
-		flex-shrink: 0;
 		display: flex;
 		align-items: center;
 		justify-content: center;
@@ -178,39 +199,35 @@
 		color: var(--color-icon-active);
 	}
 
-	textarea {
-		flex: 1;
-		min-height: 24px;
-		max-height: 40vh;
-		line-height: 1.5;
-		padding: 6px 0;
-		overflow-y: auto;
-	}
-
-	textarea::placeholder {
-		color: var(--text-secondary);
-	}
-
-	.send-button {
-		flex-shrink: 0;
+	.action-button {
 		display: flex;
 		align-items: center;
 		justify-content: center;
 		width: 36px;
 		height: 36px;
-		color: var(--color-icon-default);
-		transition: color 0.15s;
+		border-radius: 50%;
+		transition: all 0.15s;
 	}
 
-	.send-button.active {
+	.action-button.send {
+		color: #777777;
+		opacity: 1;
+	}
+
+	.action-button.send:disabled {
+		opacity: 1;
+		cursor: default;
+	}
+
+	.action-button.send.active {
 		color: var(--color-icon-active);
 	}
 
-	.send-button.busy {
+	.action-button.send:hover:not(:disabled) {
 		color: var(--color-icon-active);
 	}
 
-	.send-button:hover:not(:disabled) {
-		color: var(--color-icon-active);
+	.action-button.stop {
+		color: var(--accent-brand);
 	}
 </style>

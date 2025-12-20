@@ -19,5 +19,4 @@ export { default as SourcesDrawer } from './SourcesDrawer.svelte';
 export { default as TextSelectionMenu } from './TextSelectionMenu.svelte';
 export { default as ThinkingDots } from './ThinkingDots.svelte';
 export { default as ArchiveItem } from './ArchiveItem.svelte';
-export { default as NotepadToolbar } from './NotepadToolbar.svelte';
 export { default as NotepadSelectionMenu } from './NotepadSelectionMenu.svelte';

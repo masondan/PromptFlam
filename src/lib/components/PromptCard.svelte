@@ -92,18 +92,19 @@
 		height: 28px;
 		color: var(--color-icon-default);
 		margin-top: var(--spacing-xs);
-		transition: color 0.15s;
+		transition: color 0.15s, transform 0.15s;
 	}
 
 	.copy-button:hover {
 		color: var(--color-icon-active);
+		transform: scale(1.1);
 	}
 
 	.prompt-card {
 		position: relative;
 		background: var(--bg-surface);
 		border-radius: var(--radius);
-		padding: var(--spacing-md);
+		padding: var(--spacing-sm) var(--spacing-md);
 		padding-right: calc(var(--spacing-md) + 24px);
 		max-width: 100%;
 	}
@@ -118,11 +119,12 @@
 		line-height: var(--line-height);
 		white-space: pre-wrap;
 		word-wrap: break-word;
+		margin: 0;
 	}
 
 	.expand-button {
 		position: absolute;
-		top: var(--spacing-md);
+		top: var(--spacing-sm);
 		right: var(--spacing-sm);
 		display: flex;
 		align-items: center;

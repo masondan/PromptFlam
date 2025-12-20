@@ -9,10 +9,12 @@
  * Call Perplexity API with streaming support
  * @param {Array} messages - Array of {role, content} objects
  * @param {Function} onChunk - Callback for each text chunk (for streaming)
- * @returns {Promise<{content: string, sources: Array}>}
+ * @param {AbortSignal} signal - Optional AbortSignal for cancellation
+ * @returns {Promise<{content: string, sources: Array, aborted: boolean}>}
  */
-export async function callPerplexity(messages, onChunk = null) {
+export async function callPerplexity(messages, onChunk = null, signal = null) {
 	const response = await fetch('/api/chat', {
+		signal,
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json'
@@ -77,6 +79,16 @@ export async function callPerplexity(messages, onChunk = null) {
 			}
 		}
 	} catch (error) {
+		// Handle abort gracefully
+		if (error.name === 'AbortError') {
+			const sources = formatCitations(citations);
+			const normalizedContent = normalizeCitationPlacement(fullContent);
+			return {
+				content: normalizedContent,
+				sources,
+				aborted: true
+			};
+		}
 		console.error('Stream reading error:', error);
 		throw error;
 	}
@@ -89,7 +101,8 @@ export async function callPerplexity(messages, onChunk = null) {
 
 	return {
 		content: normalizedContent,
-		sources
+		sources,
+		aborted: false
 	};
 }
 

@@ -1,6 +1,6 @@
 <script>
 	import { onMount } from 'svelte';
-	import { Header, NotepadToolbar, NotepadSelectionMenu } from '$lib/components';
+	import { Header, NotepadSelectionMenu } from '$lib/components';
 	import { 
 		currentNoteTitle, 
 		currentNoteContent, 
@@ -11,10 +11,6 @@
 	let editorRef;
 	let titleRef;
 	let saveTimeout;
-	let toolbarExpanded = false;
-	let fontSizeState = 0; // 0 = default, 1 = medium, 2 = large
-	let isBoldActive = false;
-	let isItalicActive = false;
 	let showToast = false;
 	let toastMessage = '';
 	let hasContent = false;
@@ -44,15 +40,7 @@
 	function handleContentInput() {
 		if (editorRef) {
 			currentNoteContent.set(editorRef.innerHTML || '');
-			updateFormattingState();
 			debouncedSave();
-		}
-	}
-
-	function updateFormattingState() {
-		if (typeof document !== 'undefined') {
-			isBoldActive = document.queryCommandState('bold');
-			isItalicActive = document.queryCommandState('italic');
 		}
 	}
 
@@ -64,21 +52,41 @@
 	}
 
 	function handleStartOver() {
-		if (hasContent) {
-			if (confirm('Start a new note? Current note is auto-saved.')) {
-				startNewNote();
-				if (editorRef) editorRef.innerHTML = '';
-				if (titleRef) titleRef.textContent = '';
-				fontSizeState = 0;
-				updateEditorFontSize();
-			}
+		if (!hasContent) {
+			showToastMessage('Hang on. First\ncreate a note');
+			return;
 		}
+		startNewNote();
+		if (editorRef) editorRef.innerHTML = '';
+		if (titleRef) titleRef.textContent = '';
+	}
+
+	function htmlToMarkdown(html) {
+		let markdown = html;
+		
+		// Convert strong/bold tags to markdown
+		markdown = markdown.replace(/<strong[^>]*>([^<]+)<\/strong>/gi, '**$1**');
+		markdown = markdown.replace(/<b[^>]*>([^<]+)<\/b>/gi, '**$1**');
+		
+		// Preserve line breaks from divs/ps
+		markdown = markdown.replace(/<\/?div[^>]*>/gi, '\n');
+		markdown = markdown.replace(/<br\s*\/?>/gi, '\n');
+		markdown = markdown.replace(/<p[^>]*>/gi, '');
+		markdown = markdown.replace(/<\/p>/gi, '\n');
+		
+		// Remove other HTML tags
+		markdown = markdown.replace(/<[^>]+>/g, '');
+		
+		// Clean up excessive whitespace
+		markdown = markdown.replace(/\n\n+/g, '\n\n').trim();
+		
+		return markdown;
 	}
 
 	function handleDownload() {
-		const plainText = editorRef ? editorRef.innerText : content;
 		const noteTitle = title || 'Untitled note';
-		const text = `${noteTitle}\n\n${plainText}`;
+		const markdownContent = htmlToMarkdown(editorRef ? editorRef.innerHTML : content);
+		const text = `${noteTitle}\n\n${markdownContent}`;
 		const filename = `${noteTitle.replace(/[^a-z0-9]/gi, '-').toLowerCase()}.txt`;
 		
 		const blob = new Blob([text], { type: 'text/plain' });
@@ -93,9 +101,9 @@
 	}
 
 	async function handleCopy() {
-		const plainText = editorRef ? editorRef.innerText : content;
 		const noteTitle = title || 'Untitled note';
-		const text = `${noteTitle}\n\n${plainText}`;
+		const markdownContent = htmlToMarkdown(editorRef ? editorRef.innerHTML : content);
+		const text = `${noteTitle}\n\n${markdownContent}`;
 		
 		try {
 			await navigator.clipboard.writeText(text);
@@ -201,12 +209,13 @@
 <main class="notepad-page">
 	<div class="notepad-header">
 		<button 
-			class="startover-btn" 
+			class="new-chat-btn" 
 			on:click={handleStartOver}
-			aria-label="Start over"
-			disabled={!hasContent}
+			aria-label="Start new note"
 		>
-			<img src="/icons/icon-startover.svg" alt="" class="startover-icon" />
+			<svg viewBox="0 0 24 24" width="24" height="24" fill="white">
+				<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z" />
+			</svg>
 		</button>
 	</div>
 
@@ -231,7 +240,7 @@
 			tabindex="0"
 			aria-label="Note content"
 			aria-multiline="true"
-			data-placeholder="Write or paste"
+			data-placeholder="Start writing or paste text. Your notes are saved automatically in the archive."
 			on:input={handleContentInput}
 			on:keyup={updateFormattingState}
 			on:mouseup={updateFormattingState}
@@ -256,20 +265,6 @@
 	{/if}
 </main>
 
-<NotepadToolbar
-	bind:isExpanded={toolbarExpanded}
-	{fontSizeState}
-	{isBoldActive}
-	{isItalicActive}
-	on:toggle={handleToolbarToggle}
-	on:fontsize={handleFontSize}
-	on:undo={handleUndo}
-	on:redo={handleRedo}
-	on:list={handleList}
-	on:italic={handleItalic}
-	on:bold={handleBold}
-/>
-
 <NotepadSelectionMenu {editorRef} />
 
 {#if showToast}
@@ -284,43 +279,49 @@
 		flex-direction: column;
 		max-width: var(--max-content-width);
 		margin: 0 auto;
-		padding-bottom: 80px;
+		padding-bottom: var(--spacing-lg);
 	}
 
 	.notepad-header {
+		position: fixed;
+		top: 0;
+		right: 0;
+		z-index: var(--z-header);
 		display: flex;
 		align-items: center;
 		justify-content: flex-end;
-		padding: var(--spacing-sm) var(--spacing-md);
+		height: var(--header-height);
+		padding-right: var(--spacing-md);
 	}
 
-	.startover-btn {
-		width: 36px;
-		height: 36px;
+	.new-chat-btn {
+		width: 40px;
+		height: 40px;
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		border-radius: var(--radius-sm);
-		transition: opacity 0.15s ease;
+		border-radius: 50%;
+		background: var(--accent-brand);
+		color: white;
+		transition: transform 0.15s ease;
 	}
 
-	.startover-btn:disabled {
-		opacity: 0.3;
+	.new-chat-btn:hover {
+		transform: scale(1.05);
 	}
 
-	.startover-btn:not(:disabled):hover {
-		background-color: var(--bg-surface-dark);
+	.new-chat-btn:active {
+		transform: scale(0.95);
 	}
 
-	.startover-icon {
-		width: 20px;
-		height: 20px;
-		opacity: 0.6;
+	.new-chat-btn svg {
+		width: 24px;
+		height: 24px;
 	}
 
 	.editor-container {
 		flex: 1;
-		padding: 0 var(--spacing-md);
+		padding: var(--spacing-lg) var(--spacing-md) 0;
 		display: flex;
 		flex-direction: column;
 	}
@@ -408,18 +409,19 @@
 
 	.toast {
 		position: fixed;
-		bottom: 80px;
-		left: 50%;
-		transform: translateX(-50%);
-		background: var(--text-primary);
-		color: var(--bg-main);
+		top: calc(var(--header-height) + var(--spacing-md));
+		right: var(--spacing-md);
+		background: #efefef;
+		color: var(--text-primary);
 		padding: var(--spacing-sm) var(--spacing-md);
-		border-radius: var(--radius-full);
+		border-radius: var(--radius);
 		font-size: 0.875rem;
-		font-weight: 500;
+		font-weight: 400;
 		box-shadow: var(--shadow-lg);
 		animation: fadeInUp 0.2s ease-out;
 		z-index: var(--z-overlay);
+		text-align: center;
+		white-space: pre-line;
 	}
 
 	@keyframes fadeInUp {
