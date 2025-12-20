@@ -12,6 +12,7 @@
 	} from '$lib/components';
 	import { chatMessages, addChatMessage, clearChat, archiveCurrentChat, updateLastMessage, autoSaveChat, currentChatSessionId } from '$lib/stores';
 	import { callPerplexity } from '$lib/services/perplexity.js';
+	import { formatMarkdownForCopy } from '$lib/utils.js';
 
 	let inputValue = '';
 	let isLoading = false;
@@ -219,10 +220,14 @@
 		}
 	}
 
-	async function handleCopy() {
-		const lastAssistantMessage = $chatMessages.findLast(m => m.role === 'assistant');
-		if (lastAssistantMessage) {
-			await navigator.clipboard.writeText(lastAssistantMessage.content);
+	async function handleCopy(e) {
+		const messageIndex = e.detail?.index;
+		if (messageIndex !== undefined) {
+			const message = $chatMessages[messageIndex];
+			if (message && message.role === 'assistant') {
+				const cleanContent = formatMarkdownForCopy(message.content);
+				await navigator.clipboard.writeText(cleanContent);
+			}
 		}
 	}
 

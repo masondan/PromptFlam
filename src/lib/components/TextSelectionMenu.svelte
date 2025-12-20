@@ -1,5 +1,6 @@
 <script>
 	import { createEventDispatcher, onMount, onDestroy } from 'svelte';
+	import { extractSelectionText, formatMarkdownForCopy } from '$lib/utils.js';
 
 	export let containerRef = null;
 	export let messages = [];
@@ -16,10 +17,6 @@
 	let fullMessageText = '';
 	let currentMessageElement = null;
 
-	function stripCitations(text) {
-		return text.replace(/\[\d+\]/g, '').replace(/\s+/g, ' ').trim();
-	}
-
 	function handleSelectionChange() {
 		if (isSelectAllMode) return;
 		
@@ -35,7 +32,7 @@
 				rangeRect.top >= containerRect.top &&
 				rangeRect.bottom <= containerRect.bottom
 			) {
-				selectedText = stripCitations(text);
+				selectedText = extractSelectionText(selection);
 				const yPos = rangeRect.top < 64 ? rangeRect.top + rangeRect.height + 8 : rangeRect.top - 8;
 				position = {
 					x: rangeRect.left + rangeRect.width / 2,
@@ -88,7 +85,7 @@
 	function handleSelectAll() {
 		const message = messages[selectedMessageIndex];
 		if (message && message.role === 'assistant' && currentMessageElement) {
-			fullMessageText = stripCitations(message.content || '');
+			fullMessageText = formatMarkdownForCopy(message.content || '');
 			
 			selectAllTapped = true;
 			setTimeout(() => {

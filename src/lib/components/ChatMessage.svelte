@@ -31,7 +31,7 @@
 	}
 
 	function handleCopy() {
-		dispatch('copy');
+		dispatch('copy', { index });
 	}
 
 	function handleCitationClick(index) {
