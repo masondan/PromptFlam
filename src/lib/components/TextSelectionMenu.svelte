@@ -36,9 +36,10 @@
 				rangeRect.bottom <= containerRect.bottom
 			) {
 				selectedText = stripCitations(text);
+				const yPos = rangeRect.top < 64 ? rangeRect.top + rangeRect.height + 8 : rangeRect.top - 8;
 				position = {
 					x: rangeRect.left + rangeRect.width / 2,
-					y: rangeRect.top - 8
+					y: yPos,
 				};
 				
 				const messageElements = containerRef.querySelectorAll('.message-content');
@@ -100,9 +101,15 @@
 				selection.addRange(range);
 				
 				const rangeRect = range.getBoundingClientRect();
+				const viewportWidth = window.innerWidth;
+				
+				const xPos = rangeRect.width > viewportWidth 
+					? viewportWidth / 2
+					: rangeRect.left + rangeRect.width / 2;
+
 				position = {
-					x: rangeRect.left + rangeRect.width / 2,
-					y: rangeRect.top - 8
+					x: xPos,
+					y: Math.max(rangeRect.top, 80)
 				};
 				
 				isSelectAllMode = true;

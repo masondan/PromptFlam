@@ -4,6 +4,8 @@
 
 	export let showNewChat = false;
 	export let onNewChat = () => {};
+	export let showNewNote = false;
+	export let onNewNote = () => {};
 
 	const navItems = [
 		{ name: 'prompts', path: '/prompts', label: 'Prompts' },
@@ -40,6 +42,15 @@
 			class="new-chat-button"
 			on:click={onNewChat}
 			aria-label="Start new chat"
+		>
+			<Icon name="newchat" size={20} />
+		</button>
+	{/if}
+	{#if showNewNote}
+		<button
+			class="new-chat-button"
+			on:click={onNewNote}
+			aria-label="Start new note"
 		>
 			<Icon name="newchat" size={20} />
 		</button>

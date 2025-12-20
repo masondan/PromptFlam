@@ -204,21 +204,9 @@
 	<title>Notepad | PromptFlam</title>
 </svelte:head>
 
-<Header />
+<Header showNewNote={true} onNewNote={handleStartOver} />
 
 <main class="notepad-page">
-	<div class="notepad-header">
-		<button 
-			class="new-chat-btn" 
-			on:click={handleStartOver}
-			aria-label="Start new note"
-		>
-			<svg viewBox="0 0 24 24" width="24" height="24" fill="white">
-				<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z" />
-			</svg>
-		</button>
-	</div>
-
 	<div class="editor-container">
 		<div
 			bind:this={titleRef}
@@ -280,43 +268,6 @@
 		max-width: var(--max-content-width);
 		margin: 0 auto;
 		padding-bottom: var(--spacing-lg);
-	}
-
-	.notepad-header {
-		position: fixed;
-		top: 0;
-		right: 0;
-		z-index: var(--z-header);
-		display: flex;
-		align-items: center;
-		justify-content: flex-end;
-		height: var(--header-height);
-		padding-right: var(--spacing-md);
-	}
-
-	.new-chat-btn {
-		width: 40px;
-		height: 40px;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		border-radius: 50%;
-		background: var(--accent-brand);
-		color: white;
-		transition: transform 0.15s ease;
-	}
-
-	.new-chat-btn:hover {
-		transform: scale(1.05);
-	}
-
-	.new-chat-btn:active {
-		transform: scale(0.95);
-	}
-
-	.new-chat-btn svg {
-		width: 24px;
-		height: 24px;
 	}
 
 	.editor-container {
