@@ -19,6 +19,9 @@
 	function handleSelectionChange() {
 		if (!editorRef) return;
 		
+		// Don't hide if we're showing paste menu
+		if (menuMode === 'paste' && isVisible) return;
+		
 		const selection = window.getSelection();
 		const text = selection?.toString().trim();
 
@@ -41,7 +44,7 @@
 			} else {
 				isVisible = false;
 			}
-		} else {
+		} else if (menuMode !== 'paste') {
 			isVisible = false;
 		}
 	}
@@ -295,13 +298,6 @@
 				on:click={handlePaste}
 				aria-label="Paste"
 			>Paste</button>
-			<span class="separator"></span>
-			<button 
-				class="menu-button" 
-				class:tapped={selectAllTapped}
-				on:click={handleSelectAll}
-				aria-label="Select all"
-			>Select all</button>
 		{/if}
 	</div>
 {/if}
