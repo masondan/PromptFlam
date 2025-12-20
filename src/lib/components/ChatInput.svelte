@@ -151,6 +151,16 @@
 		z-index: var(--z-input-drawer);
 	}
 
+	@media (min-width: 768px) {
+		.input-drawer {
+			left: 50%;
+			right: auto;
+			transform: translateX(-50%);
+			width: 100%;
+			max-width: var(--app-max-width);
+		}
+	}
+
 	.input-container {
 		display: flex;
 		flex-direction: column;

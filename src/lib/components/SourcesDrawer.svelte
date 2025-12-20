@@ -178,6 +178,16 @@
 		align-items: flex-end;
 	}
 
+	@media (min-width: 768px) {
+		.overlay {
+			left: 50%;
+			right: auto;
+			transform: translateX(-50%);
+			width: 100%;
+			max-width: var(--app-max-width);
+		}
+	}
+
 	.drawer {
 		width: 100%;
 		max-height: calc(100vh - var(--header-height) - 20px);

@@ -42,6 +42,7 @@
 	--header-height: 56px;
 	--input-drawer-min-height: 80px;
 	--max-content-width: 650px; /* Increased for better line length */
+	--app-max-width: 480px; /* Mobile phone width for desktop constraint */
 
 	/* 5. Z-INDEX LAYERS */
 	--z-header: 100;
@@ -171,4 +172,20 @@ textarea {
 	clip: rect(0, 0, 0, 0);
 	white-space: nowrap;
 	border: 0;
+}
+
+/* DESKTOP APP SHELL - Constrains app to mobile width on larger screens */
+@media (min-width: 768px) {
+	body {
+		background: #e8e8e8;
+	}
+
+	.app-shell {
+		max-width: var(--app-max-width);
+		margin: 0 auto;
+		background: var(--bg-main);
+		min-height: 100vh;
+		position: relative;
+		box-shadow: 0 0 40px rgba(0, 0, 0, 0.08);
+	}
 }

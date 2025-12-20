@@ -72,6 +72,16 @@
 		z-index: var(--z-header);
 	}
 
+	@media (min-width: 768px) {
+		.header {
+			left: 50%;
+			right: auto;
+			transform: translateX(-50%);
+			width: 100%;
+			max-width: var(--app-max-width);
+		}
+	}
+
 	/* Gradient fade at bottom of header */
 	.header::after {
 		content: '';

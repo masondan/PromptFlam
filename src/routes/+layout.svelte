@@ -8,4 +8,6 @@
 	});
 </script>
 
-<slot />
+<div class="app-shell">
+	<slot />
+</div>
