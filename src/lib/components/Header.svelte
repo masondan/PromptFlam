@@ -120,8 +120,9 @@
 	}
 
 	.nav-button.active {
-		border: 2px solid var(--color-icon-active);
-		color: var(--color-icon-active);
+		border: none;
+		background: var(--accent-brand);
+		color: #ffffff;
 	}
 
 	.new-chat-button {
