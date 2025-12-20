@@ -11,6 +11,10 @@
 
 	let showToolbar = false;
 	let showDeleteConfirm = false;
+	let copyTapped = false;
+	let shareTapped = false;
+	let downloadTapped = false;
+	let trashTapped = false;
 
 	$: title = type === 'chat' 
 		? getChatTitle(item.messages) 
@@ -38,62 +42,84 @@
 
 	function handleCopy(e) {
 		e.stopPropagation();
-		const text = type === 'chat'
-			? item.messages.map(m => `${m.role}: ${m.content}`).join('\n\n')
-			: `${item.title}\n\n${item.content}`;
-		
-		navigator.clipboard.writeText(text);
-		dispatch('copy', { item });
-		closeToolbar();
+		copyTapped = true;
+		setTimeout(() => {
+			const text = type === 'chat'
+				? item.messages.map(m => `${m.role}: ${m.content}`).join('\n\n')
+				: `${item.title}\n\n${item.content}`;
+			
+			navigator.clipboard.writeText(text);
+			dispatch('copy', { item });
+			copyTapped = false;
+			closeToolbar();
+		}, 150);
 	}
 
 	async function handleShare(e) {
 		e.stopPropagation();
-		const text = type === 'chat'
-			? item.messages.map(m => `${m.role}: ${m.content}`).join('\n\n')
-			: `${item.title}\n\n${item.content}`;
-		
-		if (navigator.share) {
-			try {
-				await navigator.share({ text });
-			} catch (err) {
-				if (err.name !== 'AbortError') {
-					await navigator.clipboard.writeText(text);
-					dispatch('copy', { item });
+		shareTapped = true;
+		setTimeout(async () => {
+			const text = type === 'chat'
+				? item.messages.map(m => `${m.role}: ${m.content}`).join('\n\n')
+				: `${item.title}\n\n${item.content}`;
+			
+			if (navigator.share) {
+				try {
+					await navigator.share({ text });
+				} catch (err) {
+					if (err.name !== 'AbortError') {
+						await navigator.clipboard.writeText(text);
+						dispatch('copy', { item });
+					}
 				}
+			} else {
+				await navigator.clipboard.writeText(text);
+				dispatch('copy', { item });
 			}
-		} else {
-			await navigator.clipboard.writeText(text);
-			dispatch('copy', { item });
-		}
-		closeToolbar();
+			shareTapped = false;
+			closeToolbar();
+		}, 150);
 	}
 
 	function handleDownload(e) {
 		e.stopPropagation();
-		const text = type === 'chat'
-			? item.messages.map(m => `${m.role}: ${m.content}`).join('\n\n')
-			: `${item.title}\n\n${item.content}`;
-		
-		const filename = type === 'chat'
-			? `chat-${new Date(item.timestamp).toISOString().split('T')[0]}.txt`
-			: `${(item.title || 'note').replace(/[^a-z0-9]/gi, '-').toLowerCase()}.txt`;
-		
-		const blob = new Blob([text], { type: 'text/plain' });
-		const url = URL.createObjectURL(blob);
-		const a = document.createElement('a');
-		a.href = url;
-		a.download = filename;
-		a.click();
-		URL.revokeObjectURL(url);
-		
-		dispatch('download', { item });
-		closeToolbar();
+		downloadTapped = true;
+		setTimeout(() => {
+			const text = type === 'chat'
+				? item.messages.map(m => `${m.role}: ${m.content}`).join('\n\n')
+				: `${item.title}\n\n${item.content}`;
+			
+			const filename = type === 'chat'
+				? `chat-${new Date(item.timestamp).toISOString().split('T')[0]}.txt`
+				: `${(item.title || 'note').replace(/[^a-z0-9]/gi, '-').toLowerCase()}.txt`;
+			
+			const blob = new Blob([text], { type: 'text/plain' });
+			const url = URL.createObjectURL(blob);
+			const a = document.createElement('a');
+			a.href = url;
+			a.download = filename;
+			a.click();
+			URL.revokeObjectURL(url);
+			
+			dispatch('download', { item });
+			downloadTapped = false;
+			closeToolbar();
+		}, 150);
 	}
 
 	function handleTrashClick(e) {
 		e.stopPropagation();
-		showDeleteConfirm = true;
+		trashTapped = true;
+		setTimeout(() => {
+			if (showDeleteConfirm) {
+				dispatch('delete', { id: item.id, type });
+				trashTapped = false;
+				closeToolbar();
+			} else {
+				showDeleteConfirm = true;
+				trashTapped = false;
+			}
+		}, 150);
 	}
 
 	function handleDeleteConfirm(e) {
@@ -153,25 +179,26 @@
 		</div>
 
 		{#if showToolbar && !isSelectMode}
-			<div class="toolbar">
-				<button class="toolbar-btn" on:click={handleCopy}>COPY</button>
-				<button class="toolbar-btn" on:click={handleShare}>SHARE</button>
-				<button class="toolbar-btn" on:click={handleDownload}>DOWNLOAD</button>
-				<span class="toolbar-divider"></span>
-				<button 
-					class="toolbar-trash"
-					class:active={showDeleteConfirm}
-					on:click={handleTrashClick}
-					aria-label="Delete"
-				>
-					<img src="/icons/icon-trash.svg" alt="" class="trash-icon" />
-				</button>
-				
-				{#if showDeleteConfirm}
-					<button class="delete-confirm" on:click={handleDeleteConfirm}>
-						DELETE?
+			<div class="toolbar-wrapper">
+				<div class="toolbar">
+					{#if showDeleteConfirm}
+						<button class="delete-confirm" on:click={handleDeleteConfirm}>Delete?</button>
+					{/if}
+					<button 
+						class="toolbar-trash"
+						class:tapped={trashTapped}
+						on:click={handleTrashClick}
+						aria-label="Delete"
+					>
+						<img src="/icons/icon-trash.svg" alt="" class="trash-icon" />
 					</button>
-				{/if}
+					<span class="toolbar-divider"></span>
+					<button class="toolbar-btn" class:tapped={copyTapped} on:click={handleCopy}>Copy</button>
+					<span class="toolbar-divider"></span>
+					<button class="toolbar-btn" class:tapped={shareTapped} on:click={handleShare}>Share</button>
+					<span class="toolbar-divider"></span>
+					<button class="toolbar-btn" class:tapped={downloadTapped} on:click={handleDownload}>Download</button>
+				</div>
 			</div>
 		{/if}
 
@@ -217,13 +244,12 @@
 	.select-icon {
 		width: 20px;
 		height: 20px;
-		opacity: 0.6;
-		transition: opacity 0.15s ease;
+		transition: filter 0.15s ease;
+		filter: brightness(0) saturate(100%) invert(47%) sepia(0%) saturate(0%) hue-rotate(0deg) brightness(100%) contrast(100%);
 	}
 
 	.select-icon.selected {
-		opacity: 1;
-		filter: brightness(0) saturate(100%) invert(27%) sepia(0%) saturate(0%) hue-rotate(0deg) brightness(55%) contrast(100%);
+		filter: brightness(0) saturate(100%) invert(18%) sepia(95%) saturate(4911%) hue-rotate(264deg) brightness(88%) contrast(98%);
 	}
 
 	.item-content {
@@ -273,38 +299,45 @@
 		opacity: 1;
 	}
 
+	.toolbar-wrapper {
+		display: flex;
+		justify-content: flex-end;
+		margin-top: var(--spacing-sm);
+		margin-bottom: var(--spacing-sm);
+	}
+
 	.toolbar {
 		display: flex;
 		align-items: center;
-		gap: var(--spacing-xs);
-		background: var(--bg-surface-dark);
+		background: var(--accent-brand);
 		border-radius: var(--radius-full);
 		padding: var(--spacing-xs) var(--spacing-sm);
-		margin-top: var(--spacing-sm);
-		margin-bottom: var(--spacing-sm);
-		width: fit-content;
+		gap: 0;
 	}
 
 	.toolbar-btn {
-		font-size: 11px;
-		font-weight: 500;
-		text-transform: uppercase;
-		letter-spacing: 0.5px;
-		color: var(--color-icon-default);
+		font-size: 14px;
+		font-weight: 400;
+		color: #ffffff;
 		padding: var(--spacing-xs) var(--spacing-sm);
+		background: transparent;
 		border-radius: var(--radius-sm);
-		transition: color 0.15s ease;
+		transition: transform 0.15s ease;
+		white-space: nowrap;
 	}
 
 	.toolbar-btn:hover {
-		color: var(--color-icon-active);
+		transform: scale(1.05);
+	}
+
+	.toolbar-btn.tapped {
+		transform: scale(1.15);
 	}
 
 	.toolbar-divider {
 		width: 1px;
 		height: 16px;
-		background: var(--color-separator);
-		margin: 0 var(--spacing-xs);
+		background: rgba(255, 255, 255, 0.4);
 	}
 
 	.toolbar-trash {
@@ -313,38 +346,36 @@
 		justify-content: center;
 		padding: var(--spacing-xs);
 		border-radius: var(--radius-sm);
+		transition: transform 0.15s ease;
+	}
+
+	.toolbar-trash:hover {
+		transform: scale(1.05);
+	}
+
+	.toolbar-trash.tapped {
+		transform: scale(1.15);
 	}
 
 	.trash-icon {
 		width: 18px;
 		height: 18px;
-		opacity: 0.6;
-		transition: all 0.15s ease;
-	}
-
-	.toolbar-trash:hover .trash-icon {
-		opacity: 1;
-	}
-
-	.toolbar-trash.active .trash-icon {
-		opacity: 1;
-		filter: brightness(0) saturate(100%) invert(18%) sepia(95%) saturate(4911%) hue-rotate(264deg) brightness(88%) contrast(98%);
+		filter: brightness(0) invert(1);
 	}
 
 	.delete-confirm {
-		background: #5422B0;
-		color: white;
-		font-size: 11px;
-		font-weight: 600;
-		text-transform: uppercase;
-		letter-spacing: 0.5px;
-		padding: var(--spacing-xs) var(--spacing-md);
-		border-radius: var(--radius-full);
-		margin-left: var(--spacing-xs);
+		font-size: 14px;
+		font-weight: 400;
+		color: #ffffff;
+		padding: var(--spacing-xs) var(--spacing-sm);
+		background: transparent;
+		border-radius: var(--radius-sm);
+		transition: transform 0.15s ease;
+		white-space: nowrap;
 	}
 
 	.delete-confirm:hover {
-		background: #6a2ed6;
+		transform: scale(1.05);
 	}
 
 	.item-preview {

@@ -14,6 +14,9 @@
 	let showToast = false;
 	let toastMessage = '';
 	let hasContent = false;
+	let shareTapped = false;
+	let downloadTapped = false;
+	let copyTapped = false;
 
 	$: title = $currentNoteTitle;
 	$: content = $currentNoteContent;
@@ -84,55 +87,68 @@
 	}
 
 	function handleDownload() {
-		const noteTitle = title || 'Untitled note';
-		const markdownContent = htmlToMarkdown(editorRef ? editorRef.innerHTML : content);
-		const text = `${noteTitle}\n\n${markdownContent}`;
-		const filename = `${noteTitle.replace(/[^a-z0-9]/gi, '-').toLowerCase()}.txt`;
-		
-		const blob = new Blob([text], { type: 'text/plain' });
-		const url = URL.createObjectURL(blob);
-		const a = document.createElement('a');
-		a.href = url;
-		a.download = filename;
-		a.click();
-		URL.revokeObjectURL(url);
-		
-		showToastMessage('Downloaded');
+		downloadTapped = true;
+		setTimeout(() => {
+			const noteTitle = title || 'Untitled note';
+			const markdownContent = htmlToMarkdown(editorRef ? editorRef.innerHTML : content);
+			const text = `${noteTitle}\n\n${markdownContent}`;
+			const filename = `${noteTitle.replace(/[^a-z0-9]/gi, '-').toLowerCase()}.txt`;
+			
+			const blob = new Blob([text], { type: 'text/plain' });
+			const url = URL.createObjectURL(blob);
+			const a = document.createElement('a');
+			a.href = url;
+			a.download = filename;
+			a.click();
+			URL.revokeObjectURL(url);
+			
+			showToastMessage('Downloaded');
+			downloadTapped = false;
+		}, 150);
 	}
 
 	async function handleCopy() {
-		const noteTitle = title || 'Untitled note';
-		const markdownContent = htmlToMarkdown(editorRef ? editorRef.innerHTML : content);
-		const text = `${noteTitle}\n\n${markdownContent}`;
-		
-		try {
-			await navigator.clipboard.writeText(text);
-			showToastMessage('Copied to clipboard');
-		} catch (err) {
-			console.error('Copy failed:', err);
-			showToastMessage('Failed to copy');
-		}
+		copyTapped = true;
+		setTimeout(async () => {
+			const noteTitle = title || 'Untitled note';
+			const markdownContent = htmlToMarkdown(editorRef ? editorRef.innerHTML : content);
+			const text = `${noteTitle}\n\n${markdownContent}`;
+			
+			try {
+				await navigator.clipboard.writeText(text);
+				showToastMessage('Copied to clipboard');
+			} catch (err) {
+				console.error('Copy failed:', err);
+				showToastMessage('Failed to copy');
+			}
+			copyTapped = false;
+		}, 150);
 	}
 
 	async function handleShare() {
-		const plainText = editorRef ? editorRef.innerText : content;
-		const noteTitle = title || 'Untitled note';
-		const text = `${noteTitle}\n\n${plainText}`;
-		
-		if (navigator.share) {
-			try {
-				await navigator.share({
-					title: noteTitle,
-					text: text
-				});
-			} catch (err) {
-				if (err.name !== 'AbortError') {
-					console.error('Share failed:', err);
+		shareTapped = true;
+		setTimeout(async () => {
+			const plainText = editorRef ? editorRef.innerText : content;
+			const noteTitle = title || 'Untitled note';
+			const text = `${noteTitle}\n\n${plainText}`;
+			
+			if (navigator.share) {
+				try {
+					await navigator.share({
+						title: noteTitle,
+						text: text
+					});
+				} catch (err) {
+					if (err.name !== 'AbortError') {
+						console.error('Share failed:', err);
+					}
 				}
+			} else {
+				await navigator.clipboard.writeText(text);
+				showToastMessage('Copied to clipboard');
 			}
-		} else {
-			await handleCopy();
-		}
+			shareTapped = false;
+		}, 150);
 	}
 
 	function showToastMessage(msg) {
@@ -239,13 +255,13 @@
 		<div class="content-footer">
 			<span class="word-count">{wordCount} {wordCount === 1 ? 'word' : 'words'}</span>
 			<div class="action-buttons">
-				<button class="action-btn" on:click={handleShare} aria-label="Share">
+				<button class="action-btn" class:tapped={shareTapped} on:click={handleShare} aria-label="Share">
 					<img src="/icons/icon-share.svg" alt="" class="action-icon" />
 				</button>
-				<button class="action-btn" on:click={handleDownload} aria-label="Download">
+				<button class="action-btn" class:tapped={downloadTapped} on:click={handleDownload} aria-label="Download">
 					<img src="/icons/icon-download.svg" alt="" class="action-icon" />
 				</button>
-				<button class="action-btn" on:click={handleCopy} aria-label="Copy">
+				<button class="action-btn" class:tapped={copyTapped} on:click={handleCopy} aria-label="Copy">
 					<img src="/icons/icon-copy.svg" alt="" class="action-icon" />
 				</button>
 			</div>
@@ -345,11 +361,15 @@
 		align-items: center;
 		justify-content: center;
 		border-radius: var(--radius-sm);
-		transition: background-color 0.15s ease;
+		transition: background-color 0.15s ease, transform 0.15s ease;
 	}
 
 	.action-btn:hover {
 		background-color: var(--bg-surface-dark);
+	}
+
+	.action-btn.tapped {
+		transform: scale(1.15);
 	}
 
 	.action-icon {

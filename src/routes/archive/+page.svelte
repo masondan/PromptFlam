@@ -151,7 +151,11 @@
 				on:click={toggleSelectMode}
 				aria-label={isSelectMode ? 'Exit select mode' : 'Select items'}
 			>
-				<img src="/icons/icon-select-all.svg" alt="" class="select-all-icon" />
+				<img 
+					src={isSelectMode ? '/icons/icon-select-all-fill.svg' : '/icons/icon-select-all.svg'} 
+					alt="" 
+					class="select-all-icon" 
+				/>
 			</button>
 		</div>
 	</div>
@@ -200,8 +204,7 @@
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
-		padding: var(--spacing-md) var(--spacing-md) 0;
-		border-bottom: 1px solid var(--color-border);
+		padding: var(--spacing-md) var(--spacing-md) var(--spacing-sm);
 	}
 
 	.tabs {
@@ -210,12 +213,12 @@
 	}
 
 	.tab {
-		font-size: var(--font-size-base);
-		font-weight: 500;
-		color: var(--color-icon-default);
+		font-size: var(--font-size-h2);
+		font-weight: 600;
+		color: #777777;
 		padding-bottom: var(--spacing-xs);
 		border-bottom: 2px solid transparent;
-		transition: all 0.15s ease;
+		transition: color 0.15s ease, border-color 0.15s ease;
 	}
 
 	.tab:hover {
@@ -293,16 +296,17 @@
 		width: 20px;
 		height: 20px;
 		opacity: 0.6;
-		transition: opacity 0.15s ease;
+		transition: opacity 0.15s ease, filter 0.15s ease;
 	}
 
-	.select-all-btn:hover .select-all-icon,
+	.select-all-btn:hover .select-all-icon {
+		opacity: 1;
+		filter: brightness(0) saturate(100%) invert(18%) sepia(95%) saturate(4911%) hue-rotate(264deg) brightness(88%) contrast(98%);
+	}
+
 	.select-all-btn.active .select-all-icon {
 		opacity: 1;
-	}
-
-	.select-all-btn.active .select-all-icon {
-		filter: brightness(0) saturate(100%) invert(27%) sepia(0%) saturate(0%) hue-rotate(0deg) brightness(55%) contrast(100%);
+		filter: brightness(0) saturate(100%) invert(18%) sepia(95%) saturate(4911%) hue-rotate(264deg) brightness(88%) contrast(98%);
 	}
 
 	.archive-list {
