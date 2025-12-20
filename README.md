@@ -3,8 +3,9 @@
 An AI-powered prompt library and writing assistant for journalists and content creators.
 
 **Live**: [https://promptflam.pages.dev/](https://promptflam.pages.dev/)  
-**Status**: Phase 6 Complete (Testing & Refinement)  
-**Last Updated**: Dec 19, 2025
+**Status**: Phase 8 Complete (Production Deployed)  
+**Version**: 2.0.0  
+**Last Updated**: Dec 20, 2025
 
 ---
 
@@ -115,9 +116,9 @@ public/
 
 ---
 
-## Project Status: Phase 6 Complete
+## Project Status: Phase 8 Complete ✅
 
-**All core features built and integrated.** Currently in testing and refinement phase.
+**Production deployed.** SvelteKit refactor is live at https://promptflam.pages.dev/
 
 ### Completed Phases
 1. ✓ SvelteKit foundation with routing
@@ -125,7 +126,9 @@ public/
 3. ✓ Perplexity API integration with streaming & citations
 4. ✓ Prompt library with search/filters/favorites
 5. ✓ Archive page (saved chats & edits)
-6. ✓ Edit/notepad page with text formatting & export
+6. ✓ Notepad page with text formatting & export
+7. ✓ Testing & refinement
+8. ✓ **Production deployment** (v2.0.0)
 
 See `PHASES.md` for complete historical breakdown.
 
