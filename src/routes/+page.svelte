@@ -22,84 +22,33 @@
 	let showSourcesDrawer = false;
 	let currentSources = [];
 	let highlightedSourceIndex = -1;
+	let mainEl;
 	let chatContentRef;
 	let abortController = null;
 	let chatInputHeight = 120;
+	let shouldPreventAutoScroll = false;
 
 	$: hasMessages = $chatMessages.length > 0;
 
-	function scrollNewPromptToTop() {
+	async function scrollNewPromptToTop() {
 		if (typeof window === 'undefined') return;
+		if (!mainEl || !chatContentRef) return;
 
-		const prompts = chatContentRef?.querySelectorAll('.prompt-wrapper');
-		if (!prompts || prompts.length === 0) return;
+		await tick();
 
-		const lastPrompt = prompts[prompts.length - 1];
-		if (!lastPrompt) return;
+		requestAnimationFrame(() => {
+			const prompts = chatContentRef.querySelectorAll('.prompt-wrapper[data-prompt-index]');
+			if (!prompts || !prompts.length) return;
 
-		const headerHeight = 56 + 16 + 24;
-		const rect = lastPrompt.getBoundingClientRect();
-		const absoluteTop = rect.top + window.pageYOffset;
-		const targetY = absoluteTop - headerHeight;
-
-		window.scrollTo(0, targetY);
-	}
-
-	function isMobile() {
-		if (typeof navigator === 'undefined') return false;
-		return /Mobi|Android/i.test(navigator.userAgent);
-	}
-
-	function waitForLayoutSettle({ maxWait = 600, stableFor = 150 } = {}) {
-		if (typeof window === 'undefined') return Promise.resolve();
-
-		if (!isMobile() || !window.visualViewport) {
-			return new Promise((resolve) => setTimeout(resolve, 50));
-		}
-
-		const vv = window.visualViewport;
-		let lastVvHeight = vv.height;
-		let lastInputHeight = chatInputHeight;
-		let lastChange = performance.now();
-		const start = lastChange;
-
-		return new Promise((resolve) => {
-			const check = (now) => {
-				const vh = vv.height;
-				const ih = chatInputHeight;
-
-				if (vh !== lastVvHeight || ih !== lastInputHeight) {
-					lastVvHeight = vh;
-					lastInputHeight = ih;
-					lastChange = now;
-				}
-
-				if (now - lastChange >= stableFor || now - start >= maxWait) {
-					cleanup();
-					resolve();
-				}
-			};
-
-			const onVvResize = () => check(performance.now());
-			const onWinResize = () => check(performance.now());
-
-			const cleanup = () => {
-				vv.removeEventListener('resize', onVvResize);
-				window.removeEventListener('resize', onWinResize);
-				clearTimeout(timeoutId);
-			};
-
-			vv.addEventListener('resize', onVvResize);
-			window.addEventListener('resize', onWinResize);
-
-			const timeoutId = setTimeout(() => {
-				cleanup();
-				resolve();
-			}, maxWait);
-
-			requestAnimationFrame((ts) => check(ts));
+			const lastPrompt = prompts[prompts.length - 1];
+			
+			// Scroll with padding offset for breathing room below header
+			const paddingOffset = 90;
+			mainEl.scrollTop = lastPrompt.offsetTop - paddingOffset;
 		});
 	}
+
+
 
 	onMount(() => {
 		if ($pendingChatInput) {
@@ -119,16 +68,10 @@
 		isStreaming = false;
 		streamingContent = '';
 		abortController = new AbortController();
+		shouldPreventAutoScroll = true;
 
-		// Scroll to show the new prompt at the top of the visible area (just under header)
-		// Wait for DOM update and layout to settle before computing scroll target
-		await tick();
-		await waitForLayoutSettle();
-		await tick();
-
-		// Scroll new prompt to top of visible area
-		await new Promise((r) => requestAnimationFrame(r));
-		scrollNewPromptToTop();
+		// Wait for DOM update then scroll new prompt to top
+		await scrollNewPromptToTop();
 
 		try {
 			// Prepare messages for API (convert to simple format, filter out non-API roles)
@@ -139,7 +82,7 @@
 					content: m.content
 				}));
 
-			const { content, sources, aborted } = await callPerplexity(apiMessages, (chunk, fullContent) => {
+			const { content, sources, aborted } = await callPerplexity(apiMessages, async (chunk, fullContent) => {
 				// On first chunk, switch from thinking dots to streaming
 				if (!isStreaming) {
 					isStreaming = true;
@@ -148,6 +91,9 @@
 				// Update streaming content as chunks arrive
 				streamingContent = fullContent;
 				updateLastMessage(fullContent);
+
+				await tick();
+    
 			}, abortController.signal);
 
 			if (aborted) {
@@ -192,6 +138,7 @@
 			isStreaming = false;
 			streamingContent = '';
 			abortController = null;
+			shouldPreventAutoScroll = false;
 		}
 	}
 
@@ -325,7 +272,7 @@
 
 <Header showNewChat={hasMessages} onNewChat={handleNewChat} />
 
-<main class="create-page" style="--chat-input-height: {chatInputHeight}px;">
+<main class="create-page" bind:this={mainEl} style="--chat-input-height: {chatInputHeight}px;">
 	{#if !hasMessages && !isLoading}
 		<div class="logo-container">
 			<img 
@@ -371,6 +318,9 @@
 					<button on:click={() => errorMessage = ''}>Dismiss</button>
 				</div>
 			{/if}
+			
+			<!-- Spacer ensures we can always scroll the last prompt to the top -->
+			<div class="scroll-spacer"></div>
 		</div>
 	{/if}
 </main>
@@ -399,11 +349,29 @@
 
 <style>
 	.create-page {
-		min-height: 100vh;
+		position: fixed;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		z-index: 1;
 		padding-top: calc(var(--header-height) + var(--spacing-md) + var(--spacing-md));
 		padding-bottom: calc(var(--chat-input-height, var(--input-drawer-min-height)) + 40px);
 		display: flex;
 		flex-direction: column;
+		overflow-y: auto;
+		overflow-x: hidden;
+		-webkit-overflow-scrolling: touch;
+	}
+
+	@media (min-width: 768px) {
+		.create-page {
+			left: 50%;
+			right: auto;
+			transform: translateX(-50%);
+			width: 100%;
+			max-width: var(--app-max-width);
+		}
 	}
 
 	.logo-container {
@@ -468,5 +436,14 @@
 		margin-top: var(--spacing-sm);
 	}
 
+	.prompt-wrapper {
+		/* Offset for the fixed header when scrolling into view */
+		scroll-margin-top: 88px;
+	}
 
+	.scroll-spacer {
+		/* Fill remaining viewport height so we can always scroll last prompt to top */
+		min-height: calc(100vh - var(--header-height) - 150px);
+		flex-shrink: 0;
+	}
 </style>

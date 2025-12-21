@@ -69,7 +69,7 @@
 		align-items: center;
 		justify-content: space-between;
 		padding: var(--spacing-md) var(--spacing-md) var(--spacing-sm);
-		z-index: var(--z-header);
+		z-index: 101;
 		transform: translateZ(0);
 		-webkit-transform: translateZ(0);
 	}
@@ -78,9 +78,10 @@
 		.header {
 			left: 50%;
 			right: auto;
-			transform: translateX(-50%);
+			transform: translateX(-50%) translateZ(0);
 			width: 100%;
 			max-width: var(--app-max-width);
+			-webkit-transform: translateX(-50%) translateZ(0);
 		}
 	}
 
