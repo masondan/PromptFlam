@@ -89,7 +89,7 @@
 
 	function handleTabClick(tab) {
 		activeTab = tab;
-		if (tab === 'favorites') {
+		if (tab === 'favorites' || tab === 'search') {
 			selectedCategory = 'all';
 			selectedSubcategory = 'all';
 		}
