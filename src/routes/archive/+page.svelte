@@ -195,7 +195,7 @@
 <style>
 	.archive-page {
 		min-height: 100vh;
-		padding-top: calc(var(--header-height) + var(--spacing-md) + var(--spacing-md));
+		padding-top: calc(var(--header-height) + var(--spacing-md) + var(--spacing-sm));
 		max-width: var(--max-content-width);
 		margin: 0 auto;
 	}
