@@ -9,6 +9,8 @@
 	const dispatch = createEventDispatcher();
 
 	let textareaEl;
+	let drawerEl;
+	let lastHeight = 0;
 
 	$: hasContent = value.trim().length > 0;
 	$: canSend = hasContent && !isLoading;
@@ -16,6 +18,13 @@
 	afterUpdate(() => {
 		if (textareaEl) {
 			autoResize();
+		}
+		if (drawerEl) {
+			const h = drawerEl.offsetHeight;
+			if (h !== lastHeight) {
+				lastHeight = h;
+				dispatch('resize', { height: h });
+			}
 		}
 	});
 
@@ -103,7 +112,7 @@
 	}
 </script>
 
-<div class="input-drawer">
+<div class="input-drawer" bind:this={drawerEl}>
 	<div class="input-container">
 		<textarea
 			bind:this={textareaEl}

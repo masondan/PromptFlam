@@ -25,6 +25,7 @@
 	let highlightedSourceIndex = -1;
 	let chatContentRef;
 	let abortController = null;
+	let chatInputHeight = 120;
 
 	$: hasMessages = $chatMessages.length > 0;
 
@@ -252,7 +253,7 @@
 
 <Header showNewChat={hasMessages} onNewChat={handleNewChat} />
 
-<main class="create-page">
+<main class="create-page" style="--chat-input-height: {chatInputHeight}px;">
 	{#if !hasMessages && !isLoading}
 		<div class="logo-container">
 			<img 
@@ -314,6 +315,7 @@
 	on:send={handleSend}
 	on:openPromptDrawer={handleOpenPromptDrawer}
 	on:stop={handleStop}
+	on:resize={(e) => { chatInputHeight = e.detail.height; }}
 />
 
 <PromptDrawer 
@@ -333,7 +335,7 @@
 	.create-page {
 		min-height: 100vh;
 		padding-top: calc(var(--header-height) + var(--spacing-md) + var(--spacing-md));
-		padding-bottom: calc(var(--input-drawer-min-height) + 40px);
+		padding-bottom: calc(var(--chat-input-height, var(--input-drawer-min-height)) + 40px);
 		display: flex;
 		flex-direction: column;
 	}
