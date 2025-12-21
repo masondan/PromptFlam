@@ -1,7 +1,7 @@
 <script>
 	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
-	import { onMount } from 'svelte';
+	import { onMount, tick } from 'svelte';
 
 	const pages = ['/prompts', '/', '/notepad', '/archive'];
 	
@@ -13,6 +13,8 @@
 	let isHorizontalSwipe = null;
 	let translateX = 0;
 	let transitioning = false;
+	let animating = false;
+	let enterDirection = null;
 
 	const SWIPE_THRESHOLD = 80;
 	const VELOCITY_THRESHOLD = 0.3;
@@ -25,7 +27,7 @@
 	}
 
 	function handleTouchStart(e) {
-		if (transitioning) return;
+		if (transitioning || animating) return;
 		
 		startX = e.touches[0].clientX;
 		startY = e.touches[0].clientY;
@@ -37,7 +39,7 @@
 	}
 
 	function handleTouchMove(e) {
-		if (!isDragging || transitioning) return;
+		if (!isDragging || transitioning || animating) return;
 
 		const touchX = e.touches[0].clientX;
 		const touchY = e.touches[0].clientY;
@@ -67,7 +69,7 @@
 	}
 
 	function handleTouchEnd() {
-		if (!isDragging || transitioning) {
+		if (!isDragging || transitioning || animating) {
 			isDragging = false;
 			return;
 		}
@@ -81,9 +83,9 @@
 
 		if (isHorizontalSwipe && shouldNavigate) {
 			if (deltaX > 0 && currentIndex > 0) {
-				navigateTo(currentIndex - 1, 'right');
+				navigateTo(currentIndex - 1, 'from-left');
 			} else if (deltaX < 0 && currentIndex < pages.length - 1) {
-				navigateTo(currentIndex + 1, 'left');
+				navigateTo(currentIndex + 1, 'from-right');
 			} else {
 				resetPosition();
 			}
@@ -95,17 +97,33 @@
 		isHorizontalSwipe = null;
 	}
 
-	function navigateTo(index, direction) {
+	async function navigateTo(index, direction) {
 		transitioning = true;
-		const targetX = direction === 'left' ? -window.innerWidth : window.innerWidth;
-		translateX = targetX;
+		enterDirection = direction;
+		
+		const exitX = direction === 'from-right' ? -window.innerWidth : window.innerWidth;
+		translateX = exitX;
 
-		setTimeout(() => {
-			goto(pages[index]).then(() => {
+		await new Promise(r => setTimeout(r, 200));
+		
+		await goto(pages[index]);
+		await tick();
+		
+		animating = true;
+		transitioning = false;
+		
+		translateX = direction === 'from-right' ? window.innerWidth : -window.innerWidth;
+		
+		await tick();
+		requestAnimationFrame(() => {
+			requestAnimationFrame(() => {
 				translateX = 0;
-				transitioning = false;
+				setTimeout(() => {
+					animating = false;
+					enterDirection = null;
+				}, 200);
 			});
-		}, 200);
+		});
 	}
 
 	function resetPosition() {
@@ -127,12 +145,14 @@
 			}
 		};
 	});
+
+	$: transitionStyle = (isDragging || transitioning) ? 'none' : 'transform 0.2s ease-out';
 </script>
 
 <div 
 	bind:this={container} 
 	class="swipe-container"
-	style="transform: translateX({translateX}px); transition: {isDragging ? 'none' : 'transform 0.2s ease-out'};"
+	style="transform: translateX({translateX}px); transition: {transitionStyle};"
 >
 	<slot />
 </div>
@@ -141,5 +161,6 @@
 	.swipe-container {
 		min-height: 100dvh;
 		will-change: transform;
+		background: var(--bg-main);
 	}
 </style>

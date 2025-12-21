@@ -531,13 +531,8 @@
 	}
 
 	.task-item {
-		padding: var(--spacing-sm) 0;
-	}
-
-	.task-item + .task-item {
-		border-top: 1px solid var(--color-border);
-		margin-top: var(--spacing-sm);
-		padding-top: var(--spacing-md);
+		padding: var(--spacing-md) 0;
+		border-bottom: 1px solid var(--color-border);
 	}
 
 	.task-header {
