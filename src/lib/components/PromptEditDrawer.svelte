@@ -13,22 +13,22 @@
 	let textareaEl;
 	let editedText = '';
 	let copied = false;
-	let lastText = '';
+	let initialized = false;
 
-	$: if (isOpen && text && text !== lastText) {
+	$: if (isOpen && text && !initialized) {
 		editedText = text;
-		lastText = text;
+		initialized = true;
+		
+		setTimeout(() => {
+			if (textareaEl) {
+				textareaEl.focus();
+				textareaEl.setSelectionRange(editedText.length, editedText.length);
+			}
+		}, 300);
 	}
 
 	$: if (!isOpen) {
-		lastText = '';
-	}
-
-	$: if (isOpen && textareaEl) {
-		setTimeout(() => {
-			textareaEl?.focus();
-			textareaEl?.setSelectionRange(editedText.length, editedText.length);
-		}, 300);
+		initialized = false;
 	}
 
 	function close() {
