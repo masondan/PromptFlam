@@ -20,3 +20,4 @@ export { default as TextSelectionMenu } from './TextSelectionMenu.svelte';
 export { default as ThinkingDots } from './ThinkingDots.svelte';
 export { default as ArchiveItem } from './ArchiveItem.svelte';
 export { default as NotepadSelectionMenu } from './NotepadSelectionMenu.svelte';
+export { default as SwipeNavigation } from './SwipeNavigation.svelte';
