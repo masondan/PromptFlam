@@ -3,7 +3,7 @@
   "short_name": "PromptFlam",
   "start_url": ".",
   "display": "standalone",
-  "background_color": "#dab2ff",
+  "background_color": "#ffffff",
   "theme_color": "#555555",
   "description": "A free mobile-first library of AI prompts for content creators and journalists.",
   "icons": [
