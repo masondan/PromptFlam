@@ -150,7 +150,7 @@
 	});
 
 	$: transitionStyle = (isDragging || transitioning) ? 'none' : 'transform 0.2s ease-out';
-$: isTransforming = isDragging || transitioning || animating || translateX !== 0;
+$: isTransforming = (isDragging && isHorizontalSwipe) || transitioning || animating || translateX !== 0;
 </script>
 
 <div 
