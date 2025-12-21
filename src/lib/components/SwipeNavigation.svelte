@@ -97,26 +97,21 @@
 	}
 
 	async function navigateTo(index, deltaX) {
-		transitioning = true;
-
 		const width = window.innerWidth;
+		const direction = deltaX > 0 ? 1 : -1;
 
-		// Exit: continue in the same direction as the swipe
-		// swipe left (deltaX < 0) → exit to left (-width)
-		// swipe right (deltaX > 0) → exit to right (+width)
-		const exitX = deltaX < 0 ? -width : width;
-		translateX = exitX;
-
-		await new Promise((r) => setTimeout(r, 200));
+		transitioning = true;
+		animating = false;
+		translateX = 0;
 
 		await goto(pages[index]);
 		await tick();
 
-		// Position NEW page off-screen on the opposite side
-		// swipe left → new page starts on the right (+width)
-		// swipe right → new page starts on the left (-width)
-		const enterX = deltaX < 0 ? width : -width;
-		translateX = enterX;
+		// Place new page off-screen on the correct side (no animation yet)
+		// Right swipe (direction = 1) → new page comes from LEFT → start at -width
+		// Left swipe (direction = -1) → new page comes from RIGHT → start at +width
+		const startX = direction === 1 ? -width : width;
+		translateX = startX;
 
 		await tick();
 
