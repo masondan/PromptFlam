@@ -63,12 +63,12 @@
 		top: 0;
 		left: 0;
 		right: 0;
-		height: var(--header-height);
+		height: calc(var(--header-height) + var(--spacing-sm));
 		background: var(--bg-main);
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
-		padding: 0 var(--spacing-md);
+		padding: var(--spacing-sm) var(--spacing-md);
 		z-index: var(--z-header);
 	}
 
@@ -97,7 +97,7 @@
 	.nav {
 		display: flex;
 		align-items: center;
-		gap: var(--spacing-sm);
+		gap: var(--spacing-md);
 	}
 
 	.nav-button {
