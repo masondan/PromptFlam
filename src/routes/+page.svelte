@@ -52,13 +52,7 @@
 		const lastPromptIndex = $chatMessages.length - 1;
 		const lastPromptEl = chatContentRef?.querySelector(`[data-prompt-index="${lastPromptIndex}"]`);
 		if (lastPromptEl) {
-			// Use scrollIntoView with block: 'start' to position at top of viewport
-			const headerHeight = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--header-height')) || 60;
 			lastPromptEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
-			// Adjust for header after scrollIntoView
-			setTimeout(() => {
-				window.scrollBy({ top: -(headerHeight + 16), behavior: 'smooth' });
-			}, 100);
 		}
 
 		try {
@@ -404,5 +398,9 @@
 		font-size: var(--font-size-base);
 		color: var(--text-primary);
 		margin-top: var(--spacing-sm);
+	}
+
+	.prompt-wrapper {
+		scroll-margin-top: calc(var(--header-height) + var(--spacing-md) + var(--spacing-lg));
 	}
 </style>
