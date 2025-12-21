@@ -28,6 +28,30 @@
 
 	$: hasMessages = $chatMessages.length > 0;
 
+	function scrollPastPreviousResponse() {
+		if (typeof window === 'undefined') return;
+
+		const messages = chatContentRef?.querySelectorAll('.message');
+		if (!messages || messages.length === 0) return;
+
+		const lastMessage = messages[messages.length - 1];
+		const scroller = document.scrollingElement || document.documentElement;
+		if (!lastMessage || !scroller) return;
+
+		const rect = lastMessage.getBoundingClientRect();
+		const messageBottom = rect.bottom + window.pageYOffset;
+		
+		const headerHeight = 56 + 16 + 24;
+		const targetY = messageBottom - headerHeight;
+		const maxScroll = scroller.scrollHeight - scroller.clientHeight;
+		const clampedTarget = Math.max(0, Math.min(targetY, maxScroll));
+
+		scroller.scrollTo({
+			top: clampedTarget,
+			behavior: 'smooth'
+		});
+	}
+
 	function isMobile() {
 		if (typeof navigator === 'undefined') return false;
 		return /Mobi|Android/i.test(navigator.userAgent);
@@ -109,10 +133,9 @@
 		await waitForLayoutSettle();
 		await tick();
 
-		// Now $chatMessages and DOM are in sync - find the last user prompt
-		const prompts = chatContentRef?.querySelectorAll('.prompt-wrapper');
-		const lastPromptEl = prompts?.[prompts.length - 1];
-		lastPromptEl?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+		// Scroll past the previous response so new prompt appears at top
+		await new Promise((r) => requestAnimationFrame(r));
+		scrollPastPreviousResponse();
 
 		try {
 			// Prepare messages for API (convert to simple format, filter out non-API roles)
@@ -452,7 +475,5 @@
 		margin-top: var(--spacing-sm);
 	}
 
-	.prompt-wrapper {
-		scroll-margin-top: calc(var(--header-height) + var(--spacing-md) + var(--spacing-lg));
-	}
+
 </style>
