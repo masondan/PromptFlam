@@ -1,6 +1,6 @@
 <script>
 	import { Icon } from '$lib/components';
-	import { createEventDispatcher } from 'svelte';
+	import { createEventDispatcher, tick } from 'svelte';
 
 	export let value = '';
 	export let isLoading = false;
@@ -12,6 +12,10 @@
 
 	$: hasContent = value.trim().length > 0;
 	$: canSend = hasContent && !isLoading;
+	
+	$: if (value && textareaEl) {
+		tick().then(autoResize);
+	}
 
 	function findBracketBoundaries(text, cursorPos) {
 		let openBracket = -1;
@@ -65,7 +69,10 @@
 	function autoResize() {
 		if (!textareaEl) return;
 		textareaEl.style.height = 'auto';
-		const maxHeight = window.innerHeight * 0.4;
+		const headerHeight = 80;
+		const buttonRowHeight = 52;
+		const padding = 32;
+		const maxHeight = window.innerHeight - headerHeight - buttonRowHeight - padding;
 		textareaEl.style.height = Math.min(textareaEl.scrollHeight, maxHeight) + 'px';
 	}
 
@@ -149,6 +156,8 @@
 		left: 0;
 		right: 0;
 		z-index: var(--z-input-drawer);
+		transform: translateZ(0);
+		-webkit-transform: translateZ(0);
 	}
 
 	@media (min-width: 768px) {

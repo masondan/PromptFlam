@@ -70,6 +70,8 @@
 		justify-content: space-between;
 		padding: var(--spacing-md) var(--spacing-md) var(--spacing-sm);
 		z-index: var(--z-header);
+		transform: translateZ(0);
+		-webkit-transform: translateZ(0);
 	}
 
 	@media (min-width: 768px) {
