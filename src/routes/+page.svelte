@@ -28,28 +28,21 @@
 
 	$: hasMessages = $chatMessages.length > 0;
 
-	function scrollPastPreviousResponse() {
+	function scrollNewPromptToTop() {
 		if (typeof window === 'undefined') return;
 
-		const messages = chatContentRef?.querySelectorAll('.message');
-		if (!messages || messages.length === 0) return;
+		const prompts = chatContentRef?.querySelectorAll('.prompt-wrapper');
+		if (!prompts || prompts.length === 0) return;
 
-		const lastMessage = messages[messages.length - 1];
-		const scroller = document.scrollingElement || document.documentElement;
-		if (!lastMessage || !scroller) return;
+		const lastPrompt = prompts[prompts.length - 1];
+		if (!lastPrompt) return;
 
-		const rect = lastMessage.getBoundingClientRect();
-		const messageBottom = rect.bottom + window.pageYOffset;
-		
 		const headerHeight = 56 + 16 + 24;
-		const targetY = messageBottom - headerHeight;
-		const maxScroll = scroller.scrollHeight - scroller.clientHeight;
-		const clampedTarget = Math.max(0, Math.min(targetY, maxScroll));
+		const rect = lastPrompt.getBoundingClientRect();
+		const absoluteTop = rect.top + window.pageYOffset;
+		const targetY = absoluteTop - headerHeight;
 
-		scroller.scrollTo({
-			top: clampedTarget,
-			behavior: 'smooth'
-		});
+		window.scrollTo(0, targetY);
 	}
 
 	function isMobile() {
@@ -133,9 +126,9 @@
 		await waitForLayoutSettle();
 		await tick();
 
-		// Scroll past the previous response so new prompt appears at top
+		// Scroll new prompt to top of visible area
 		await new Promise((r) => requestAnimationFrame(r));
-		scrollPastPreviousResponse();
+		scrollNewPromptToTop();
 
 		try {
 			// Prepare messages for API (convert to simple format, filter out non-API roles)
