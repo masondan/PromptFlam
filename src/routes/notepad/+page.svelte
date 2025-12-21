@@ -199,7 +199,7 @@
 			tabindex="0"
 			aria-label="Note content"
 			aria-multiline="true"
-			data-placeholder="Start writing or paste text. Your notes are saved automatically in the archive."
+			data-placeholder="Text"
 			on:input={handleContentInput}
 		></div>
 	</div>
