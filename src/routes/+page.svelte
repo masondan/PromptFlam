@@ -52,10 +52,13 @@
 		const lastPromptIndex = $chatMessages.length - 1;
 		const lastPromptEl = chatContentRef?.querySelector(`[data-prompt-index="${lastPromptIndex}"]`);
 		if (lastPromptEl) {
-			// Calculate the offset to position the prompt just below the header
+			// Use scrollIntoView with block: 'start' to position at top of viewport
 			const headerHeight = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--header-height')) || 60;
-			const promptTop = lastPromptEl.getBoundingClientRect().top + window.scrollY;
-			window.scrollTo({ top: promptTop - headerHeight - 16, behavior: 'smooth' });
+			lastPromptEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+			// Adjust for header after scrollIntoView
+			setTimeout(() => {
+				window.scrollBy({ top: -(headerHeight + 16), behavior: 'smooth' });
+			}, 100);
 		}
 
 		try {
