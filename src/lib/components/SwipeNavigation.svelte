@@ -14,7 +14,6 @@
 	let translateX = 0;
 	let transitioning = false;
 	let animating = false;
-	let enterDirection = null;
 
 	const SWIPE_THRESHOLD = 80;
 	const VELOCITY_THRESHOLD = 0.3;
@@ -83,9 +82,9 @@
 
 		if (isHorizontalSwipe && shouldNavigate) {
 			if (deltaX > 0 && currentIndex > 0) {
-				navigateTo(currentIndex - 1, 'from-left');
+				navigateTo(currentIndex - 1, deltaX);
 			} else if (deltaX < 0 && currentIndex < pages.length - 1) {
-				navigateTo(currentIndex + 1, 'from-right');
+				navigateTo(currentIndex + 1, deltaX);
 			} else {
 				resetPosition();
 			}
@@ -97,33 +96,39 @@
 		isHorizontalSwipe = null;
 	}
 
-	async function navigateTo(index, direction) {
+	async function navigateTo(index, deltaX) {
 		transitioning = true;
-		enterDirection = direction;
-		
-		const exitX = direction === 'from-right' ? -window.innerWidth : window.innerWidth;
+
+		const width = window.innerWidth;
+
+		// Exit: continue in the same direction as the swipe
+		// swipe left (deltaX < 0) → exit to left (-width)
+		// swipe right (deltaX > 0) → exit to right (+width)
+		const exitX = deltaX < 0 ? -width : width;
 		translateX = exitX;
 
-		await new Promise(r => setTimeout(r, 200));
-		
+		await new Promise((r) => setTimeout(r, 200));
+
 		await goto(pages[index]);
 		await tick();
-		
-		// Position new page off-screen BEFORE enabling transition
-		translateX = direction === 'from-right' ? window.innerWidth : -window.innerWidth;
-		
+
+		// Position NEW page off-screen on the opposite side
+		// swipe left → new page starts on the right (+width)
+		// swipe right → new page starts on the left (-width)
+		const enterX = deltaX < 0 ? width : -width;
+		translateX = enterX;
+
 		await tick();
-		
-		// Now enable transition and animate to center
+
 		requestAnimationFrame(() => {
 			transitioning = false;
 			animating = true;
-			
+
 			requestAnimationFrame(() => {
 				translateX = 0;
+
 				setTimeout(() => {
 					animating = false;
-					enterDirection = null;
 				}, 200);
 			});
 		});
