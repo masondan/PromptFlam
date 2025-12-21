@@ -1,6 +1,6 @@
 <script>
 	import { Icon } from '$lib/components';
-	import { createEventDispatcher, tick } from 'svelte';
+	import { createEventDispatcher, afterUpdate } from 'svelte';
 
 	export let value = '';
 	export let isLoading = false;
@@ -13,9 +13,11 @@
 	$: hasContent = value.trim().length > 0;
 	$: canSend = hasContent && !isLoading;
 	
-	$: if (value && textareaEl) {
-		tick().then(autoResize);
-	}
+	afterUpdate(() => {
+		if (textareaEl) {
+			autoResize();
+		}
+	});
 
 	function findBracketBoundaries(text, cursorPos) {
 		let openBracket = -1;
