@@ -323,6 +323,12 @@ export function cleanupOldArchives() {
 // Schema: ['Text-Blog', 'Audio-Mini-pod', ...]
 export const favorites = createPersistentStore('favorites', []);
 
+// Prompt library navigation state (persists across page navigation)
+export const promptLibraryCategory = createPersistentStore('promptLibraryCategory', 'all');
+export const promptLibrarySubcategory = createPersistentStore('promptLibrarySubcategory', 'all');
+export const promptLibraryExpandedId = createPersistentStore('promptLibraryExpandedId', null);
+export const promptLibraryScrollY = createPersistentStore('promptLibraryScrollY', 0);
+
 /**
  * Toggle a subcategory in favorites
  * @param {string} category - The category name

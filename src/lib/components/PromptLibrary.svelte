@@ -1,7 +1,16 @@
 <script>
-	import { createEventDispatcher, onMount } from 'svelte';
+	import { createEventDispatcher, onMount, onDestroy } from 'svelte';
 	import { Icon } from '$lib/components';
-	import { favorites, toggleFavorite, isFavorite } from '$lib/stores.js';
+	import { browser } from '$app/environment';
+	import { 
+		favorites, 
+		toggleFavorite, 
+		isFavorite,
+		promptLibraryCategory,
+		promptLibrarySubcategory,
+		promptLibraryExpandedId,
+		promptLibraryScrollY
+	} from '$lib/stores.js';
 
 	export let mode = 'page';
 	
@@ -13,11 +22,9 @@
 	
 	let activeTab = 'all';
 	let searchQuery = '';
-	let selectedCategory = 'all';
-	let selectedSubcategory = 'all';
 	let categoryDropdownOpen = false;
 	let subcategoryDropdownOpen = false;
-	let expandedPromptId = null;
+	let scrollRestored = false;
 
 	const categoryOrder = ['Text', 'Audio', 'Video', 'Social Media', 'Website', 'Strategy', 'Co-pilot', 'Image Gen'];
 
@@ -25,11 +32,11 @@
 		(a, b) => categoryOrder.indexOf(a) - categoryOrder.indexOf(b)
 	);
 
-	$: subcategories = selectedCategory === 'all'
+	$: subcategories = $promptLibraryCategory === 'all'
 		? []
-		: [...new Set(prompts.filter(p => p.category === selectedCategory).map(p => p.subCategory))].sort();
+		: [...new Set(prompts.filter(p => p.category === $promptLibraryCategory).map(p => p.subCategory))].sort();
 
-	$: filteredPrompts = filterPrompts(prompts, activeTab, searchQuery, selectedCategory, selectedSubcategory, $favorites);
+	$: filteredPrompts = filterPrompts(prompts, activeTab, searchQuery, $promptLibraryCategory, $promptLibrarySubcategory, $favorites);
 
 	$: groupedPrompts = groupPrompts(filteredPrompts);
 
@@ -90,8 +97,8 @@
 	function handleTabClick(tab) {
 		activeTab = tab;
 		if (tab === 'favorites' || tab === 'search') {
-			selectedCategory = 'all';
-			selectedSubcategory = 'all';
+			promptLibraryCategory.set('all');
+			promptLibrarySubcategory.set('all');
 		}
 		if (tab !== 'search') {
 			searchQuery = '';
@@ -99,13 +106,13 @@
 	}
 
 	function handleCategorySelect(cat) {
-		selectedCategory = cat;
-		selectedSubcategory = 'all';
+		promptLibraryCategory.set(cat);
+		promptLibrarySubcategory.set('all');
 		categoryDropdownOpen = false;
 	}
 
 	function handleSubcategorySelect(sub) {
-		selectedSubcategory = sub;
+		promptLibrarySubcategory.set(sub);
 		subcategoryDropdownOpen = false;
 	}
 
@@ -134,7 +141,7 @@
 	}
 
 	function togglePromptExpand(promptId) {
-		expandedPromptId = expandedPromptId === promptId ? null : promptId;
+		promptLibraryExpandedId.set($promptLibraryExpandedId === promptId ? null : promptId);
 	}
 
 	function getPromptId(category, subCategory, task) {
@@ -148,6 +155,12 @@
 		}
 	}
 
+	function saveScrollPosition() {
+		if (browser) {
+			promptLibraryScrollY.set(window.scrollY);
+		}
+	}
+
 	onMount(async () => {
 		try {
 			const response = await fetch('/prompts.json');
@@ -157,7 +170,18 @@
 			error = e.message;
 		} finally {
 			loading = false;
+			if (browser && $promptLibraryScrollY > 0) {
+				requestAnimationFrame(() => {
+					window.scrollTo(0, $promptLibraryScrollY);
+					scrollRestored = true;
+				});
+			}
 		}
+
+		window.addEventListener('scroll', saveScrollPosition);
+		return () => {
+			window.removeEventListener('scroll', saveScrollPosition);
+		};
 	});
 </script>
 
@@ -173,7 +197,7 @@
 					subcategoryDropdownOpen = false;
 				}}
 			>
-				<span>{selectedCategory === 'all' ? 'All Prompts' : selectedCategory}</span>
+				<span>{$promptLibraryCategory === 'all' ? 'All Prompts' : $promptLibraryCategory}</span>
 				<Icon name={categoryDropdownOpen ? 'collapse' : 'expand'} size={16} />
 			</button>
 			{#if categoryDropdownOpen}
@@ -207,7 +231,7 @@
 		</button>
 	</div>
 
-	{#if selectedCategory !== 'all' && subcategories.length > 0}
+	{#if $promptLibraryCategory !== 'all' && subcategories.length > 0}
 		<div class="filters">
 			<div class="dropdown subcategory-dropdown" class:open={subcategoryDropdownOpen}>
 				<button
@@ -217,13 +241,13 @@
 						categoryDropdownOpen = false;
 					}}
 				>
-					<span>{selectedSubcategory === 'all' ? `All ${selectedCategory}` : selectedSubcategory}</span>
+					<span>{$promptLibrarySubcategory === 'all' ? `All ${$promptLibraryCategory}` : $promptLibrarySubcategory}</span>
 					<Icon name={subcategoryDropdownOpen ? 'collapse' : 'expand'} size={16} />
 				</button>
 				{#if subcategoryDropdownOpen}
 					<div class="dropdown-menu">
 						<button class="dropdown-item" on:click={() => handleSubcategorySelect('all')}>
-							All {selectedCategory}
+							All {$promptLibraryCategory}
 						</button>
 						{#each subcategories as sub}
 							<button class="dropdown-item" on:click={() => handleSubcategorySelect(sub)}>
@@ -265,7 +289,7 @@
 							</div>
 							{#each tasks as prompt}
 								{@const promptId = getPromptId(category, subCategory, prompt.task)}
-								{@const isExpanded = expandedPromptId === promptId}
+								{@const isExpanded = $promptLibraryExpandedId === promptId}
 								<div class="task-item">
 									<div class="task-header" on:click={() => togglePromptExpand(promptId)}>
 										{#if prompt.task}
