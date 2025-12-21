@@ -13,9 +13,15 @@
 	let textareaEl;
 	let editedText = '';
 	let copied = false;
+	let lastText = '';
 
-	$: if (isOpen && text) {
+	$: if (isOpen && text && text !== lastText) {
 		editedText = text;
+		lastText = text;
+	}
+
+	$: if (!isOpen) {
+		lastText = '';
 	}
 
 	$: if (isOpen && textareaEl) {
