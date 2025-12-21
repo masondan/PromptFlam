@@ -105,16 +105,15 @@
 		abortController = new AbortController();
 
 		// Scroll to show the new prompt at the top of the visible area (just under header)
-		const lastPromptIndex = $chatMessages.length - 1;
-
+		// Wait for DOM update and layout to settle before computing scroll target
 		await tick();
 		await waitForLayoutSettle();
 		await tick();
 
-		const lastPromptEl = chatContentRef?.querySelector(`[data-prompt-index="${lastPromptIndex}"]`);
-		if (lastPromptEl) {
-			lastPromptEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
-		}
+		// Now $chatMessages and DOM are in sync - find the last user prompt
+		const prompts = chatContentRef?.querySelectorAll('.prompt-wrapper');
+		const lastPromptEl = prompts?.[prompts.length - 1];
+		lastPromptEl?.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
 		try {
 			// Prepare messages for API (convert to simple format, filter out non-API roles)
