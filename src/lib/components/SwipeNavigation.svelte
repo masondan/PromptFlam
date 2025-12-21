@@ -109,13 +109,16 @@
 		await goto(pages[index]);
 		await tick();
 		
-		animating = true;
-		transitioning = false;
-		
+		// Position new page off-screen BEFORE enabling transition
 		translateX = direction === 'from-right' ? window.innerWidth : -window.innerWidth;
 		
 		await tick();
+		
+		// Now enable transition and animate to center
 		requestAnimationFrame(() => {
+			transitioning = false;
+			animating = true;
+			
 			requestAnimationFrame(() => {
 				translateX = 0;
 				setTimeout(() => {
