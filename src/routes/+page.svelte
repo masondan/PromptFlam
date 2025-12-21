@@ -29,6 +29,62 @@
 
 	$: hasMessages = $chatMessages.length > 0;
 
+	function isMobile() {
+		if (typeof navigator === 'undefined') return false;
+		return /Mobi|Android/i.test(navigator.userAgent);
+	}
+
+	function waitForLayoutSettle({ maxWait = 600, stableFor = 150 } = {}) {
+		if (typeof window === 'undefined') return Promise.resolve();
+
+		if (!isMobile() || !window.visualViewport) {
+			return new Promise((resolve) => setTimeout(resolve, 50));
+		}
+
+		const vv = window.visualViewport;
+		let lastVvHeight = vv.height;
+		let lastInputHeight = chatInputHeight;
+		let lastChange = performance.now();
+		const start = lastChange;
+
+		return new Promise((resolve) => {
+			const check = (now) => {
+				const vh = vv.height;
+				const ih = chatInputHeight;
+
+				if (vh !== lastVvHeight || ih !== lastInputHeight) {
+					lastVvHeight = vh;
+					lastInputHeight = ih;
+					lastChange = now;
+				}
+
+				if (now - lastChange >= stableFor || now - start >= maxWait) {
+					cleanup();
+					resolve();
+				}
+			};
+
+			const onVvResize = () => check(performance.now());
+			const onWinResize = () => check(performance.now());
+
+			const cleanup = () => {
+				vv.removeEventListener('resize', onVvResize);
+				window.removeEventListener('resize', onWinResize);
+				clearTimeout(timeoutId);
+			};
+
+			vv.addEventListener('resize', onVvResize);
+			window.addEventListener('resize', onWinResize);
+
+			const timeoutId = setTimeout(() => {
+				cleanup();
+				resolve();
+			}, maxWait);
+
+			requestAnimationFrame((ts) => check(ts));
+		});
+	}
+
 	onMount(() => {
 		if ($pendingChatInput) {
 			inputValue = $pendingChatInput;
@@ -49,8 +105,12 @@
 		abortController = new AbortController();
 
 		// Scroll to show the new prompt at the top of the visible area (just under header)
-		await tick();
 		const lastPromptIndex = $chatMessages.length - 1;
+
+		await tick();
+		await waitForLayoutSettle();
+		await tick();
+
 		const lastPromptEl = chatContentRef?.querySelector(`[data-prompt-index="${lastPromptIndex}"]`);
 		if (lastPromptEl) {
 			lastPromptEl.scrollIntoView({ behavior: 'smooth', block: 'start' });

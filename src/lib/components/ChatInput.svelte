@@ -93,6 +93,7 @@
 		value = '';
 		if (textareaEl) {
 			textareaEl.style.height = 'auto';
+			textareaEl.blur();
 		}
 	}
 
