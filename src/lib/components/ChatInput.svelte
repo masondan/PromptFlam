@@ -4,7 +4,7 @@
 
 	export let value = '';
 	export let isLoading = false;
-	export let placeholder = 'Tap ☆ to add a library prompt';
+	export let placeholder = 'Write, speak or tap ☆ to add a prompt';
 
 	const dispatch = createEventDispatcher();
 
@@ -285,7 +285,7 @@
 		border-top-right-radius: var(--radius-lg);
 		padding: var(--spacing-md);
 		padding-bottom: calc(var(--spacing-md) + env(safe-area-inset-bottom, 0px));
-		box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.08);
+		box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.15);
 	}
 
 	textarea {
@@ -378,7 +378,7 @@
 		border-radius: 50%;
 		color: var(--color-icon-default);
 		transition: color 0.15s;
-		transform: translateY(1px);
+		transform: translateY(2px);
 	}
 
 	.mic-button:hover {
