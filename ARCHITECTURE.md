@@ -1,645 +1,456 @@
 # Architecture Guide
 
-Complete technical reference for PromptFlam SvelteKit implementation.
+Technical reference for PromptFlam SvelteKit implementation. Read this to understand how the app works.
 
 ---
 
-## Project Structure
+## Core Concepts
 
-```
-src/
-├── routes/
-│   ├── +page.svelte           Create page (AI chat)
-│   ├── +layout.svelte         Root layout with header/nav
-│   ├── prompts/
-│   │   └── +page.svelte       Prompts library page
-│   ├── notepad/
-│   │   └── +page.svelte       Text editor page
-│   ├── archive/
-│   │   └── +page.svelte       Saved chats & edits archive
-│   └── api/
-│       └── perplexity.js      Server-side API proxy
-│
-├── lib/
-│   ├── stores.js              State management (all stores)
-│   │
-│   ├── services/
-│   │   ├── perplexity.js      Perplexity API wrapper
-│   │   └── storage.js         localStorage abstraction
-│   │
-│   ├── components/
-│   │   ├── Icon.svelte        Reusable icon wrapper
-│   │   ├── Header.svelte      Top navigation bar
-│   │   ├── ChatMessage.svelte Single message display
-│   │   ├── ChatInput.svelte   Input field + send button
-│   │   └── ...
-│   │
-│   └── icons.js               Icon barrel export
-│
-├── app.svelte                 Root component
-└── app.css                    Global styles
+**Three-layer architecture:**
+1. **Pages** (`src/routes/*.svelte`) — SvelteKit routes, subscribe to stores
+2. **Stores** (`src/lib/stores.js`) — Reactive state with localStorage persistence
+3. **Services** (`src/lib/services/`) — API calls (Perplexity, metadata, storage)
 
-public/
-├── icons/                     All SVG icons (24×24px)
-└── [images, logos]
-```
+**Data flow**: User action → Component → Store update → localStorage auto-sync
 
 ---
 
-## State Management (Svelte Stores)
+## State Management (`src/lib/stores.js`)
 
-Located in: `src/lib/stores.js`
+All stores use `createPersistentStore()` helper that auto-syncs to localStorage.
 
 ### Core Stores
 
-#### `chatMessages`
-```javascript
-// Array of message objects
-[
-  {
-    id: 'msg-1',
-    role: 'user' | 'assistant',
-    content: 'Your message text',
-    timestamp: Date,
-    sources: [{ title, url, snippet }]  // For AI responses
-  },
-  ...
-]
-```
+**Chat Session**:
+- `chatMessages` — Current conversation `[{role, content, timestamp, sources}]`
+- `currentChatSessionId` — Tracks which archive entry to update (for auto-save)
 
-#### `currentPrompts`
-```javascript
-// Bracket content in active chat input
-// Example: "Write a headline for [AUDIENCE: journalists]"
-// Renders as visual chips in chat input for editing
-string
-```
+**Notepad Session**:
+- `currentNoteTitle` — Editor title
+- `currentNoteContent` — Editor body (HTML)
+- `currentNoteSessionId` — Tracks which archive entry to update
 
-#### `drafts`
-```javascript
-// Array of saved note drafts
-[
-  {
-    id: timestamp,
-    title: 'Draft title',
-    content: 'Full text content',
-    timestamp: Date
-  },
-  ...
-]
-```
+**Archive** (max 10 items each, auto-cleanup after 30 days):
+- `archiveChats` — `[{id, messages[], timestamp}]`
+- `archiveNotes` — `[{id, title, content, timestamp}]`
 
-#### `archiveChats`
-```javascript
-// Saved AI conversations (auto-cleanup: 30 days + max 10 items)
-[
-  {
-    id: timestamp,
-    messages: [...],  // Full chat array
-    timestamp: Date
-  },
-  ...
-]
-```
+**Other**:
+- `currentPrompts` — Bracket content in chat input
+- `favorites` — `['Category-SubCategory', ...]`
 
-#### `archiveEdits`
-```javascript
-// Saved draft notes (auto-cleanup: 30 days + max 10 items)
-[
-  {
-    id: timestamp,
-    title: string,
-    content: string,
-    timestamp: Date
-  },
-  ...
-]
-```
-
-### Store Pattern
-
-All stores auto-persist to localStorage. Example:
+### Helper Functions
 
 ```javascript
-import { writable } from 'svelte/store';
-import { browser } from '$app/environment';
+// Chat operations
+addChatMessage(role, content, sources)    // Add to current session
+updateLastMessage(content, sources)       // Update streaming response
+clearChat()                               // Clear current session
+startNewChat()                            // Archive + reset
+autoSaveChat()                            // Update/create archive entry
+restoreChat(archivedChat)                 // Load from archive
 
-function createChatStore() {
-  const key = 'promptflam_chat';
-  const stored = browser ? localStorage.getItem(key) : null;
-  const initial = stored ? JSON.parse(stored) : [];
+// Note operations
+autoSaveNote()                            // Update/create archive entry
+startNewNote()                            // Reset title + content
+restoreNote(archivedNote)                 // Load from archive
 
-  const { subscribe, set, update } = writable(initial);
-
-  return {
-    subscribe,
-    add: (message) => update(msgs => {
-      const updated = [...msgs, message];
-      if (browser) localStorage.setItem(key, JSON.stringify(updated));
-      return updated;
-    })
-  };
-}
-
-export const chatMessages = createChatStore();
+// Utilities
+cleanupOldArchives()                      // Remove 30+ day old items
+toggleFavorite(category, subcategory)     // Toggle favorite
+isFavorite(category, subcategory, favsList) // Check if favorited
 ```
 
 ---
 
 ## Services Layer
 
-### Perplexity API Service
-
-**File**: `src/lib/services/perplexity.js`
+### Perplexity Service (`src/lib/services/perplexity.js`)
 
 ```javascript
-export async function callPerplexity(messages, systemPrompt) {
-  // Sends messages to Perplexity API
-  // Returns: { content, citations }
-  // 
-  // messages: [{ role, content }, ...]
-  // Returns: {
-  //   content: "Response text",
-  //   citations: [{ title, url, snippet }, ...]
-  // }
-}
+callPerplexity(messages, onChunk, signal)
+// → Calls POST /api/chat (our server proxy)
+// → Streams response chunks to onChunk callback
+// → Returns {content, sources, aborted}
 ```
 
-**Key Details**:
-- Uses `/openai/` endpoint (OpenAI-compatible)
-- Model: `sonar` (real-time, fast)
-- `search_recency_filter: 'month'` for fresh data
-- Streaming support (token-by-token animation)
-- Error handling + retry logic
-- API key from `import.meta.env.VITE_PERPLEXITY_API_KEY`
+**How streaming works:**
+1. Client calls `callPerplexity()` with message array
+2. Service POSTs to `/api/chat` (our endpoint)
+3. Server forwards to Perplexity API with `stream: true`
+4. Server pipes chunks back to client as `text/event-stream`
+5. Client receives `data: {content: '...'}` chunks
+6. `onChunk()` callback fires for each chunk (UI updates in real-time)
+7. At end, server sends `data: {citations: [...]}`
 
-### Storage Service
+**Citation normalization**: Converts `text[1].` → `text.[1]` (citation after punctuation)
 
-**File**: `src/lib/services/storage.js`
+### Storage Service (`src/lib/services/storage.js`)
 
-```javascript
-export const storage = {
-  set: (key, value) => { /* Save to localStorage */ },
-  get: (key) => { /* Retrieve from localStorage */ },
-  remove: (key) => { /* Delete from localStorage */ },
-  clear: () => { /* Clear all localStorage */ }
-}
-```
+Simple localStorage wrapper (currently minimal usage; stores handle persistence directly).
 
 ---
 
-## Component Patterns
+## API Routes
+
+### POST `/api/chat` (Secure Proxy)
+
+**Server file**: `src/routes/api/chat/+server.js`
+
+**Key features**:
+- Reads `PERPLEXITY_API_KEY` from server-side env (never exposed to browser)
+- Injects `SYSTEM_PROMPT` to guide AI behavior (formatting, tone, citations)
+- Converts streaming response to `text/event-stream` for real-time display
+- Extracts citations from Perplexity response
+- Handles errors gracefully
+
+**Model**: `sonar` (Perplexity's default)  
+**Config**: `temperature: 0.7`, `max_tokens: 1500`, `search_recency_filter: month`
+
+### POST `/api/metadata`
+
+**Server file**: `src/routes/api/metadata/+server.js`
+
+**Fetches**: Open Graph `title`, `description` from URLs  
+**Timeout**: 5 seconds per URL  
+**Read limit**: First 50KB of HTML (stops at `</head>`)
+
+Used to enrich citation display in UI (currently not integrated in components; infrastructure ready).
+
+---
+
+## Components (`src/lib/components/`)
+
+**17 Svelte components** organized by function:
 
 ### Page Components
+- `Header.svelte` — Fixed nav bar with 4 page buttons
 
-Each page is a SvelteKit route with standard layout:
+### Chat (Create Page)
+- `ChatInput.svelte` — Message input + bracket-chip system + send button
+- `ChatMessage.svelte` — Renders individual message + citations
+- `PromptDrawer.svelte` — Drawer to insert prompts into chat
+- `SourcesDrawer.svelte` — View full citation details
+- `TextSelectionMenu.svelte` — Inline menu on text selection (copy, rewrite, expand, shorten)
+- `ThinkingDots.svelte` — Loading animation while waiting for AI
 
-```svelte
-<script>
-  import Header from '$lib/components/Header.svelte';
-  import { chatMessages } from '$lib/stores.js';
-</script>
+### Prompts Library
+- `PromptLibrary.svelte` — Main library UI (category filter, search, favorites)
+- `PromptCard.svelte` — Single prompt card + favorite/copy buttons
+- `PromptEditDrawer.svelte` — Drawer version of library (for inserting into chat)
 
-<Header title="Create" />
-<main>
-  <!-- Page content -->
-</main>
+### Notepad (Edit Page)
+- `NotepadToolbar.svelte` — Formatting buttons (bold, italic, list, font size, undo, redo)
+- `NotepadSelectionMenu.svelte` — Inline menu on text selection in notepad
 
-<style>
-  main { padding: 1rem; }
-</style>
-```
+### Archive (Saved Items)
+- `ArchiveItem.svelte` — Single chat/note card with menu (restore, download, share, delete)
 
-### Icon System
+### Utilities
+- `Icon.svelte` — Renders SVG icons by name with size + variant
+- `index.js` — Barrel export of all components
 
-**Barrel Export** (`src/lib/icons.js`):
+---
+
+## Icon System
+
+**Location**: `static/icons/` (40+ SVG icons)
+
+**Naming**: 
+- Outline: `icon-{name}.svg`
+- Filled: `icon-{name}-fill.svg`
+- All 24×24px at 2px stroke weight
+
+**Import**: 
 ```javascript
-export { default as IconCreate } from '../../public/icons/icon-create.svg?component';
-export { default as IconSend } from '../../public/icons/icon-send.svg?component';
-// ... all icons
-```
+// In src/lib/icons.js:
+export { default as IconCreate } from '../../static/icons/icon-create.svg?component';
 
-**Icon Component** (`src/lib/components/Icon.svelte`):
-```svelte
-<script>
-  export let name;          // 'send', 'create', etc.
-  export let size = 24;     // 24px default
-  export let variant = '';  // 'outline' or 'fill'
-</script>
-
-<svelte:component 
-  this={iconMap[name]} 
-  {width, height}
-  stroke="currentColor" />
-```
-
-**Usage**:
-```svelte
-<Icon name="send" size={24} />
-<Icon name="star" size={20} variant="fill" />
-```
-
-### Reusable Components
-
-Pattern for all reusable components:
-
-```svelte
-<!-- MyComponent.svelte -->
-<script>
-  export let data;         // Props from parent
-  export let onAction;     // Callback to parent
-</script>
-
-<div class="component">
-  <!-- Content -->
-  <button on:click={() => onAction()}>Action</button>
-</div>
-
-<style>
-  .component {
-    /* Minimal styles; use app.css for globals */
-  }
-</style>
+// In components:
+import Icon from '$lib/components/Icon.svelte';
+<Icon name="create" size={24} />
 ```
 
 ---
 
-## Pages & Features
+## Global Styles (`src/app.css`)
+
+**Design tokens** in `:root`:
+
+Colors:
+```css
+--bg-main: #ffffff
+--bg-surface: #f8f8f8
+--text-primary: #1f1f1f
+--text-secondary: #777777
+--accent-brand: #5422b0
+--color-border: #e0e0e0
+--color-highlight: #F0E6F7
+```
+
+Spacing: `--spacing-xs` (4px) → `--spacing-xl` (32px)  
+Typography: `--font-size-base` (1rem) → `--font-size-h1` (1.5rem)  
+Shadows: `--shadow-sm`, `--shadow-md`  
+Radius: `--radius` (12px), `--radius-sm` (6px), `--radius-lg` (16px)
+
+**Scoped styles** in components use CSS variables for consistency.
+
+---
+
+## Page Details
 
 ### Create Page (`src/routes/+page.svelte`)
 
-**What it shows**:
-- Chat message history
-- Chat input with bracket-chip support
-- Send button
-- Prompt library shortcut icon (in input)
+**Key state**:
+```javascript
+let inputValue = '';              // Chat input text
+let isLoading = false;            // Waiting for API
+let isStreaming = false;          // Actively receiving chunks
+let streamingContent = '';        // Current streamed response
+let showPromptDrawer = false;     // Prompt library drawer open
+let showSourcesDrawer = false;    // Citations drawer open
+let abortController = null;       // For canceling requests
+```
 
-**Key interactions**:
-- User types → sends → AI responds with citations
-- Citations render as clickable links below message
-- Text selection in responses → inline menu (Rewrite, Expand, Shorten, Copy)
-- [Sources] button → drawer with full citations
+**Key flows**:
+1. User sends message → `handleSend()` → adds to `chatMessages`
+2. Call `callPerplexity()` with streaming callback
+3. On first chunk → add empty assistant message
+4. On chunks → `updateLastMessage()` with accumulated content
+5. On complete → `updateLastMessage()` with final content + sources → `autoSaveChat()`
+6. On abort → remove empty message or keep partial response
+
+**Text selection menu**: Show on text selection in AI response (copy, rewrite, expand, shorten)
 
 ### Prompts Page (`src/routes/prompts/+page.svelte`)
 
-**What it shows**:
-- Full-screen prompt library
-- Category + subcategory filters
-- Search toolbar: [All Prompts] [Search] [Favourites]
-
-**Key interactions**:
-- Browse or search prompts
-- Mark as favorite (saved to localStorage)
+Displays `static/prompts.json` with:
+- Category filtering
+- Search by title/description
+- Favorite toggle (persisted in `favorites` store)
 - Copy prompt to clipboard
-- NOT direct insertion (users navigate via button; insertion via Create page drawer)
-
-### Prompt Shortcut Drawer (In Create Page)
-
-**What it shows**:
-- Same prompt library (category, search, favorites)
-- "Insert Prompt" button closes drawer + adds to chat input
-
-**Key interactions**:
-- Icon in chat input opens drawer
-- Select prompt → "Insert Prompt" → adds to chat input
-- Bracket content renders as visual chips for editing
 
 ### Notepad Page (`src/routes/notepad/+page.svelte`)
 
-**What it shows**:
-- Text editor with title + content
-- Formatting toolbar (Font size, Undo, Redo, List, Italic, Bold)
-- More menu (⋯) for additional actions
-- Three action buttons under text: Share, Download, Copy
+**Key features**:
+- Contenteditable divs for title + content
+- Formatting buttons (bold, italic, list, font size, undo, redo, more menu)
+- Auto-save on input change (debounced 2s)
+- Download as `.txt` file
+- Share via system API
+- "Start Over" clears and archives
 
-**Key interactions**:
-- Type/format text → auto-save to localStorage
-- Select text → inline menu (Copy, Italic, Bold)
-- Download as .txt file
-- Share via system share
-- Copy content to clipboard
+**HTML to Markdown**: Converts formatting tags when exporting
 
 ### Archive Page (`src/routes/archive/+page.svelte`)
 
-**What it shows**:
-- Two tabs: "Chats" | "Edits"
-- List of saved items with preview + timestamp
-- Three-dot menu per item (Download | Share | Delete)
+**Two tabs**: Chats | Edits
 
-**Key interactions**:
-- Tap item → restore to Create/Edit page
-- Three-dot menu → Download, Share, or Delete
-- "Clear All" button (with confirmation)
-- Auto-cleanup: 30 days + max 10 items per tab
+**Per item**:
+- Click → restore to Create/Notepad page
+- Three-dot menu → Download, Share, Delete
+- Timestamp + preview text
 
-### Header/Navigation
-
-**Always visible** (fixed at top):
-- Four buttons: Prompts | Create | Edit | Saved (Archive)
-- Light background, pale grey buttons
-- Active page highlighted
-- Mobile: also accessible via swipe left/right
+**"Clear All"**: Confirmation modal, then delete all items in current tab
 
 ---
 
-## Styling Approach
+## Data Persistence
 
-### Design Principles
-- Minimalist: clean, uncluttered UI
-- Material Design: soft shadows, rounded corners
-- Responsive: mobile-first, tablet/desktop compatible
-- Light theme: light background, dark text
-- Accessibility: sufficient color contrast, keyboard navigation
-
-### CSS Organization
-
-**Global styles** (`src/app.css`) — Unified Design System:
-```css
-:root {
-  /* Colors */
-  --bg-main: #ffffff;
-  --bg-surface: #f8f8f8;
-  --bg-surface-dark: #efefef;
-  --text-primary: #1f1f1f;
-  --text-secondary: #777777;
-  --accent-brand: #5422b0;
-  --color-border: #e0e0e0;
-  --color-highlight: #F0E6F7;
-  --color-icon-default: #777777;
-  --color-icon-active: #5422b0;
-
-  /* Typography */
-  --font-size-base: 1rem;      /* 16px */
-  --font-size-h3: 1.125rem;    /* 18px */
-  --font-size-h2: 1.25rem;     /* 20px */
-  --font-size-h1: 1.5rem;      /* 24px */
-
-  /* Spacing & Radius */
-  --spacing-xs: 4px;
-  --spacing-sm: 8px;
-  --spacing-md: 16px;
-  --spacing-lg: 24px;
-  --spacing-xl: 32px;
-  --radius: 12px;
-  --radius-sm: 6px;
-  --radius-lg: 16px;
-
-  /* Shadows & Layout */
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.07);
-  --header-height: 56px;
-  --max-content-width: 650px;
-}
+**localStorage keys** (all prefixed with `promptflam_`):
+```
+promptflam_chatMessages
+promptflam_currentChatSessionId
+promptflam_currentNoteTitle
+promptflam_currentNoteContent
+promptflam_currentNoteSessionId
+promptflam_archiveChats
+promptflam_archiveNotes
+promptflam_currentPrompts
+promptflam_favorites
 ```
 
-**Component styles** (in `<style>` blocks):
-```css
-/* Scoped to component only */
-.button {
-  background: var(--bg-surface);
-  border-radius: var(--radius);
-  padding: var(--spacing-sm) var(--spacing-md);
-}
-```
+**Auto-sync**: Every store update → `localStorage.setItem()` (synchronous, fast)
 
----
-
-## Icon System Details
-
-### Icon Directory Structure
-
-```
-public/icons/
-├── icon-create.svg (outline)
-├── icon-create-fill.svg (filled variant)
-├── icon-send.svg
-├── icon-prompts.svg
-├── icon-prompts-fill.svg
-├── icon-edit.svg
-├── icon-archive.svg
-├── icon-delete.svg
-├── icon-copy.svg
-├── icon-star.svg
-├── icon-star-fill.svg
-├── ... (24 total)
-```
-
-### Icon Naming Convention
-
-- **Outline**: `icon-{name}.svg` (default)
-- **Filled**: `icon-{name}-fill.svg` (variant)
-- All 24×24px at 2px stroke weight
-
-### Icon Categories
-
-**Navigation** (Footer tabs):
-- `icon-create` - Chat/messaging
-- `icon-prompts` - Prompt library
-- `icon-edit` - Draft editor
-- `icon-archive` - Saved items
-
-**Chat/Actions**:
-- `icon-send` - Send message
-- `icon-plus` - Add/insert
-- `icon-menu` - Three-dot menu
-- `icon-close` - Close/dismiss
-- `icon-search` - Search
-- `icon-copy` - Copy
-- `icon-star` / `icon-star-fill` - Favorite toggle
-
-**Editing**:
-- `icon-bold`, `icon-italic`, `icon-underline` - Text formatting
-- `icon-type` - Text size
-- `icon-save`, `icon-download` - File operations
-- `icon-delete` - Remove
-
-**Other**:
-- `icon-info` - Information/sources
-- `icon-share` - Share via system
-- `icon-refresh` - Reload/redo
-- `icon-expand`, `icon-collapse` - Toggle
-- `icon-link` - External link
-- `icon-settings` - Configuration
-- `icon-back` - Navigate back
+**Limits**:
+- Max 10 items per archive type
+- Items older than 30 days auto-removed
+- Browser warning at 80% capacity (typical: 5–10MB available)
 
 ---
 
 ## Environment Setup
 
-### Required Variables
-
 **`.env.local`** (not committed):
 ```
-VITE_PERPLEXITY_API_KEY=pplx-your-key-here
+PERPLEXITY_API_KEY=pplx-your-key-here
 ```
 
-**`.env.example`** (committed):
+**`.env.example`** (committed, shows structure):
 ```
-VITE_PERPLEXITY_API_KEY=pplx-your-key-here
+PERPLEXITY_API_KEY="your-key-here"
 ```
 
-### SvelteKit Config
-
-**`svelte.config.js`**:
-```javascript
-import adapter from '@sveltejs/adapter-cloudflare';
-import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
-
-export default {
-  preprocess: vitePreprocess(),
-  kit: {
-    adapter: adapter({
-      routes: { include: ['/*'], exclude: ['<all>'] }
-    })
-  }
-};
-```
+**SvelteKit config** (`svelte.config.js`):
+- Adapter: `@sveltejs/adapter-cloudflare`
+- Preprocessor: `vitePreprocess`
 
 ---
 
 ## Build & Deployment
 
-### Local Development
+**Local**:
 ```bash
-npm run dev           # Starts http://localhost:5173
-npm run build         # Build for production
-npm run preview       # Test production locally
+npm run dev           # http://localhost:5173 (hot reload)
+npm run build         # Build to .svelte-kit/cloudflare
+npm run preview       # Test production build locally
 ```
 
-### Production Deployment
+**Production** (Cloudflare Pages):
+1. Push to `main` branch
+2. GitHub webhook triggers build
+3. `npm run build` runs automatically
+4. Deployed to CDN within 2–3 minutes
+5. Live at `https://promptflam.pages.dev`
 
-Cloudflare Pages auto-deploys when you push to GitHub `main` branch:
-
-```bash
-git push origin main
-# Cloudflare detects change → runs "npm run build" → deploys to CDN within 2-3 min
-```
-
-**Domain**: https://promptflam.pages.dev/
+**Rollback**: `git revert HEAD && git push origin main`
 
 ---
 
-## Key Design Decisions
+## Common Patterns
 
-| Decision | Why | Trade-off |
-|----------|-----|-----------|
-| SvelteKit | Reactive, small bundle, file-based routing | Learning curve for new devs |
-| Svelte stores | Built-in state mgmt, no Redux/Pinia needed | Different paradigm if coming from React |
-| localStorage only | No server cost, simple for educational use | Limited to user device; no multi-device sync |
-| Perplexity API | Real-time sources + citations for journalism | Dependency on external API; ~2-3s response |
-| Vanilla CSS | No framework bloat, easy to customize | More CSS to write; no component styling libraries |
-| Cloudflare Pages | Free, simple, auto-deploys | Vendor lock-in (but low cost) |
+### Adding a New Store
+
+```javascript
+// In src/lib/stores.js
+export const myStore = createPersistentStore('myKey', defaultValue);
+
+// In component
+import { myStore } from '$lib/stores.js';
+<div>{$myStore}</div>
+```
+
+### Adding a New Icon
+
+```javascript
+// 1. Place SVG in static/icons/icon-myicon.svg
+// 2. Export in src/lib/icons.js
+export { default as IconMyicon } from '../../static/icons/icon-myicon.svg?component';
+
+// 3. Use in component
+<Icon name="myicon" size={24} />
+```
+
+### Creating API Route
+
+```javascript
+// src/routes/api/myroute/+server.js
+export async function POST({ request }) {
+  const { data } = await request.json();
+  return new Response(JSON.stringify({ result: data }), {
+    headers: { 'Content-Type': 'application/json' }
+  });
+}
+
+// Call from client
+const res = await fetch('/api/myroute', {
+  method: 'POST',
+  body: JSON.stringify({ data: 'value' })
+});
+```
 
 ---
 
-## Performance Considerations
+## Performance Notes
 
-### Bundle Size
-- Target: < 100KB gzipped
-- SvelteKit compilation removes dead code
-- Test: `npm run build && npm run preview`
-
-### Streaming Responses
-- Token-by-token animation for AI responses
-- Prevents UI freeze while waiting for API
-- Uses `EventStream` pattern
-
-### localStorage Limits
-- Warn users at 80% capacity
-- Auto-cleanup: 30 days + max 10 items per archive tab
-- Prevents "quota exceeded" errors
-
-### Network Optimization
-- Lazy load non-critical components
-- Code splitting via SvelteKit routes
-- Test on slow connections (3G simulated)
+- **Bundle size**: ~70KB gzipped (SvelteKit + marked + dependencies)
+- **Streaming**: Token-by-token animation prevents UI freeze
+- **localStorage**: Synchronous but fast; max ~5MB typical
+- **Icons**: Imported as components; tree-shaken by Vite
+- **Lazy loading**: Page components split by route (automatic with SvelteKit)
 
 ---
 
 ## Browser Support
 
-- Chrome/Edge 90+ (desktop & mobile)
+- Chrome/Edge 90+
 - Firefox 88+
-- Safari 14+ (desktop & iOS)
+- Safari 14+
 - Android Chrome 90+
 
-**Not supported**: IE 11, older mobile browsers
+**Not supported**: IE 11, older mobile browsers (localStorage, fetch limitations)
 
 ---
 
 ## Accessibility (WCAG 2.1 AA)
 
 - Keyboard navigation: Tab through all interactive elements
-- Color contrast: All text meets 4.5:1 for normal text
-- Screen readers: ARIA labels for icons + buttons
-- Focus indicators: Visible outline on buttons/inputs
-- Forms: Proper label associations
-
----
-
-## Common Tasks
-
-### Adding a New Icon
-
-1. Place SVG in `public/icons/icon-{name}.svg`
-2. Add export to `src/lib/icons.js`:
-   ```javascript
-   export { default as IconMyIcon } from '../../public/icons/icon-my-icon.svg?component';
-   ```
-3. Use in component:
-   ```svelte
-   <Icon name="my-icon" size={24} />
-   ```
-
-### Creating a New Page
-
-1. Create folder in `src/routes/` (e.g., `src/routes/my-page/`)
-2. Create `+page.svelte` inside
-3. File-based routing: `/my-page` automatically available
-
-### Adding Store Data
-
-1. Define store in `src/lib/stores.js`
-2. Import in component: `import { myStore } from '$lib/stores.js'`
-3. Subscribe in template: `{#each $myStore as item}`
-
-### Using API Service
-
-1. Import service: `import { callPerplexity } from '$lib/services/perplexity.js'`
-2. Call with await: `const { content, citations } = await callPerplexity(messages)`
-3. Handle errors with try/catch
+- Color contrast: 4.5:1 for normal text (purple `#5422b0` on white background)
+- ARIA labels: Icons + buttons have `aria-label`
+- Focus indicators: Visible outline on interactive elements
+- Forms: Proper semantic HTML
 
 ---
 
 ## Debugging Tips
 
-### Console Logging
+### Check localStorage
 ```javascript
-console.log('Store value:', $chatMessages);  // Reactive value
-console.log('Env key:', import.meta.env.VITE_PERPLEXITY_API_KEY);
+// In browser console
+JSON.parse(localStorage.getItem('promptflam_chatMessages'))
+localStorage.clear() // Nuclear option: clear all data
 ```
 
-### DevTools
-- **Network**: Check API calls to Perplexity
-- **Storage**: Inspect localStorage keys
-- **Console**: Watch for errors
+### Check API calls
+**DevTools → Network tab**:
+- Look for `POST /api/chat` (not direct Perplexity call)
+- Response type: `text/event-stream`
+- Check for error status codes
 
-### Common Issues
-- **"Cannot find module"**: Check import paths start with `$lib` or `./`
-- **Store not updating**: Ensure you're using `update()` or `set()`, not direct mutation
-- **Styling not applied**: Check CSS specificity; scoped styles have lower priority
-
----
-
-## Testing
-
-**Not yet implemented** (Phase 8+):
-- Unit tests (Vitest)
-- E2E tests (Playwright)
-- Accessibility audit (axe DevTools)
-
-For now: Manual testing in dev server (`npm run dev`).
+### Watch stores in real-time
+```javascript
+// In .svelte component
+import { chatMessages } from '$lib/stores.js';
+$: console.log('Messages updated:', $chatMessages);
+```
 
 ---
 
-**Last Updated**: Dec 19, 2025
+## Testing (Manual)
+
+**Not yet automated** (Vitest/Playwright ready in SvelteKit but not integrated).
+
+**Manual flow**:
+1. `npm run dev`
+2. Open http://localhost:5173
+3. Type message → send → watch streaming response
+4. Open DevTools Network tab to see `/api/chat` stream
+5. Switch pages (Prompts, Notepad, Archive) → test functionality
+6. Refresh page → check localStorage persistence
+7. Test on mobile (iPhone Safari, Android Chrome)
+
+---
+
+## File Structure Summary
+
+```
+src/
+├── routes/          (5 pages + 2 API endpoints)
+├── lib/
+│   ├── stores.js    (9 stores + helpers)
+│   ├── services/    (2 services)
+│   ├── components/  (17 components)
+│   ├── utils/       (utility functions)
+│   └── icons.js     (icon exports)
+├── app.svelte       (root)
+└── app.css          (design tokens)
+
+static/
+├── prompts.json     (prompt library)
+├── icons/           (40+ SVG icons)
+├── manifest.json    (PWA)
+└── *.png            (logos)
+```
+
+---
+
+**Last Updated**: Dec 21, 2025

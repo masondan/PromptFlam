@@ -10,6 +10,7 @@
 		<meta name="keywords" content="content creator, prompts, AI prompts, script writing, video ideas, social media content, creative writing, story ideas" />
 		<meta name="author" content="Dan Mason" />
 		<meta name="robots" content="noindex, nofollow" />
+		<link rel="canonical" href="https://promptflam.pages.dev/" />
 		
 		<!-- Open Graph / Facebook -->
 		<meta property="og:type" content="website" />
@@ -17,6 +18,9 @@
 		<meta property="og:title" content="PromptFlam: Free Prompts for Content Creators" />
 		<meta property="og:description" content="A free library of powerful prompts for text, video, audio, and social media content." />
 		<meta property="og:image" content="%sveltekit.assets%/promptflam-logo.png" />
+		<meta property="og:image:width" content="1200" />
+		<meta property="og:image:height" content="630" />
+		<meta property="og:image:type" content="image/png" />
 		
 		<!-- Twitter -->
 		<meta property="twitter:card" content="summary_large_image" />
@@ -28,7 +32,25 @@
 		<!-- Theme & Icons -->
 		<meta name="theme-color" content="#4B0082" />
 		<link rel="icon" href="%sveltekit.assets%/promptflam-icon.png" type="image/png" />
+		<link rel="apple-touch-icon" href="%sveltekit.assets%/promptflam-icon.png" />
 		<link rel="manifest" href="%sveltekit.assets%/manifest.json" />
+		
+		<!-- JSON-LD Structured Data -->
+		<script type="application/ld+json">
+		{
+			"@context": "https://schema.org",
+			"@type": "WebApplication",
+			"name": "PromptFlam",
+			"description": "A free library of AI prompts for content creators and journalists.",
+			"url": "https://promptflam.pages.dev/",
+			"applicationCategory": "ProductivityApplication",
+			"author": {
+				"@type": "Person",
+				"name": "Dan Mason"
+			},
+			"image": "%sveltekit.assets%/promptflam-logo.png"
+		}
+		</script>
 		
 		%sveltekit.head%
 	</head>

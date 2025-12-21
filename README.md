@@ -2,86 +2,35 @@
 
 An AI-powered prompt library and writing assistant for journalists and content creators.
 
-**Live**: [https://promptflam.pages.dev/](https://promptflam.pages.dev/)  
-**Status**: Phase 8 Complete (Production Deployed)  
+**Live**: https://promptflam.pages.dev  
+**Status**: Phase 8 (Live Testing)  
 **Version**: 2.0.0  
-**Last Updated**: Dec 20, 2025
+**Last Updated**: Dec 21, 2025
 
 ---
 
-## Quick Navigation
+## Quick Start for AI Agents
 
-**Looking for something specific?**
+**Read this first to understand the app in 2 minutes:**
 
-| Question | Answer In |
-|----------|-----------|
-| What is PromptFlam? | [Below](#what-is-promptflam) |
-| What's the tech stack? | [Below](#tech-stack) |
-| How do I set up locally? | `DEVELOPMENT.md` |
-| How does this work technically? | `ARCHITECTURE.md` |
-| What's been built? | `PHASES.md` → "Historical Phases" |
-| What's the approval workflow? | `PHASES.md` |
-| I'm stuck, what do I do? | `DEVELOPMENT.md` (Troubleshooting) |
-
----
-
-## What is PromptFlam?
-
-PromptFlam helps content creators write better, faster by:
-- Chatting with an AI assistant (Perplexity API) for real-time insights and citations
-- Accessing a library of categorized prompts for various formats (articles, videos, audio)
-- Editing and exporting drafts
-- Archiving past conversations and notes
-
-**Why Perplexity API?** Real-time sources + built-in citations (crucial for journalism) + $1-2/month cost.
+1. **What is it?** A SvelteKit app that lets users chat with Perplexity AI, manage prompt templates, and save/export notes
+2. **Where's the code?** `/src` → `/routes` (pages), `/lib` (state & services)
+3. **How to run?** `npm install && npm run dev` → http://localhost:5173
+4. **Need API key?** Add `PERPLEXITY_API_KEY` to `.env.local`
+5. **Need docs?** Read `ARCHITECTURE.md` for implementation details
 
 ---
 
 ## Tech Stack
 
-| Layer | Tech | Notes |
-|-------|------|-------|
-| **Framework** | SvelteKit | Lightweight, reactive, file-based routing |
-| **Language** | JavaScript (ES6+) | No TypeScript |
-| **State** | Svelte stores | Built-in reactive stores with localStorage persistence |
-| **Styling** | Vanilla CSS | No framework; minimal, clean design |
-| **Storage** | Browser localStorage | Anonymous, no backend needed |
-| **AI** | Perplexity API | Real-time sources, citations, $0.005-0.015/request |
-| **Hosting** | Cloudflare Pages | Free tier, auto-deploys on git push |
-
----
-
-## Quick Start (5 min)
-
-### Prerequisites
-- Node.js 18+ (`node --version`)
-- npm 9+ (`npm --version`)
-- Git (`git --version`)
-
-### Setup
-```bash
-# Clone and create dev branch
-git clone https://github.com/masondan/PromptFlam.git
-cd PromptFlam
-git checkout -b svelte-refactor
-
-# Install and run
-npm install
-npm run dev
-```
-
-**Open**: http://localhost:5173
-
-### Get Perplexity API Key
-1. Go to [https://www.perplexity.ai/](https://www.perplexity.ai/)
-2. Sign up → API Keys → Create new key
-3. Create `.env.local`:
-   ```
-   VITE_PERPLEXITY_API_KEY=pplx-your-key-here
-   ```
-4. Set spending limit to $5/month (safety)
-
-**Full setup guide**: See `DEVELOPMENT.md`
+| Layer | Tech |
+|-------|------|
+| Framework | SvelteKit 2 + Svelte 5 |
+| Language | JavaScript (no TypeScript) |
+| State | Svelte stores (auto-persist to localStorage) |
+| Styling | Vanilla CSS with design tokens |
+| AI | Perplexity API (streaming responses) |
+| Hosting | Cloudflare Pages (auto-deploy on git push) |
 
 ---
 
@@ -90,157 +39,175 @@ npm run dev
 ```
 src/
 ├── routes/
-│   ├── +page.svelte           (Create page - chat)
-│   ├── +layout.svelte         (Root layout)
-│   ├── prompts/
-│   │   └── +page.svelte       (Prompts library)
-│   ├── edit/
-│   │   └── +page.svelte       (Edit/draft page)
-│   └── archive/
-│       └── +page.svelte       (Saved chats & edits)
+│   ├── +page.svelte              (Chat/Create page)
+│   ├── +layout.svelte            (Root layout + header nav)
+│   ├── prompts/+page.svelte      (Prompt library)
+│   ├── notepad/+page.svelte      (Text editor)
+│   ├── archive/+page.svelte      (Saved chats & notes)
+│   └── api/
+│       ├── chat/+server.js       (Perplexity API proxy - secure)
+│       └── metadata/+server.js   (URL metadata fetcher)
+│
 ├── lib/
-│   ├── stores.js              (State management)
+│   ├── stores.js                 (All state management)
 │   ├── services/
-│   │   ├── perplexity.js      (AI API wrapper)
-│   │   └── storage.js         (localStorage wrapper)
-│   └── components/
-│       └── Icon.svelte        (Reusable icon)
-├── app.svelte                 (Root component)
-└── app.css                    (Global styles)
+│   │   ├── perplexity.js         (AI API client)
+│   │   └── storage.js            (localStorage wrapper)
+│   ├── components/               (17 Svelte components)
+│   │   ├── Header.svelte
+│   │   ├── ChatInput.svelte
+│   │   ├── ChatMessage.svelte
+│   │   ├── PromptLibrary.svelte
+│   │   ├── SourcesDrawer.svelte
+│   │   ├── TextSelectionMenu.svelte
+│   │   ├── NotepadToolbar.svelte
+│   │   ├── ArchiveItem.svelte
+│   │   └── ... (9 more)
+│   ├── icons.js                  (Icon barrel export)
+│   ├── utils.js                  (Shared utilities)
+│   └── utils/
+│       └── formatTime.js         (Timestamp formatter)
+│
+├── app.svelte                    (Root component)
+└── app.css                       (Global styles + design tokens)
 
-public/
-└── icons/                     (24×24px SVG icons)
+static/
+├── prompts.json                  (Prompt library data)
+├── icons/                        (40+ SVG icons, 24×24px)
+├── manifest.json                 (PWA manifest)
+└── *.png                         (Logo & app icons)
 ```
 
-**More details**: See `ARCHITECTURE.md`
+---
+
+## Core Stores (`src/lib/stores.js`)
+
+All stores auto-persist to localStorage:
+
+| Store | Purpose | Schema |
+|-------|---------|--------|
+| `chatMessages` | Current chat session | `[{role, content, timestamp, sources?}]` |
+| `currentChatSessionId` | Archive ID tracking | `number \| null` |
+| `currentNoteTitle` | Notepad title | `string` |
+| `currentNoteContent` | Notepad content | `string` |
+| `currentNoteSessionId` | Note archive ID | `number \| null` |
+| `archiveChats` | Saved conversations (max 10) | `[{id, messages, timestamp}]` |
+| `archiveNotes` | Saved drafts (max 10) | `[{id, title, content, timestamp}]` |
+| `currentPrompts` | Bracket content in chat | `[{bracketContent}]` |
+| `favorites` | Favorited prompt subcategories | `['Text-Blog', 'Audio-Mini-pod']` |
+
+**Auto-cleanup**: Items older than 30 days + max 10 per type
 
 ---
 
-## Project Status: Phase 8 Complete ✅
+## API Routes
 
-**Production deployed.** SvelteKit refactor is live at https://promptflam.pages.dev/
+### POST `/api/chat`
+Secure proxy to Perplexity API. Returns **streaming** response (text/event-stream).
 
-### Completed Phases
-1. ✓ SvelteKit foundation with routing
-2. ✓ Chat UI with message display
-3. ✓ Perplexity API integration with streaming & citations
-4. ✓ Prompt library with search/filters/favorites
-5. ✓ Archive page (saved chats & edits)
-6. ✓ Notepad page with text formatting & export
-7. ✓ Testing & refinement
-8. ✓ **Production deployment** (v2.0.0)
+**Request**: `{ messages: [{role, content}, ...] }`  
+**Response**: `data: {content: '...'}` + `data: {citations: [...]}`
 
-See `PHASES.md` for complete historical breakdown.
+### POST `/api/metadata`
+Fetches title + description from citation URLs (5s timeout per URL).
+
+**Request**: `{ urls: ['https://...', ...] }`  
+**Response**: `{ metadata: { url: {title, excerpt}, ... } }`
 
 ---
 
-## Key Features (All Phases)
+## Pages Overview
 
-- **AI Chat**: Real-time responses with current sources + citations
-- **Prompt Library**: Categorized, searchable prompts for quick insertion into chat
-- **Draft Editor**: Format, save, and export notes as .txt
-- **Archive**: Unified save history with 30-day auto-cleanup + max 10 items per type
-- **Offline Support**: localStorage ensures chat persists across sessions
-
----
-
-## Cost Breakdown
-
-| Service | Cost/Month | Why |
-|---------|-----------|-----|
-| Perplexity API | $0.50-2 | 100-200 users × light usage |
-| Cloudflare Pages | $0 | Free tier |
-| Domain | $0 | Pages subdomain |
-| **Total** | **~$1-2** | Effectively free |
+| Page | Path | Purpose |
+|------|------|---------|
+| **Create** | `/` | AI chat interface (current chat session) |
+| **Prompts** | `/prompts` | Browse/search/favorite prompt templates |
+| **Notepad** | `/notepad` | Text editor with formatting & export |
+| **Archive** | `/archive` | View/restore/delete saved chats & notes |
 
 ---
 
-## Development Workflow
+## Key Features
 
-### Git Strategy
-- **Branch**: `svelte-refactor` (development)
-- **Main**: Stable, auto-deployed to production
-- **Commit message**: `Phase X: [what was built]`
+- **Streaming AI responses** with real-time citations
+- **Prompt library** with category filtering, search, favorites
+- **Rich text editor** with bold, italic, lists, formatting
+- **Archive system** with 30-day auto-cleanup
+- **Offline-first** (all data in localStorage)
+- **Responsive** (mobile-first design)
+- **PWA** support (installable on home screen)
+
+---
+
+## Development
 
 ### Commands
 ```bash
-npm run dev       # Local dev server (http://localhost:5173)
+npm run dev       # Dev server at http://localhost:5173
 npm run build     # Build for production
 npm run preview   # Test production build locally
-npm run format    # Format code with Prettier
-npm run lint      # Check for errors
+```
+
+### Git Workflow
+```bash
+git checkout -b feature-name
+git add .
+git commit -m "Brief description"
+git push origin feature-name
+# → Create PR or merge to main to deploy
 ```
 
 ### Deployment
-1. Work on `svelte-refactor` branch
-2. When phase is done: `git push origin svelte-refactor`
-3. When ready for production: merge to `main`
-4. Cloudflare auto-deploys within 2-3 minutes
+- **Auto-deploy**: Push to `main` branch → Cloudflare Pages builds & deploys in ~2 min
+- **Rollback**: `git revert HEAD && git push origin main`
 
 ---
 
-## Documentation
+## Environment Setup
 
-- **README.md** (this file) — Start here; 5-min overview + navigation
-- **DEVELOPMENT.md** — Local setup & troubleshooting
-- **ARCHITECTURE.md** — Technical deep-dive (stores, services, components, current state)
-- **PHASES.md** — Historical phases and what's been built
-
-*Phase details archived in `/archive` folder.*
-
----
-
-## Common Commands
-
-```bash
-# Setup (first time only)
-npm install
-cp .env.example .env.local
-# [Add Perplexity API key to .env.local]
-
-# Development
-npm run dev              # Local dev server (http://localhost:5173)
-npm run build            # Build for production
-
-# Git
-git add .
-git commit -m "Phase 3: Your message here"
-git push origin svelte-refactor
-
-# When phase is done
-git checkout main
-git merge svelte-refactor
-git push origin main     # Cloudflare auto-deploys
+Create `.env.local`:
+```
+PERPLEXITY_API_KEY=pplx-your-key-here
 ```
 
----
-
-## Entry Points by Role
-
-### New Developer
-1. README.md (this file)
-2. DEVELOPMENT.md (setup)
-3. ARCHITECTURE.md (how it works & current state)
-
-### AI Agent (Bug Fixing / Testing)
-1. README.md (this file)
-2. ARCHITECTURE.md (current implementation)
-3. Identify issue → locate relevant component/store in codebase
-
-### Project Lead
-1. PHASES.md (project history)
-2. README.md (current status)
-3. Review + approve fixes
+Safety: Set Perplexity spending limit to $5/month on their console.
 
 ---
 
-## Support & Contributing
+## Documentation Files
 
-**For questions or bugs**: Check `DEVELOPMENT.md` troubleshooting section.
-
-**For new phases**: See `PHASES.md` for current phase; chat with lead (Dan Mason) for approval to proceed.
+- **README.md** (this file) — Quick start for all roles
+- **ARCHITECTURE.md** — Technical deep-dive (stores, components, patterns)
+- **DEVELOPMENT.md** — Local setup & troubleshooting
+- **PHASES.md** — Project history & completed phases
+- **AGENTS.md** — AI agent instructions (commands, conventions)
 
 ---
 
-**Repository**: https://github.com/masondan/PromptFlam  
-**Live App**: https://promptflam.pages.dev/
+## Browser Support
+
+- Chrome/Edge 90+
+- Firefox 88+
+- Safari 14+ (desktop & iOS)
+- Android Chrome 90+
+
+---
+
+## Cost
+
+- **Perplexity API**: $0.50–2/month (100–200 users, light usage)
+- **Cloudflare Pages**: Free
+- **Domain**: Included (`.pages.dev` subdomain)
+- **Total**: ~$1–2/month
+
+---
+
+## Useful Links
+
+- **Live app**: https://promptflam.pages.dev
+- **GitHub repo**: https://github.com/masondan/PromptFlam
+- **Perplexity docs**: https://docs.perplexity.ai/
+
+---
+
+**For questions**: Check `DEVELOPMENT.md` troubleshooting section or review code in `/src`
