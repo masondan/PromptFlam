@@ -150,12 +150,14 @@
 	});
 
 	$: transitionStyle = (isDragging || transitioning) ? 'none' : 'transform 0.2s ease-out';
+$: isTransforming = isDragging || transitioning || animating || translateX !== 0;
 </script>
 
 <div 
 	bind:this={container} 
 	class="swipe-container"
-	style="transform: translateX({translateX}px); transition: {transitionStyle};"
+	class:transforming={isTransforming}
+	style={isTransforming ? `transform: translateX(${translateX}px); transition: ${transitionStyle};` : ''}
 >
 	<slot />
 </div>
@@ -163,7 +165,10 @@
 <style>
 	.swipe-container {
 		min-height: 100dvh;
-		will-change: transform;
 		background: var(--bg-main);
+	}
+	
+	.swipe-container.transforming {
+		will-change: transform;
 	}
 </style>
