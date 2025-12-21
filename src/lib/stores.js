@@ -318,6 +318,23 @@ export function cleanupOldArchives() {
 	);
 }
 
+/**
+ * Clear session stores for fresh start (called on new app launch)
+ * Clears transient state while preserving archives and favorites
+ */
+export function clearSessionStores() {
+	chatMessages.reset();
+	currentChatSessionId.set(null);
+	currentNoteTitle.set('');
+	currentNoteContent.set('');
+	currentNoteSessionId.set(null);
+	currentPrompts.reset();
+	promptLibraryCategory.set('all');
+	promptLibrarySubcategory.set('all');
+	promptLibraryExpandedId.set(null);
+	promptLibraryScrollY.set(0);
+}
+
 // Pending chat input (for pre-filling from prompt library)
 // Schema: string (the prompt text to pre-fill)
 export const pendingChatInput = writable('');
