@@ -63,12 +63,12 @@
 		top: 0;
 		left: 0;
 		right: 0;
-		height: calc(var(--header-height) + var(--spacing-sm));
+		height: calc(var(--header-height) + var(--spacing-md));
 		background: var(--bg-main);
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
-		padding: var(--spacing-sm) var(--spacing-md);
+		padding: var(--spacing-md) var(--spacing-md) var(--spacing-sm);
 		z-index: var(--z-header);
 	}
 
