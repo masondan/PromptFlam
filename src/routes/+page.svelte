@@ -1,5 +1,5 @@
 <script>
-	import { tick } from 'svelte';
+	import { tick, onMount } from 'svelte';
 	import { 
 		Header, 
 		ChatInput, 
@@ -10,7 +10,7 @@
 		TextSelectionMenu,
 		ThinkingDots 
 	} from '$lib/components';
-	import { chatMessages, addChatMessage, clearChat, archiveCurrentChat, updateLastMessage, autoSaveChat, currentChatSessionId } from '$lib/stores';
+	import { chatMessages, addChatMessage, clearChat, archiveCurrentChat, updateLastMessage, autoSaveChat, currentChatSessionId, pendingChatInput } from '$lib/stores';
 	import { callPerplexity } from '$lib/services/perplexity.js';
 	import { formatMarkdownForCopy } from '$lib/utils.js';
 
@@ -27,6 +27,13 @@
 	let abortController = null;
 
 	$: hasMessages = $chatMessages.length > 0;
+
+	onMount(() => {
+		if ($pendingChatInput) {
+			inputValue = $pendingChatInput;
+			pendingChatInput.set('');
+		}
+	});
 
 	async function handleSend(e) {
 		const message = e.detail.message;

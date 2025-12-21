@@ -318,6 +318,10 @@ export function cleanupOldArchives() {
 	);
 }
 
+// Pending chat input (for pre-filling from prompt library)
+// Schema: string (the prompt text to pre-fill)
+export const pendingChatInput = writable('');
+
 // Favorites store for prompt subcategories
 // Uses category-subcategory ID pattern to avoid collisions
 // Schema: ['Text-Blog', 'Audio-Mini-pod', ...]

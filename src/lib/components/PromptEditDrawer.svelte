@@ -1,7 +1,9 @@
 <script>
 	import { createEventDispatcher } from 'svelte';
+	import { goto } from '$app/navigation';
 	import { Icon } from '$lib/components';
 	import { fade, fly } from 'svelte/transition';
+	import { pendingChatInput } from '$lib/stores.js';
 
 	export let isOpen = false;
 	export let text = '';
@@ -89,6 +91,12 @@
 			}
 		}, 0);
 	}
+
+	function handleAddToChat() {
+		pendingChatInput.set(editedText);
+		close();
+		goto('/');
+	}
 </script>
 
 <svelte:window on:keydown={handleKeydown} />
@@ -122,6 +130,9 @@
 				></textarea>
 
 				<div class="action-buttons">
+					<button class="action-btn add-to-chat-btn" on:click={handleAddToChat} aria-label="Add to chat">
+						<Icon name="create" size={20} />
+					</button>
 					<button class="action-btn" on:click={handleShare} aria-label="Share">
 						<Icon name="share" size={20} />
 					</button>

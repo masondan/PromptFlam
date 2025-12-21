@@ -2,6 +2,7 @@
 	import { createEventDispatcher, onMount, onDestroy } from 'svelte';
 	import { Icon } from '$lib/components';
 	import { browser } from '$app/environment';
+	import { goto } from '$app/navigation';
 	import { 
 		favorites, 
 		toggleFavorite, 
@@ -9,7 +10,8 @@
 		promptLibraryCategory,
 		promptLibrarySubcategory,
 		promptLibraryExpandedId,
-		promptLibraryScrollY
+		promptLibraryScrollY,
+		pendingChatInput
 	} from '$lib/stores.js';
 
 	export let mode = 'page';
@@ -134,6 +136,12 @@
 	function handleInsert(prompt) {
 		const text = stripHtml(prompt.prompt);
 		dispatch('insert', { prompt: text });
+	}
+
+	function handleAddToChat(prompt) {
+		const text = stripHtml(prompt.prompt);
+		pendingChatInput.set(text);
+		goto('/');
 	}
 
 	function handleBackToTop() {
@@ -302,6 +310,13 @@
 									<p class="prompt-text" class:collapsed={!isExpanded}>{stripHtml(prompt.prompt)}</p>
 									<div class="action-buttons">
 										{#if mode === 'page'}
+											<button
+												class="action-btn add-to-chat-btn"
+												on:click={() => handleAddToChat(prompt)}
+												aria-label="Add to chat"
+											>
+												<Icon name="create" size={20} />
+											</button>
 											<button
 												class="action-btn"
 												on:click={() => handleEdit(prompt)}
