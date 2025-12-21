@@ -201,8 +201,6 @@
 			aria-multiline="true"
 			data-placeholder="Start writing or paste text. Your notes are saved automatically in the archive."
 			on:input={handleContentInput}
-			on:keyup={updateFormattingState}
-			on:mouseup={updateFormattingState}
 		></div>
 	</div>
 
