@@ -300,14 +300,11 @@
 								{@const isExpanded = $promptLibraryExpandedId === promptId}
 								<div class="task-item">
 									<div class="task-header" on:click={() => togglePromptExpand(promptId)}>
-										{#if prompt.task}
-											<h3 class="task-label">{toTitleCase(prompt.task)}</h3>
-										{/if}
 										<button class="expand-btn" aria-label={isExpanded ? 'Collapse' : 'Expand'}>
 											<Icon name={isExpanded ? 'collapse' : 'expand'} size={16} />
 										</button>
 									</div>
-									<p class="prompt-text" class:collapsed={!isExpanded}>{stripHtml(prompt.prompt)}</p>
+									<p class="prompt-text" class:collapsed={!isExpanded} on:click={() => togglePromptExpand(promptId)}>{#if prompt.task}<span class="task-label">{toTitleCase(prompt.task)}:</span>{' '}{/if}{stripHtml(prompt.prompt)}</p>
 									<div class="action-buttons">
 										{#if mode === 'page'}
 											<button
@@ -552,19 +549,16 @@
 
 	.task-header {
 		display: flex;
-		justify-content: space-between;
-		align-items: center;
+		justify-content: flex-end;
+		align-items: flex-start;
 		cursor: pointer;
-		margin-bottom: var(--spacing-xs);
+		float: right;
+		margin-left: var(--spacing-sm);
 	}
 
 	.task-label {
-		display: block;
-		font-size: var(--font-size-h3);
 		font-weight: 600;
 		color: #777777;
-		margin: 0;
-		text-transform: none;
 	}
 
 	.expand-btn {
@@ -582,6 +576,7 @@
 		white-space: pre-wrap;
 		margin: 0 0 var(--spacing-md) 0;
 		line-height: 1.6;
+		cursor: pointer;
 	}
 
 	.prompt-text.collapsed {
