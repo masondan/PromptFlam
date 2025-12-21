@@ -7,7 +7,6 @@
 		PromptCard, 
 		PromptDrawer, 
 		SourcesDrawer, 
-		TextSelectionMenu,
 		ThinkingDots 
 	} from '$lib/components';
 	import { chatMessages, addChatMessage, clearChat, archiveCurrentChat, updateLastMessage, autoSaveChat, currentChatSessionId, pendingChatInput } from '$lib/stores';
@@ -301,9 +300,7 @@
 		}
 	}
 
-	function handleSelectionCopy(e) {
-		console.log('Copied:', e.detail.text);
-	}
+
 </script>
 
 <svelte:head>
@@ -359,12 +356,6 @@
 				</div>
 			{/if}
 		</div>
-		
-		<TextSelectionMenu 
-			containerRef={chatContentRef}
-			messages={$chatMessages}
-			on:copy={handleSelectionCopy}
-		/>
 	{/if}
 </main>
 

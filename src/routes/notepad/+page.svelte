@@ -1,6 +1,6 @@
 <script>
 	import { onMount } from 'svelte';
-	import { Header, NotepadSelectionMenu } from '$lib/components';
+	import { Header } from '$lib/components';
 	import { 
 		currentNoteTitle, 
 		currentNoteContent, 
@@ -17,7 +17,6 @@
 	let shareTapped = false;
 	let downloadTapped = false;
 	let copyTapped = false;
-	let fontSizeState = 0;
 
 	$: title = $currentNoteTitle;
 	$: content = $currentNoteContent;
@@ -160,52 +159,7 @@
 		}, 2000);
 	}
 
-	// Toolbar handlers
-	function handleFontSize() {
-		fontSizeState = (fontSizeState + 1) % 3;
-		updateEditorFontSize();
-	}
 
-	function updateEditorFontSize() {
-		if (editorRef) {
-			const sizes = ['1rem', '1.125rem', '1.25rem'];
-			editorRef.style.fontSize = sizes[fontSizeState];
-		}
-	}
-
-	function handleUndo() {
-		document.execCommand('undo');
-		editorRef?.focus();
-	}
-
-	function handleRedo() {
-		document.execCommand('redo');
-		editorRef?.focus();
-	}
-
-	function handleList() {
-		document.execCommand('insertUnorderedList');
-		editorRef?.focus();
-		handleContentInput();
-	}
-
-	function handleItalic() {
-		document.execCommand('italic');
-		editorRef?.focus();
-		updateFormattingState();
-		handleContentInput();
-	}
-
-	function handleBold() {
-		document.execCommand('bold');
-		editorRef?.focus();
-		updateFormattingState();
-		handleContentInput();
-	}
-
-	function updateFormattingState() {
-		// Placeholder for formatting state tracking
-	}
 
 	onMount(() => {
 		if (editorRef && content) {
@@ -269,8 +223,6 @@
 		</div>
 	{/if}
 </main>
-
-<NotepadSelectionMenu {editorRef} />
 
 {#if showToast}
 	<div class="toast">{toastMessage}</div>
