@@ -279,7 +279,7 @@
 <style>
 	.notepad-page {
 		min-height: 100vh;
-		padding-top: var(--header-height);
+		padding-top: calc(var(--header-height) + var(--spacing-md));
 		display: flex;
 		flex-direction: column;
 		max-width: var(--max-content-width);

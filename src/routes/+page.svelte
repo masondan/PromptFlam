@@ -328,7 +328,7 @@
 <style>
 	.create-page {
 		min-height: 100vh;
-		padding-top: var(--header-height);
+		padding-top: calc(var(--header-height) + var(--spacing-md));
 		padding-bottom: calc(var(--input-drawer-min-height) + 40px);
 		display: flex;
 		flex-direction: column;
