@@ -35,6 +35,8 @@ import IconHeart from '../../static/icons/icon-heart.svg?raw';
 import IconHeartFill from '../../static/icons/icon-heart-fill.svg?raw';
 import IconArrowUp from '../../static/icons/icon-arrow-up.svg?raw';
 import IconSearch from '../../static/icons/icon-search.svg?raw';
+import IconMic from '../../static/icons/icon-mic.svg?raw';
+import IconMicFill from '../../static/icons/icon-mic-fill.svg?raw';
 
 // Icon map - maps icon names to their SVG strings
 export const iconMap = {
@@ -68,7 +70,11 @@ export const iconMap = {
 	heart: IconHeart,
 	'heart-fill': IconHeartFill,
 	'arrow-up': IconArrowUp,
-	search: IconSearch
+	search: IconSearch,
+	
+	// Voice input icons
+	mic: IconMic,
+	'mic-fill': IconMicFill
 };
 
 // List of all available icon names

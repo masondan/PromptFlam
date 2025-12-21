@@ -1,6 +1,6 @@
 <script>
 	import { Icon } from '$lib/components';
-	import { createEventDispatcher, afterUpdate } from 'svelte';
+	import { createEventDispatcher, afterUpdate, onMount } from 'svelte';
 
 	export let value = '';
 	export let isLoading = false;
@@ -11,9 +11,56 @@
 	let textareaEl;
 	let drawerEl;
 	let lastHeight = 0;
+	
+	// Voice input state
+	let isListening = false;
+	let recognition = null;
+	let speechSupported = false;
+	let baseValueBeforeSpeech = '';
 
 	$: hasContent = value.trim().length > 0;
 	$: canSend = hasContent && !isLoading;
+	
+	onMount(() => {
+		// Check for Web Speech API support
+		const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+		speechSupported = !!SpeechRecognition;
+		
+		if (speechSupported) {
+			recognition = new SpeechRecognition();
+			recognition.continuous = false;
+			recognition.interimResults = true;
+			recognition.lang = 'en-US';
+			
+			recognition.onresult = (event) => {
+				let transcript = '';
+				for (let i = 0; i < event.results.length; i++) {
+					transcript += event.results[i][0].transcript;
+				}
+				// Replace from base value (not append) to avoid duplicates
+				if (baseValueBeforeSpeech && !baseValueBeforeSpeech.endsWith(' ')) {
+					value = baseValueBeforeSpeech + ' ' + transcript;
+				} else {
+					value = baseValueBeforeSpeech + transcript;
+				}
+			};
+			
+			recognition.onend = () => {
+				isListening = false;
+			};
+			
+			recognition.onerror = (event) => {
+				console.error('Speech recognition error:', event.error);
+				isListening = false;
+			};
+		}
+		
+		return () => {
+			if (recognition) {
+				recognition.abort();
+			}
+		};
+	});
 	
 	afterUpdate(() => {
 		if (textareaEl) {
@@ -111,6 +158,23 @@
 	function handleStop() {
 		dispatch('stop');
 	}
+
+	function toggleVoiceInput() {
+		if (!speechSupported || !recognition) return;
+		
+		if (isListening) {
+			recognition.stop();
+			isListening = false;
+		} else {
+			try {
+				baseValueBeforeSpeech = value;
+				recognition.start();
+				isListening = true;
+			} catch (e) {
+				console.error('Failed to start speech recognition:', e);
+			}
+		}
+	}
 </script>
 
 <div class="input-drawer" bind:this={drawerEl}>
@@ -127,41 +191,71 @@
 		></textarea>
 		
 		<div class="button-row">
-			<button
-				class="prompt-button"
-				on:click={handlePromptDrawer}
-				aria-label="Open prompt library"
-				type="button"
-			>
-				<Icon name="prompts" size={20} />
-			</button>
+			<div class="left-buttons">
+				<button
+					class="prompt-button"
+					on:click={handlePromptDrawer}
+					aria-label="Open prompt library"
+					type="button"
+				>
+					<Icon name="prompts" size={20} />
+				</button>
+				
+				{#if speechSupported}
+					<button
+						class="mic-button"
+						class:listening={isListening}
+						on:click={toggleVoiceInput}
+						aria-label={isListening ? 'Stop listening' : 'Start voice input'}
+						type="button"
+					>
+						{#if isListening}
+							<div class="pulse-ring"></div>
+							<div class="pulse-ring delay"></div>
+						{/if}
+						<Icon name={isListening ? 'mic-fill' : 'mic'} size={20} />
+					</button>
+				{/if}
+			</div>
 			
-			{#if isLoading}
-				<button
-					class="action-button stop"
-					on:click={handleStop}
-					aria-label="Stop generating"
-					type="button"
-				>
-					<Icon name="stop-fill" size={20} />
-				</button>
-			{:else}
-				<button
-					class="action-button send"
-					class:active={canSend}
-					on:click={handleSend}
-					disabled={!canSend}
-					aria-label="Send message"
-					type="button"
-				>
-					<Icon name={canSend ? 'send-fill' : 'send'} size={20} />
-				</button>
-			{/if}
+			<div class="right-buttons">
+				{#if isLoading}
+					<button
+						class="action-button stop"
+						on:click={handleStop}
+						aria-label="Stop generating"
+						type="button"
+					>
+						<Icon name="stop-fill" size={20} />
+					</button>
+				{:else}
+					<button
+						class="action-button send"
+						class:active={canSend}
+						on:click={handleSend}
+						disabled={!canSend}
+						aria-label="Send message"
+						type="button"
+					>
+						<Icon name={canSend ? 'send-fill' : 'send'} size={20} />
+					</button>
+				{/if}
+			</div>
 		</div>
 	</div>
 </div>
 
 <style>
+	@keyframes pulse-ring {
+		0% {
+			transform: scale(1);
+			opacity: 0.4;
+		}
+		100% {
+			transform: scale(1.4);
+			opacity: 0;
+		}
+	}
 	.input-drawer {
 		position: fixed;
 		bottom: 0;
@@ -260,5 +354,52 @@
 
 	.action-button.stop {
 		color: var(--accent-brand);
+	}
+
+	.left-buttons {
+		display: flex;
+		align-items: center;
+		gap: var(--spacing-xs);
+	}
+
+	.right-buttons {
+		display: flex;
+		align-items: center;
+		gap: var(--spacing-xs);
+	}
+
+	.mic-button {
+		position: relative;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 37px;
+		height: 37px;
+		border-radius: 50%;
+		color: var(--color-icon-default);
+		transition: color 0.15s;
+		transform: translateY(1px);
+	}
+
+	.mic-button:hover {
+		color: var(--color-icon-active);
+	}
+
+	.mic-button.listening {
+		color: var(--accent-brand);
+	}
+
+	.pulse-ring {
+		position: absolute;
+		width: 24px;
+		height: 24px;
+		border-radius: 50%;
+		border: 1px solid var(--accent-brand);
+		animation: pulse-ring 0.8s ease-out infinite;
+		pointer-events: none;
+	}
+
+	.pulse-ring.delay {
+		animation-delay: 0.3s;
 	}
 </style>
