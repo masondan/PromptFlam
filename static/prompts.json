@@ -292,5 +292,12 @@
     "subCategory": "Prompt Tips",
     "task": "",
     "prompt": "<p>Describe the key elements of the image: Subject, background, lighting, colours, mood, framing, style/quality. Use keywords such as:<br />MOOD. Confident, elegant, empowered, heartwarming, beautiful, mysterious, optimistic, happy, dramatic, harmonious.<br />LIGHTING: Natural, hard/soft light, studio, sunset, golden hour, diffused, candlelight.<br />FRAMING: Close-up, panorama, wide/medium shot, head-and-shoulders, bird's eye, POV.<br />STYLE: Photorealistic, editorial, blurred background, abstract, surreal, vintage, watercolour, cinematic, fantasy, impressionist, pencil-sketch, oil painting.</p>"
+  },
+  {
+    "id": 43,
+    "category": "Audio",
+    "subCategory": "Q&A",
+    "task": "",
+    "prompt": "<p>Act as a podcast scriptwriter. Draft a script for a [x] [second] [minute] mini‑podcast episode with two speakers (a host and an expert) that will engage an audience of [who, where].<br />About the podcast: [name, description]<br />Base the script on: [topic/question] [URL]<br />Format & style:<br />- No banter. No chat. No conversation. No intro and outro. Just quick-fire, creative questions and straight answers. Focus on the who, what, why, where, when and how of the story, in a logical flow. Pack in as many direct questions and answers as possible.<br />- The host opens with a punchy first question that grabs attention (the hook)<br />- The expert replies with short, fact-based, clearly spoken answers that vary in length and detail.<br />- Use simple, clear language. Avoid jargon.<br />- Attribute facts verbally (eg “according to…”).<br />- Keep the style fast-paced, informative and audience‑focused.<br />- Compare credible sources to verify facts and add additional context.<br />Output format:<br />Host: Question<br />Expert: Answer<br />Host: Follow-up<br />Expert: Answer</p>"
   }
 ]
