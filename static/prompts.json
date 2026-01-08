@@ -181,12 +181,12 @@
     "task": "STANDALONE",
     "prompt": "<p>Act as a social media video creator. Draft a fact-based explainer video script with [x] sentences, that will engage an online audience of [who, where].<br />Base the script on: [topic/question] [URL]<br />Optimise the script for captions viewed on vertical mobile screens. Start with a snappy explainer hook. Continue with fact-based sentences of around 15 words to explain the key points in simple, narrative language.<br />Avoid opinion and speculation. Use editorial style to attribute facts and sources inline. Consider other credible sources for added context.<br />Suggest images or visuals to accompany each sentence.</p>"
   },
-  {
+ {
     "id": 27,
     "category": "Video",
     "subCategory": "Slideshow + Voiceover",
     "task": "IDEAS",
-    "prompt": "<p>Act as a social media video creator. Suggest 10 ideas for high-impact social media explainer videos that will engage an audience of [who, where].<br />Base answers on: [recent news] [hot topics] [topic/question] [URL]<br />In each case provide an explainer hook and brief outline. Cite sources for each idea. Include unusual angles supported by facts.</p>"
+    "prompt": "<p>Act as a social media video creator. Suggest 10 ideas for lively, factual, social media explainer videos that will engage an audience of [who, where]<br />Base answers on: [recent news] [hot topics]<br />Ideas must suit an image/video clip montage + voiceover format. Include unusual angles designed to spark conversation and informed debate.<br />In each case make the hook a question and give a brief outline. Suggest a list of visuals.</p>"
   },
   {
     "id": 28,
