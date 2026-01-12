@@ -292,5 +292,12 @@
     "subCategory": "Prompt Tips",
     "task": "",
     "prompt": "<p>Describe the key elements of the image: Subject, background, lighting, colours, mood, framing, style/quality. Use keywords such as:<br />MOOD. Confident, elegant, empowered, heartwarming, beautiful, mysterious, optimistic, happy, dramatic, harmonious.<br />LIGHTING: Natural, hard/soft light, studio, sunset, golden hour, diffused, candlelight.<br />FRAMING: Close-up, panorama, wide/medium shot, head-and-shoulders, bird's eye, POV.<br />STYLE: Photorealistic, editorial, blurred background, abstract, surreal, vintage, watercolour, cinematic, fantasy, impressionist, pencil-sketch, oil painting.</p>"
+  },
+  {
+    "id": 43,
+    "category": "Image Gen",
+    "subCategory": "Logo Design",
+    "task": "",
+    "prompt": "<p>Act as brand graphic designer. Design a simple, minimalist square logo in a single colour: [colour] [white] on a background of solid [colour] [white]<br />The logo should project: [organisation/project aim]<br />Use a flat vector style with clean lines, high contrast and no gradients, shading, text or details. Use only one simple visual element to ensure maximum clarity at tiny sizes.</p>"
   }
 ]
