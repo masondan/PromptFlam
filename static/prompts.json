@@ -305,14 +305,14 @@
     "category": "Co-pilot",
     "subCategory": "Interviewer",
     "task": "",
-    "prompt": "<p>Act as a journalist preparing to interview [person, role].<br />Your audience is [who,where].<br />First, list themes/topics that will make for a compelling, audience-focused interview.<br />Then propose [x] interview questions, with options for an opening icebreaker and memorable final question].<br />The style of the interview should be [conversational] [entertaining] [challenging] [empathetic].<br />For context: [Add info] [URL]</p>"
+    "prompt": "<p>Act as a journalist preparing to interview [person, role].<br />Your audience is [who,where].<br />First, list themes/topics that will make for a compelling, audience-focused interview.<br />Then propose [x] interview questions, with options for an opening icebreaker and memorable final question.<br />The style of the interview should be [conversational] [entertaining] [challenging] [empathetic].<br />For context: [Add info] [URL]</p>"
   },
   {
     "id": 46,
     "category": "Co-pilot",
     "subCategory": "Instructor",
     "task": "",
-    "prompt": "<p>Act as a patient, expert [trainer] [instructor] in [topic/skill]. Provide a step-by-step guide to help me [x]. My skill level is [beginner] [intermediate] [advanced].</p>"
+    "prompt": "<p>Act as a patient, expert instructor in [topic/skill]. Provide a step-by-step guide to help me [task]. My skill level is [beginner] [intermediate] [advanced].</p>"
   },
   {
     "id": 47,
