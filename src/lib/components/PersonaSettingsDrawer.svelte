@@ -56,7 +56,7 @@
 		<div class="drawer" transition:fly={{ y: '100%', duration: 250 }}>
 			<div class="content-area">
 				<p class="description">
-					This pre-fills the 'act as a [role]' and '…audience of [who, where]' sections in prompts.
+					This pre-fills the 'act as a [role]' and '…audience of [who, where]' sections.
 				</p>
 
 				<div class="input-group">
