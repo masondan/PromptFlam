@@ -30,7 +30,7 @@
 	let subcategoryDropdownOpen = false;
 	let scrollRestored = false;
 
-	const categoryOrder = ['Text', 'Audio', 'Video', 'Social Media', 'Website', 'Strategy', 'Co-pilot', 'Image Gen'];
+	const categoryOrder = ['Text', 'Data', 'Audio', 'Video', 'Social Media', 'Website', 'Strategy', 'Co-pilot', 'Image Gen'];
 
 	$: categories = [...new Set(prompts.map(p => p.category))].sort(
 		(a, b) => categoryOrder.indexOf(a) - categoryOrder.indexOf(b)

@@ -2,35 +2,35 @@
   {
     "id": 1,
     "category": "Text",
-    "subCategory": "Blog",
+    "subCategory": "Feature",
     "task": "IDEAS",
     "prompt": "<p>Act as a [role]. Suggest 10 ideas for topical, factual explainer articles that will engage an online audience of [who, where].<br />Base your ideas on: [recent news] [hot topics] [topic/question] [URL]<br />In each case provide a brief outline and keyword-rich explainer headline built around a question (eg how, why). Include unusual, fresh angles supported by verifiable facts.</p>"
   },
   {
     "id": 2,
     "category": "Text",
-    "subCategory": "Blog",
+    "subCategory": "Feature",
     "task": "DRAFT",
     "prompt": "<p>Act as a [role]. Draft a fact-based explainer article of [x] words that will engage an online audience of [who, where]<br />Base the article on: [idea number] [topic/question] [URL]<br />Write in a professional, objective style that delivers knowledge and understanding for the target audience.<br/>Follow a search-friendly, narrative structure. Use only authoritative sources. Avoid opinion and speculation. Use editorial style to attribute facts, quotes and sources inline (eg according to ...)</p>"
   },
   {
     "id": 3,
     "category": "Text",
-    "subCategory": "Blog",
+    "subCategory": "Feature",
     "task": "SUMMARY",
     "prompt": "<p>Write a news-style introduction for the article in 50 words.</p>"
   },
   {
     "id": 4,
     "category": "Text",
-    "subCategory": "Blog",
+    "subCategory": "Feature",
     "task": "HEADLINE",
     "prompt": "<p>Provide 10 headline options for social media that balance impact with credibility.</p>"
   },
   {
     "id": 5,
     "category": "Text",
-    "subCategory": "Blog",
+    "subCategory": "Feature",
     "task": "QUOTES (optional)",
     "prompt": "<p>Provide three quotes by leaders, campaigners or experts relating specifically to the article above. State the name, position and organisation of the person quoted.</p>"
   },
