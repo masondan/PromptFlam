@@ -37,6 +37,7 @@ import IconArrowUp from '../../static/icons/icon-arrow-up.svg?raw';
 import IconSearch from '../../static/icons/icon-search.svg?raw';
 import IconMic from '../../static/icons/icon-mic.svg?raw';
 import IconMicFill from '../../static/icons/icon-mic-fill.svg?raw';
+import IconUser from '../../static/icons/icon-user.svg?raw';
 
 // Icon map - maps icon names to their SVG strings
 export const iconMap = {
@@ -74,7 +75,10 @@ export const iconMap = {
 	
 	// Voice input icons
 	mic: IconMic,
-	'mic-fill': IconMicFill
+	'mic-fill': IconMicFill,
+	
+	// Settings icons
+	user: IconUser
 };
 
 // List of all available icon names

@@ -376,3 +376,8 @@ export function isFavorite(category, subCategory, favsList) {
 	const id = `${category}-${subCategory}`;
 	return favsList.includes(id);
 }
+
+// Persona settings for prompt customization
+// These replace [role] and [who, where] tags in prompts
+export const personaRole = createPersistentStore('personaRole', '');
+export const personaAudience = createPersistentStore('personaAudience', '');

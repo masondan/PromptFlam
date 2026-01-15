@@ -1,11 +1,20 @@
 <script>
 	import { page } from '$app/stores';
 	import { Icon } from '$lib/components';
+	import { createEventDispatcher } from 'svelte';
 
 	export let showNewChat = false;
 	export let onNewChat = () => {};
 	export let showNewNote = false;
 	export let onNewNote = () => {};
+
+	const dispatch = createEventDispatcher();
+
+	$: isPromptsPage = $page.url.pathname === '/prompts';
+
+	function handleProfileClick() {
+		dispatch('openPersonaSettings');
+	}
 
 	const navItems = [
 		{ name: 'prompts', path: '/prompts', label: 'Prompts' },
@@ -53,6 +62,15 @@
 			aria-label="Start new note"
 		>
 			<Icon name="newchat" size={20} />
+		</button>
+	{/if}
+	{#if isPromptsPage}
+		<button
+			class="profile-button"
+			on:click={handleProfileClick}
+			aria-label="Persona settings"
+		>
+			<Icon name="user" size={20} />
 		</button>
 	{/if}
 </header>
@@ -143,5 +161,22 @@
 
 	.new-chat-button:hover {
 		background: #4a1e9e;
+	}
+
+	.profile-button {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 40px;
+		height: 40px;
+		padding: 0;
+		border: none;
+		background: transparent;
+		color: var(--color-icon-default);
+		transition: color 0.15s;
+	}
+
+	.profile-button:hover {
+		color: var(--color-icon-active);
 	}
 </style>

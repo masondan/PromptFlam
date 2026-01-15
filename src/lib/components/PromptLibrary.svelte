@@ -11,7 +11,9 @@
 		promptLibrarySubcategory,
 		promptLibraryExpandedId,
 		promptLibraryScrollY,
-		pendingChatInput
+		pendingChatInput,
+		personaRole,
+		personaAudience
 	} from '$lib/stores.js';
 
 	export let mode = 'page';
@@ -92,6 +94,17 @@
 		return (temp.innerText || temp.textContent || '').trim();
 	}
 
+	function applyPersonaSubstitutions(text) {
+		let result = text;
+		if ($personaRole) {
+			result = result.replace(/\[role\]/g, $personaRole);
+		}
+		if ($personaAudience) {
+			result = result.replace(/\[who, where\]/g, $personaAudience);
+		}
+		return result;
+	}
+
 	function toTitleCase(str) {
 		return str.toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
 	}
@@ -123,29 +136,25 @@
 	}
 
 	function handleCopy(prompt) {
-		const text = stripHtml(prompt.prompt);
+		const text = applyPersonaSubstitutions(stripHtml(prompt.prompt));
 		navigator.clipboard.writeText(text);
 		dispatch('copy', { prompt, text });
 	}
 
 	function handleEdit(prompt) {
-		const text = stripHtml(prompt.prompt);
+		const text = applyPersonaSubstitutions(stripHtml(prompt.prompt));
 		dispatch('edit', { prompt, text });
 	}
 
 	function handleInsert(prompt) {
-		const text = stripHtml(prompt.prompt);
+		const text = applyPersonaSubstitutions(stripHtml(prompt.prompt));
 		dispatch('insert', { prompt: text });
 	}
 
 	function handleAddToChat(prompt) {
-		const text = stripHtml(prompt.prompt);
+		const text = applyPersonaSubstitutions(stripHtml(prompt.prompt));
 		pendingChatInput.set(text);
 		goto('/');
-	}
-
-	function handleBackToTop() {
-		window.scrollTo({ top: 0, behavior: 'smooth' });
 	}
 
 	function togglePromptExpand(promptId) {
@@ -304,7 +313,7 @@
 											<Icon name={isExpanded ? 'collapse' : 'expand'} size={16} />
 										</button>
 									</div>
-									<p class="prompt-text" class:collapsed={!isExpanded} on:click={() => togglePromptExpand(promptId)}>{#if prompt.task}<span class="task-label">{toTitleCase(prompt.task)}:</span>{' '}{/if}{stripHtml(prompt.prompt)}</p>
+									<p class="prompt-text" class:collapsed={!isExpanded} on:click={() => togglePromptExpand(promptId)}>{#if prompt.task}<span class="task-label">{toTitleCase(prompt.task)}:</span>{' '}{/if}{applyPersonaSubstitutions(stripHtml(prompt.prompt))}</p>
 									<div class="action-buttons">
 										{#if mode === 'page'}
 											<button
@@ -344,13 +353,6 @@
 											aria-label={isFav ? 'Remove from favourites' : 'Add to favourites'}
 										>
 											<Icon name={isFav ? 'heart-fill' : 'heart'} size={20} />
-										</button>
-										<button
-											class="action-btn"
-											on:click={handleBackToTop}
-											aria-label="Back to top"
-										>
-											<Icon name="arrow-up" size={20} />
 										</button>
 									</div>
 								</div>

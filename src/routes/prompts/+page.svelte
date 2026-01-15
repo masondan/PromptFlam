@@ -1,8 +1,10 @@
 <script>
-	import { Header, PromptLibrary, PromptEditDrawer } from '$lib/components';
+	import { Header, PromptLibrary, PromptEditDrawer, PersonaSettingsDrawer } from '$lib/components';
 
 	let showEditDrawer = false;
 	let editText = '';
+	let showPersonaDrawer = false;
+	let personaVersion = 0;
 
 	function handleEdit(e) {
 		editText = e.detail.text;
@@ -17,26 +19,38 @@
 	function handleCopy(e) {
 		// Optional: could show a toast notification
 	}
+
+	function handlePersonaSaved() {
+		personaVersion += 1;
+	}
 </script>
 
 <svelte:head>
 	<title>Prompts | PromptFlam</title>
 </svelte:head>
 
-<Header />
+<Header on:openPersonaSettings={() => showPersonaDrawer = true} />
 
 <main class="prompts-page">
-	<PromptLibrary 
-		mode="page" 
-		on:edit={handleEdit}
-		on:copy={handleCopy}
-	/>
+	{#key personaVersion}
+		<PromptLibrary 
+			mode="page" 
+			on:edit={handleEdit}
+			on:copy={handleCopy}
+		/>
+	{/key}
 </main>
 
 <PromptEditDrawer 
 	isOpen={showEditDrawer}
 	text={editText}
 	on:close={handleCloseEditDrawer}
+/>
+
+<PersonaSettingsDrawer 
+	isOpen={showPersonaDrawer}
+	on:close={() => showPersonaDrawer = false}
+	on:saved={handlePersonaSaved}
 />
 
 <style>
