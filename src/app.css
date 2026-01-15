@@ -179,7 +179,7 @@ textarea {
 /* DESKTOP APP SHELL - Constrains app to mobile width on larger screens */
 @media (min-width: 768px) {
 	html {
-		background: #e8e8e8;
+		background: #ffffff;
 	}
 
 	body {
