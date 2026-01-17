@@ -195,19 +195,19 @@
     "task": "IDEAS",
     "prompt": "<p>Act as a professional podcast scriptwriter. Suggest 10 ideas for short explainer podcast episodes that will engage an online audience of [who, where].<br />About the podcast: [name, description]<br />Base ideas on [recent news] [hot topics] [topic/question] [URL]<br />For each idea, provide an explainer hook focused on a question (eg why, how), and a brief content outline based on verified, authoritative facts. Stay audience-focused and include unusual angles supported by credible sources.</p>"
   },
-  {
+   {
     "id": 29,
     "category": "Audio",
     "subCategory": "Mini-podcast",
     "task": "SOLO SCRIPT",
-    "prompt": "<p>Act as a podcast scriptwriter. Draft a script for an [x] [second] [minute] explainer podcast episode with one host that will engage an audience of [who, where]<br />About the podcast: [Description]<br />Base the script on: [idea number] [topic/question] [URL]<br />Format & style:<br />- Open with an attention-grabbing question (eg how, why), then provide a fact-based, objective, audio explainer script that will inform and engage the target audience<br />- No intro and outro. No banter. No opinion or speculation.<br />- Focus on the who, what, why, where, when and how of the story, in a logical flow.<br />- Use short sentences in simple, clear language. Avoid jargon.<br />- Attribute facts verbally (eg “according to…”).<br />- Keep the style very fast-paced, information-packed and audience‑focused.<br />- Include a variety of credible sources for more context.</p>"
+    "prompt": "<p>Act as a podcast scriptwriter. Draft a script for an [x] [second] [minute] explainer podcast episode with one host that will engage an audience of [who, where]<br />About the podcast: [Description]<br />Base the script on: [idea number] [topic/question] [URL]<br />Format & style:<br />- Open with a question (eg how, why), then provide a fact-based, objective, audio explainer script that will inform and engage the target audience<br />- No intro and outro. No banter. No opinion or speculation.<br />- Deliver the facts in a natural, spoken narrative style. Avoid jargon<br />- Keep the style fast-paced, informative and audience‑focused.<br />- Include a variety of credible sources for more context.</p>"
   },
   {
     "id": 30,
     "category": "Audio",
     "subCategory": "Mini-podcast",
     "task": "Q&A SCRIPT",
-    "prompt": "<p>Act as a podcast scriptwriter. Draft a script for a [x] [second] [minute] mini‑podcast episode with two speakers (a host and an expert) that will engage an audience of [who, where].<br />About the podcast: [name, description]<br />Base the script on: [topic/question] [URL]<br />Format & style:<br />- No banter. No chat. No conversation. No intro and outro. Just quick-fire, creative questions and straight answers. Focus on the who, what, why, where, when and how of the story, in a logical flow. Pack in as many direct questions and answers as possible.<br />- The host opens with a punchy first question that grabs attention (the hook)<br />- The expert replies with short, fact-based, clearly spoken answers that vary in length and detail.<br />- Use simple, clear language. Avoid jargon.<br />- Attribute facts verbally (eg “according to…”).<br />- Keep the style fast-paced, informative and audience‑focused.<br />- Compare credible sources to verify facts and add additional context.<br />Output format:<br />Host: Question<br />Expert: Answer<br />Host: Follow-up<br />Expert: Answer</p>"
+    "prompt": "<p>Act as a podcast scriptwriter. Draft a script for a [x] [second] [minute] mini‑podcast episode with two speakers (a host and an expert) that will engage an audience of [who, where].<br />About the podcast: [name, description]<br />Base the script on: [topic/question] [URL]<br />Format & style:<br />- No banter. No chat. No intro and outro. Just quick-fire, creative questions and straight, factual answers.<br />- Deliver the facts in a natural, spoken narrative style. Avoid jargon<br />Pack in as many direct questions and answers as possible.<br />- The host opens with a punchy first question that grabs attention<br />- The expert replies with expert answers.<br />- Keep the style fast-paced, informative and audience‑focused.<br />- Include a variety of credible sources for more context.<br />Output format:<br />Host: Question<br />Expert: Answer<br />Host: Follow-up<br />Expert: Answer</p>"
   },
   {
     "id": 32,
