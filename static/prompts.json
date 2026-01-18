@@ -261,75 +261,82 @@
   {
     "id": 39,
     "category": "Social Media",
-    "subCategory": "Quotes | Numbers | Myths",
+    "subCategory": "Quotes",
     "task": "DRAFT",
-    "prompt": "<p>Act as a social media content creator. Draft [x] image+text-overlay posts featuring [quotes] [facts] [numbers] [myths+facts], targeting an audience of [who, where].<br />Base answers on: [topic] [URL]<br />Optimise for: [Facebook] [X] [Instagram] [LinkedIn]<br />For each post suggest:<br />1 - Attention-grabbing image or visual ideas.<br />2 - High-impact overlay text.<br />3 - An audience-focused caption, with high-engagement hashtags.<br />Make the tone [professional] [informative] [empowering] [motivational] [entertaining] [urgent] [action-oriented] [empathetic].</p>"
+    "prompt": "<p>Act as a social media content creator. Draft [x] image+text-overlay posts featuring authentic, verified quotes by [specific person] [leaders, campaigners or experts], targeting an audience of [who, where].<br />Base answers on: [topic] [URL]<br />For each post provide:<br />1 - The quote.<br />2 - A concise explanation of the context and significance of the quote, including where and when the quote was spoken.<br />3 -  Image ideas.<br />4 - An audience-focused caption, with high-engagement hashtags.<br />Make the tone [professional] [informative] [empowering] [motivational] [entertaining] [urgent] [action-oriented] [empathetic].</p>"
+  },
+   {
+    "id": 40,
+    "category": "Social Media",
+    "subCategory": "Facts | Myths+Facts",
+    "task": "DRAFT",
+    "prompt": "<p>Act as a social media content creator. Draft [x] image+text-overlay posts featuring [facts] [myths+facts], targeting an audience of [who, where]. Base answers on: [topic] [URL]<br />Optimise for: [Facebook] [X] [Instagram] [LinkedIn]<br />For each post suggest:<br />1 - Image ideas.<br />2 - Fact-based, authoritative overlay text.<br />3 - An audience-focused caption, with high-engagement hashtags.<br />Make the tone [professional] [informative] [empowering] [motivational] [entertaining] [urgent] [action-oriented] [empathetic].</p>"
   },
   {
-    "id": 40,
+    "id": 41,
     "category": "Social Media",
     "subCategory": "Social Media Campaign",
     "task": "DRAFT",
     "prompt": "<p>Act as a social media marketing expert working with:<br />[Organisation/Cause/Group]<br />Mission: [Overall mission]<br />Create a social media campaign plan that aims to: [list objective(s)].<br />The target audience is: [who, where].<br />Existing social channels are: [Add social channels + followers].<br /> Expected campaign duration: [x weeks/months], [starting x].<br />Campaign title and hashtag: [title/hashtag] [Suggest a campaign title and hashtag].<br />Team resource consists of: [numbers, experience].<br />The budget is [x]<br />Your structured campaign plan should include: Campaign objectives, social media channels to be used and why, campaign milestones, key messages and CTAs, realistic measures, resources required, and a content plan.<br />The content plan should include: A list of high-impact content ideas (and on which channels they will appear) with suggested visuals.<br />For context: [background/market information, website URL].<br />Before answering, ask any questions that will help you provide a more detailed, comprehensive plan.</p>"
   },
   {
-    "id": 41,
+    "id": 42,
     "category": "Website",
     "subCategory": "Website Review",
     "task": "REPORT",
     "prompt": "<p>Act as an SEO and content marketing expert. Analyse and review this website: [URL].<br />Provide practical suggestions to increase [search visibility] [organic traffic and engagement] [newsletter subscriptions] [paid subscriptions] [fundraising] [volunteering].<br />For each suggestion, explain the practical steps required, including promotion, and level of complexity. Prioritise and highlight easy wins.</p>"
   },
   {
-    "id": 42,
+    "id": 43,
     "category": "Website",
     "subCategory": "Landing Page",
     "task": "DRAFT",
     "prompt": "<p>Act as a copywriting expert. Craft compelling, optimised landing page copy for a website targeting an audience of [who, where].<br />The objective is to: [eg promote a service or campaign, drive subscriptions or donations].<br />Aim for [wordcount].<br />Include headings, calls to action and suggest images/visuals.<br />Make the tone [professional] [informative] [empowering] [motivational] [entertaining] [urgent] [action-oriented] [empathetic].<br />For context: [URL]</p>"
   },
   {
-    "id": 43,
+    "id": 44,
     "category": "Strategy",
     "subCategory": "Comms Plan",
     "task": "DRAFT",
     "prompt": "<p>Act as a content marketing expert, working with:<br />[Organisation/Cause/Group]<br />Mission: [Overall mission].<br />Draft a practical, innovative communications plan that aims to [list objective(s)].<br />The target audience is [who, where].<br />Project title: [project/campaign title] [Suggest a project/campaign title].<br />Expected campaign duration: [x weeks/months], [starting x]<br />Current communication channels: [eg newsletter, website, events, social media + followers].<br />Team resource consists of [numbers, experience]<br />The budget is: [x].<br />Barriers or constraints that could hinder success: [x]<br />Your structured plan should include: A timeline. Proposals for online, offline and social media promotion. Branding, design, media and copywriting requirements. High-impact, creative content ideas. Resources required. Challenges preventing a successful outcome, and ways these might be overcome.<br />For context: [background/market information, website URL].<br />Before answering, ask any questions that will help you provide a more detailed, comprehensive answer.</p>"
   },
  {
-    "id": 44,
+    "id": 45,
     "category": "Co-pilot",
     "subCategory": "Editor",
     "task": "",
     "prompt": "<p>Act as an experienced news editor. Suggest ways the following text can be improved. Check grammar, spelling and structure, following [UK English] [US English] journalistic best practice. Check that content is objective, professional and free from editorialising or jargon.<br />Format:<br />1. Repeat the full text, highlighting in bold any issues you find.<br />Immediately following the bold text highlights, add in square brackets a very brief inline explanation and language fix. Do not comment on direct quotes unless they contain spelling or style issues.<br />3. Add a full draft incorporating your suggested improvements.<br />4. Lastly, list any suggestions to maximise the article's search visibility. Here is the text:</p>"
   },
   {
-    "id": 45,
+    "id": 46,
     "category": "Co-pilot",
     "subCategory": "Interviewer",
     "task": "",
     "prompt": "<p>Act as a journalist preparing to interview [person, role].<br />Your audience is [who,where].<br />First, list themes/topics that will make for a compelling, audience-focused interview.<br />Then propose [x] interview questions, with options for an opening icebreaker and memorable final question.<br />The style of the interview should be [conversational] [entertaining] [challenging] [empathetic].<br />For context: [Add info] [URL]</p>"
   },
   {
-    "id": 46,
+    "id": 47,
     "category": "Co-pilot",
     "subCategory": "Instructor",
     "task": "",
     "prompt": "<p>Act as a patient, expert instructor in [topic/skill]. Provide a step-by-step guide to help me [task]. My skill level is [beginner] [intermediate] [advanced].</p>"
   },
   {
-    "id": 47,
+    "id": 48,
     "category": "Co-pilot",
     "subCategory": "Prompt Engineer",
     "task": "",
     "prompt": "<p>Act as an expert AI prompt engineer. [Craft a prompt to help me:] [Suggest improvements/options for this prompt:]</p>"
   },
   {
-    "id": 48,
+    "id": 49,
     "category": "Image Gen",
     "subCategory": "Prompt Tips",
     "task": "",
     "prompt": "<p>Describe the key elements of the image: Subject, background, lighting, colours, mood, framing, style/quality. Use keywords such as:<br />MOOD. Confident, elegant, empowered, heartwarming, beautiful, mysterious, optimistic, happy, dramatic, harmonious.<br />LIGHTING: Natural, hard/soft light, studio, sunset, golden hour, diffused, candlelight.<br />FRAMING: Close-up, panorama, wide/medium shot, head-and-shoulders, bird's eye, POV.<br />STYLE: Photorealistic, editorial, blurred background, abstract, surreal, vintage, watercolour, cinematic, fantasy, impressionist, pencil-sketch, oil painting.</p>"
   },
   {
-    "id": 49,
+    "id": 50,
     "category": "Image Gen",
     "subCategory": "Logo Design",
     "task": "",
