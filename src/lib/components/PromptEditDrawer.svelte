@@ -164,6 +164,16 @@
 		z-index: var(--z-overlay);
 	}
 
+	@media (min-width: 768px) {
+		.overlay {
+			left: 50%;
+			right: auto;
+			transform: translateX(-50%);
+			width: 100%;
+			max-width: var(--app-max-width);
+		}
+	}
+
 	.drawer {
 		position: absolute;
 		top: 0;
