@@ -328,15 +328,22 @@
     "task": "",
     "prompt": "<p>Act as an expert AI prompt engineer. [Craft a prompt to help me:] [Suggest improvements/options for this prompt:]</p>"
   },
-  {
+   {
     "id": 49,
+    "category": "Co-pilot",
+    "subCategory": "Researcher",
+    "task": "",
+    "prompt": "<p>Act as a researcher journalist for news and human interest media. Provide a structured list of events, anniversaries and famous birthdays related to Nigeria that would provide a topical and engaging hook for news, blogs, social media videos, podcasts and explainer articles in the next [week] [month] [year]<br />Use the following format:<br />- The event<br />The date (and time if relevant)<br />Brief explanation of the event<br />- Suggest unusual or offbeat angles, including suggestions for interviews and ideal story forms, including short video explainers, podcasts, lists, Q&A, data stories (in charts, in numbers) and guides.<br />Make the list targeted for the following audience: [who, where]</p>"
+  },
+  {
+    "id": 50,
     "category": "Image Gen",
     "subCategory": "Prompt Tips",
     "task": "",
     "prompt": "<p>Describe the key elements of the image: Subject, background, lighting, colours, mood, framing, style/quality. Use keywords such as:<br />MOOD. Confident, elegant, empowered, heartwarming, beautiful, mysterious, optimistic, happy, dramatic, harmonious.<br />LIGHTING: Natural, hard/soft light, studio, sunset, golden hour, diffused, candlelight.<br />FRAMING: Close-up, panorama, wide/medium shot, head-and-shoulders, bird's eye, POV.<br />STYLE: Photorealistic, editorial, blurred background, abstract, surreal, vintage, watercolour, cinematic, fantasy, impressionist, pencil-sketch, oil painting.</p>"
   },
   {
-    "id": 50,
+    "id": 51,
     "category": "Image Gen",
     "subCategory": "Logo Design",
     "task": "",
