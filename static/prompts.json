@@ -333,7 +333,7 @@
     "category": "Co-pilot",
     "subCategory": "Researcher",
     "task": "",
-    "prompt": "<p>Act as a researcher journalist for news and human interest media. Provide a structured list of events, anniversaries and famous birthdays related to Nigeria that would provide a topical and engaging hook for news, blogs, social media videos, podcasts and explainer articles in the next [week] [month] [year]<br />Use the following format:<br />- The event<br />- The date (and time if relevant)<br />- Brief explanation of the event<br />- Suggest unusual or offbeat angles, including suggestions for interviews and ideal story forms, including short video explainers, podcasts, lists, Q&A, data stories (in charts, in numbers) and guides.<br />Make the list targeted for the following audience: [who, where]</p>"
+    "prompt": "<p>Act as a researcher journalist for news and human-interest media. Provide a structured list of events, anniversaries and famous birthdays related to [where] [topic] that would provide a topical and engaging hook for news, blogs, social media videos, podcasts and explainer articles in the next [week] [month] [year]<br />Use the following format:<br />- The event<br />- The date (and time if relevant)<br />- Brief explanation of the event<br />- Suggest unusual or offbeat angles, including suggestions for interviews and ideal story forms, including short video explainers, podcasts, lists, Q&A, data stories (in charts, in numbers) and guides.<br />Make the list targeted for the following audience: [who, where]</p>"
   },
   {
     "id": 50,
