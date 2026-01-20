@@ -228,14 +228,14 @@
     "category": "Video",
     "subCategory": "Slideshow + Voiceover",
     "task": "IDEAS",
-    "prompt": "<p>Act as a social media video creator. Suggest 10 ideas for lively, factual, social media explainer videos that will engage an audience of [who, where]<br />Base answers on: [recent news] [hot topics]<br />Ideas must suit an image/video clip montage + voiceover format. Include unusual angles designed to spark conversation and informed debate.<br />In each case make the hook a question and give a brief outline. Suggest a list of visuals.</p>"
+    "prompt": "<p>Act as a social media video creator. Suggest 10 ideas for lively, factual, social media explainer videos that will engage an audience of [who, where]<br />Base answers on: [recent news] [hot topics]<br />Ideas must suit an image/video clip montage + voiceover format. Include unusual angles designed to spark conversation and informed debate.<br />In each case make the hook a question and give a brief outline. Suggest a list of [x] visuals to acompany the script.</p>"
   },
   {
     "id": 35,
     "category": "Video",
     "subCategory": "Slideshow + Voiceover",
     "task": "SCRIPT",
-    "prompt": "<p>Draft a [30-second] [60-second] fact-based explainer script optimised for voiceover, that will engage an audience of [who, where].<br />Base the script on: [idea number] [topic/question] [URL]<br />Start with a snappy explainer hook based on a question (eg why, how). Follow with a fact-based script using simple narrative language.<br />Use verbal source attribution (eg 'according to') for facts and sources. Include other credible sources for added context.<br />Keep the style fast-paced, professional, informative and audience‑focused.</p>"
+    "prompt": "<p>Draft a [30-second] [60-second] fact-based explainer script optimised for voiceover, that will engage an audience of [who, where].<br />Base the script on: [idea number] [topic/question] [URL]<br />Start with a snappy explainer hook based on a question (eg why, how). Follow with a fact-based script using simple narrative language.<br />Use verbal source attribution (eg 'according to') for facts and sources. Include other credible sources for added context.<br />Keep the style fast-paced, professional, informative and audience‑focused. Suggest [x] visuals to accompany the script</p>"
   },
   {
     "id": 36,
