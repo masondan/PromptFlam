@@ -235,7 +235,7 @@
     "category": "Video",
     "subCategory": "Slideshow + Voiceover",
     "task": "SCRIPT",
-    "prompt": "<p>Draft a [30-second] [60-second] fact-based explainer script optimised for voiceover, that will engage an audience of [who, where].<br />Base the script on: [idea number] [topic/question] [URL]<br />Start with a snappy explainer hook based on a question (eg why, how). Follow with a punchy, fact-based script using simple, narrative language.<br />Use verbal source attribution (eg 'according to') for facts and sources. Include other credible sources for added context.<br />Keep the style very fast-paced, informative and audience‑focused.</p>"
+    "prompt": "<p>Draft a [30-second] [60-second] fact-based explainer script optimised for voiceover, that will engage an audience of [who, where].<br />Base the script on: [idea number] [topic/question] [URL]<br />Start with a snappy explainer hook based on a question (eg why, how). Follow with a fact-based script using simple narrative language.<br />Use verbal source attribution (eg 'according to') for facts and sources. Include other credible sources for added context.<br />Keep the style fast-paced, professional, informative and audience‑focused.</p>"
   },
   {
     "id": 36,
