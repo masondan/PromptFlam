@@ -6,7 +6,6 @@
 	let activeTab = 'chats';
 	let isSelectMode = false;
 	let selectedIds = new Set();
-	let showBulkDeleteConfirm = false;
 
 	$: items = activeTab === 'chats' ? $archiveChats : $archiveNotes;
 	$: hasItems = items.length > 0;
@@ -23,14 +22,12 @@
 		} else {
 			isSelectMode = true;
 			selectedIds = new Set();
-			showBulkDeleteConfirm = false;
 		}
 	}
 
 	function exitSelectMode() {
 		isSelectMode = false;
 		selectedIds = new Set();
-		showBulkDeleteConfirm = false;
 	}
 
 	function handleToggleSelect(e) {
@@ -44,7 +41,6 @@
 		}
 		
 		selectedIds = newSelection;
-		showBulkDeleteConfirm = false;
 	}
 
 	function handleRestore(e) {
@@ -80,24 +76,20 @@
 
 	function handleBulkTrashClick() {
 		if (hasSelection) {
-			showBulkDeleteConfirm = true;
+			const idsToDelete = Array.from(selectedIds);
+			
+			if (activeTab === 'chats') {
+				archiveChats.update(chats => 
+					chats.filter(c => !idsToDelete.includes(c.id))
+				);
+			} else {
+				archiveNotes.update(notes => 
+					notes.filter(n => !idsToDelete.includes(n.id))
+				);
+			}
+			
+			exitSelectMode();
 		}
-	}
-
-	function handleBulkDeleteConfirm() {
-		const idsToDelete = Array.from(selectedIds);
-		
-		if (activeTab === 'chats') {
-			archiveChats.update(chats => 
-				chats.filter(c => !idsToDelete.includes(c.id))
-			);
-		} else {
-			archiveNotes.update(notes => 
-				notes.filter(n => !idsToDelete.includes(n.id))
-			);
-		}
-		
-		exitSelectMode();
 	}
 </script>
 
@@ -129,14 +121,8 @@
 		<div class="tab-actions">
 			{#if isSelectMode && hasSelection}
 				<div class="bulk-delete-container">
-					{#if showBulkDeleteConfirm}
-						<button class="bulk-delete-confirm" on:click={handleBulkDeleteConfirm}>
-							DELETE?
-						</button>
-					{/if}
 					<button 
 						class="bulk-trash-btn"
-						class:active={showBulkDeleteConfirm}
 						on:click={handleBulkTrashClick}
 						aria-label="Delete selected items"
 					>

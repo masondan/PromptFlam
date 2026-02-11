@@ -211,8 +211,8 @@
 <svelte:window on:click={closeDropdowns} />
 
 <div class="prompt-library">
-	<div class="toolbar">
-		<div class="dropdown category-dropdown" class:open={categoryDropdownOpen}>
+<div class="toolbar">
+	<div class="dropdown category-dropdown" class:open={categoryDropdownOpen}>
 			<button
 				class="dropdown-trigger"
 				on:click|stopPropagation={() => {
@@ -453,8 +453,37 @@
 		min-width: 0;
 	}
 
+	.category-dropdown .dropdown-trigger {
+		background: var(--accent-brand);
+		border-color: var(--accent-brand);
+		color: #ffffff;
+	}
+
+	.category-dropdown .dropdown-trigger :global(svg) {
+		color: #ffffff;
+	}
+
+	.category-dropdown .dropdown-trigger:hover {
+		background: #6a2ed6;
+		border-color: #6a2ed6;
+	}
+
 	.subcategory-dropdown {
 		width: 100%;
+	}
+
+	.subcategory-dropdown .dropdown-trigger {
+		background: var(--color-highlight);
+		border-color: #555555;
+		color: var(--text-primary);
+	}
+
+	.subcategory-dropdown .dropdown-trigger :global(svg) {
+		color: #777777;
+	}
+
+	.subcategory-dropdown .dropdown-trigger:hover {
+		background: #ece4ff;
 	}
 
 	.dropdown-trigger {
