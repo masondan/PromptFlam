@@ -58,7 +58,7 @@
 	.prompts-page {
 		min-height: 100vh;
 		padding: var(--spacing-md);
-		padding-top: var(--spacing-lg);
+		padding-top: var(--spacing-xl);
 		max-width: var(--max-content-width);
 		margin: 0 auto;
 	}
