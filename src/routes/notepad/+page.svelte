@@ -248,9 +248,19 @@
 		padding-top: var(--spacing-sm);
 		display: flex;
 		flex-direction: column;
-		max-width: var(--max-content-width);
-		margin: 0 auto;
 		padding-bottom: var(--spacing-lg);
+	}
+
+	@media (min-width: 768px) {
+		.notepad-page {
+			position: fixed;
+			left: 50%;
+			right: auto;
+			transform: translateX(-50%);
+			width: 100%;
+			max-width: var(--app-max-width);
+			margin-left: 0;
+		}
 	}
 
 	.editor-container {

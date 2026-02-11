@@ -59,7 +59,17 @@
 		min-height: 100vh;
 		padding: var(--spacing-md);
 		padding-top: var(--spacing-xl);
-		max-width: var(--max-content-width);
-		margin: 0 auto;
+	}
+
+	@media (min-width: 768px) {
+		.prompts-page {
+			position: fixed;
+			left: 50%;
+			right: auto;
+			transform: translateX(-50%);
+			width: 100%;
+			max-width: var(--app-max-width);
+			margin-left: 0;
+		}
 	}
 </style>

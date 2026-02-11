@@ -196,8 +196,18 @@
 	.archive-page {
 		min-height: 100vh;
 		padding-top: var(--spacing-md);
-		max-width: var(--max-content-width);
-		margin: 0 auto;
+	}
+
+	@media (min-width: 768px) {
+		.archive-page {
+			position: fixed;
+			left: 50%;
+			right: auto;
+			transform: translateX(-50%);
+			width: 100%;
+			max-width: var(--app-max-width);
+			margin-left: 0;
+		}
 	}
 
 	.tab-row {
