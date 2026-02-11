@@ -107,6 +107,16 @@
 		}, 150);
 	}
 
+	function handleCancel(e) {
+		e.stopPropagation();
+		closeToolbar();
+	}
+
+	function handleExport(e) {
+		e.stopPropagation();
+		handleDownload(e);
+	}
+
 	function handleTrashClick(e) {
 		e.stopPropagation();
 		trashTapped = true;
@@ -178,30 +188,6 @@
 			{/if}
 		</div>
 
-		{#if showToolbar && !isSelectMode}
-			<div class="toolbar-wrapper">
-				<div class="toolbar">
-					{#if showDeleteConfirm}
-						<button class="delete-confirm" on:click={handleDeleteConfirm}>Delete?</button>
-					{/if}
-					<button 
-						class="toolbar-trash"
-						class:tapped={trashTapped}
-						on:click={handleTrashClick}
-						aria-label="Delete"
-					>
-						<img src="/icons/icon-trash.svg" alt="" class="trash-icon" />
-					</button>
-					<span class="toolbar-divider"></span>
-					<button class="toolbar-btn" class:tapped={copyTapped} on:click={handleCopy}>Copy</button>
-					<span class="toolbar-divider"></span>
-					<button class="toolbar-btn" class:tapped={shareTapped} on:click={handleShare}>Share</button>
-					<span class="toolbar-divider"></span>
-					<button class="toolbar-btn" class:tapped={downloadTapped} on:click={handleDownload}>Download</button>
-				</div>
-			</div>
-		{/if}
-
 		{#if preview}
 			<p class="item-preview">{preview}</p>
 		{/if}
@@ -210,6 +196,28 @@
 			<img src="/icons/icon-time.svg" alt="" class="time-icon" />
 			<span>{timestamp}</span>
 		</div>
+
+		{#if showToolbar && !isSelectMode}
+			<div class="toolbar-wrapper">
+				<div class="toolbar">
+					{#if showDeleteConfirm}
+						<button class="toolbar-text-btn" on:click={handleDeleteConfirm}>Delete for sure?</button>
+						<span class="toolbar-divider"></span>
+						<button class="toolbar-text-btn" on:click={handleCancel}>Cancel</button>
+					{:else}
+						<button class="toolbar-text-btn" class:tapped={trashTapped} on:click={handleTrashClick}>Delete</button>
+						<span class="toolbar-divider"></span>
+						<button class="toolbar-text-btn" on:click={handleCancel}>Cancel</button>
+						<span class="toolbar-divider"></span>
+						<button class="toolbar-text-btn" class:tapped={copyTapped} on:click={handleCopy}>Copy</button>
+						<span class="toolbar-divider"></span>
+						<button class="toolbar-text-btn" class:tapped={shareTapped} on:click={handleShare}>Share</button>
+						<span class="toolbar-divider"></span>
+						<button class="toolbar-text-btn" class:tapped={downloadTapped} on:click={handleExport}>Export</button>
+					{/if}
+				</div>
+			</div>
+		{/if}
 	</div>
 </div>
 
@@ -301,81 +309,48 @@
 
 	.toolbar-wrapper {
 		display: flex;
-		justify-content: flex-end;
+		justify-content: center;
 		margin-top: var(--spacing-sm);
-		margin-bottom: var(--spacing-sm);
+		margin-bottom: 0;
+		padding-top: 0;
+		padding-bottom: 0;
 	}
 
 	.toolbar {
 		display: flex;
 		align-items: center;
-		background: var(--accent-brand);
-		border-radius: var(--radius-full);
-		padding: var(--spacing-xs) var(--spacing-sm);
+		background: transparent;
+		border-radius: 0;
+		padding: 0;
 		gap: 0;
 	}
 
-	.toolbar-btn {
-		font-size: 14px;
-		font-weight: 400;
-		color: #ffffff;
+	.toolbar-text-btn {
+		font-size: 0.8125rem;
+		font-weight: 500;
+		color: var(--accent-brand);
 		padding: var(--spacing-xs) var(--spacing-sm);
 		background: transparent;
-		border-radius: var(--radius-sm);
-		transition: transform 0.15s ease;
+		border-radius: 0;
+		transition: color 0.15s ease;
 		white-space: nowrap;
+		border: none;
+		cursor: pointer;
 	}
 
-	.toolbar-btn:hover {
-		transform: scale(1.05);
+	.toolbar-text-btn:hover {
+		color: #4a1e9e;
 	}
 
-	.toolbar-btn.tapped {
-		transform: scale(1.15);
+	.toolbar-text-btn.tapped {
+		opacity: 0.7;
 	}
 
 	.toolbar-divider {
 		width: 1px;
-		height: 16px;
-		background: rgba(255, 255, 255, 0.4);
-	}
-
-	.toolbar-trash {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		padding: var(--spacing-xs);
-		border-radius: var(--radius-sm);
-		transition: transform 0.15s ease;
-	}
-
-	.toolbar-trash:hover {
-		transform: scale(1.05);
-	}
-
-	.toolbar-trash.tapped {
-		transform: scale(1.15);
-	}
-
-	.trash-icon {
-		width: 18px;
-		height: 18px;
-		filter: brightness(0) invert(1);
-	}
-
-	.delete-confirm {
-		font-size: 14px;
-		font-weight: 400;
-		color: #ffffff;
-		padding: var(--spacing-xs) var(--spacing-sm);
-		background: transparent;
-		border-radius: var(--radius-sm);
-		transition: transform 0.15s ease;
-		white-space: nowrap;
-	}
-
-	.delete-confirm:hover {
-		transform: scale(1.05);
+		height: 14px;
+		background: #ddd;
+		margin: 0 var(--spacing-xs);
 	}
 
 	.item-preview {

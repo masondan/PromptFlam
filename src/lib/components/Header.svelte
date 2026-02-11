@@ -3,8 +3,7 @@
 	import { Icon } from '$lib/components';
 	import { createEventDispatcher } from 'svelte';
 
-	export let showNewNote = false;
-	export let onNewNote = () => {};
+
 
 	const dispatch = createEventDispatcher();
 
@@ -30,6 +29,10 @@
 </script>
 
 <header class="header">
+	<div class="logo-container">
+		<img src="/promptflam-purple-logo.png" alt="PromptFlam" class="logo" />
+	</div>
+
 	<nav class="nav" aria-label="Main navigation">
 		{#each navItems as item}
 			<a
@@ -43,16 +46,6 @@
 			</a>
 		{/each}
 	</nav>
-	
-	{#if showNewNote}
-		<button
-			class="new-chat-button"
-			on:click={onNewNote}
-			aria-label="Start new note"
-		>
-			<Icon name="newchat" size={20} />
-		</button>
-	{/if}
 
 </header>
 
@@ -84,30 +77,43 @@
 		}
 	}
 
+
+
 	/* Gradient fade at bottom of header */
 	.header::after {
 		content: '';
 		position: absolute;
-		bottom: -16px;
+		bottom: 0;
 		left: 0;
 		right: 0;
-		height: 16px;
-		background: linear-gradient(to bottom, var(--bg-main), transparent);
+		height: 1px;
+		background: #777777;
 		pointer-events: none;
+	}
+
+	.logo-container {
+		display: flex;
+		align-items: center;
+		flex-shrink: 0;
+	}
+
+	.logo {
+		height: 38px;
+		width: auto;
 	}
 
 	.nav {
 		display: flex;
 		align-items: center;
-		gap: var(--spacing-md);
+		gap: var(--spacing-sm);
 	}
 
 	.nav-button {
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		width: 40px;
-		height: 40px;
+		width: 38px;
+		height: 38px;
 		border-radius: 50%;
 		border: 1px solid var(--color-icon-default);
 		color: var(--color-icon-default);

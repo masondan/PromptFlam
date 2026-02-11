@@ -1,6 +1,6 @@
 <script>
 	import { onMount } from 'svelte';
-	import { Header } from '$lib/components';
+	import { Header, Icon } from '$lib/components';
 	import { 
 		currentNoteTitle, 
 		currentNoteContent, 
@@ -29,6 +29,10 @@
 	}
 
 	function handleTitleInput(e) {
+		// If title is empty or only whitespace, clear it completely so placeholder shows
+		if (!e.target.textContent.trim()) {
+			e.target.textContent = '';
+		}
 		currentNoteTitle.set(e.target.textContent || '');
 		debouncedSave();
 	}
@@ -42,6 +46,10 @@
 
 	function handleContentInput() {
 		if (editorRef) {
+			// If content is empty or only whitespace, clear it completely so placeholder shows
+			if (!editorRef.innerText.trim()) {
+				editorRef.innerHTML = '';
+			}
 			currentNoteContent.set(editorRef.innerHTML || '');
 			debouncedSave();
 		}
@@ -162,10 +170,10 @@
 
 
 	onMount(() => {
-		if (editorRef && content) {
+		if (editorRef && content && content.trim()) {
 			editorRef.innerHTML = content;
 		}
-		if (titleRef && title) {
+		if (titleRef && title && title.trim()) {
 			titleRef.textContent = title;
 		}
 	});
@@ -175,7 +183,7 @@
 	<title>Notepad | PromptFlam</title>
 </svelte:head>
 
-<Header showNewNote={true} onNewNote={handleStartOver} />
+<Header />
 
 <main class="notepad-page">
 	<div class="editor-container">
@@ -191,22 +199,30 @@
 			on:keydown={handleTitleKeydown}
 		></div>
 
-		<div
-			bind:this={editorRef}
-			class="content-editor"
-			contenteditable="true"
-			role="textbox"
-			tabindex="0"
-			aria-label="Note content"
-			aria-multiline="true"
-			data-placeholder="Text"
-			on:input={handleContentInput}
-		></div>
+		<div class="editor-with-count">
+			<div
+				bind:this={editorRef}
+				class="content-editor"
+				contenteditable="true"
+				role="textbox"
+				tabindex="0"
+				aria-label="Note content"
+				aria-multiline="true"
+				data-placeholder="Text"
+				on:input={handleContentInput}
+			></div>
+		</div>
+		{#if hasContent}
+			<span class="inline-word-count">{wordCount} {wordCount === 1 ? 'word' : 'words'}</span>
+		{/if}
 	</div>
 
 	{#if hasContent}
 		<div class="content-footer">
-			<span class="word-count">{wordCount} {wordCount === 1 ? 'word' : 'words'}</span>
+			<button class="new-note-btn" on:click={handleStartOver} aria-label="Start new note">
+				<Icon name="newchat" size={18} />
+				<span>New note</span>
+			</button>
 			<div class="action-buttons">
 				<button class="action-btn" class:tapped={shareTapped} on:click={handleShare} aria-label="Share">
 					<img src="/icons/icon-share.svg" alt="" class="action-icon" />
@@ -250,13 +266,14 @@
 		line-height: 1.4;
 		outline: none;
 		min-height: 1.4em;
-		margin-bottom: var(--spacing-md);
+		margin-bottom: var(--spacing-sm);
 	}
 
 	.title-editor:empty::before {
 		content: attr(data-placeholder);
-		color: var(--color-icon-default);
+		color: #bbb;
 		pointer-events: none;
+		font-size: 1.3rem;
 	}
 
 	.content-editor {
@@ -269,8 +286,9 @@
 
 	.content-editor:empty::before {
 		content: attr(data-placeholder);
-		color: var(--color-icon-default);
+		color: #bbb;
 		pointer-events: none;
+		font-size: 1.1rem;
 	}
 
 	.content-editor :global(ul) {
@@ -287,6 +305,19 @@
 		background-color: #ece4ff;
 	}
 
+	.editor-with-count {
+		flex: 1;
+	}
+
+	.inline-word-count {
+		display: block;
+		text-align: right;
+		margin-top: var(--spacing-sm);
+		font-size: 0.75rem;
+		color: #aaa;
+		font-weight: 400;
+	}
+
 	.content-footer {
 		display: flex;
 		align-items: center;
@@ -295,9 +326,34 @@
 		margin-top: var(--spacing-md);
 	}
 
-	.word-count {
-		font-size: 0.875rem;
-		color: var(--color-icon-default);
+	.new-note-btn {
+		display: flex;
+		align-items: center;
+		gap: var(--spacing-sm);
+		color: #555555;
+		font-size: 0.9375rem;
+		font-weight: 500;
+		transition: all 0.15s;
+		background: transparent;
+		border: none;
+		cursor: pointer;
+	}
+
+	.new-note-btn:hover {
+		color: var(--accent-brand);
+	}
+
+	.new-note-btn :global(svg) {
+		width: 22px;
+		height: 22px;
+		flex-shrink: 0;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		border-radius: 50%;
+		background: #5422b0;
+		color: #fff;
+		padding: 2px;
 	}
 
 	.action-buttons {
@@ -324,8 +380,8 @@
 	}
 
 	.action-icon {
-		width: 20px;
-		height: 20px;
+		width: 22px;
+		height: 22px;
 		filter: brightness(0) saturate(100%) invert(33%);
 	}
 

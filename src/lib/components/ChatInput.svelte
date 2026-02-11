@@ -354,7 +354,7 @@
 		height: 22px;
 		border-radius: 50%;
 		border: none;
-		background: #555555;
+		background: #5422b0;
 		color: #fff;
 		transition: all 0.15s;
 	}
