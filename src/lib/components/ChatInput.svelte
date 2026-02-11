@@ -4,9 +4,11 @@
 
 	export let value = '';
 	export let isLoading = false;
-	export let placeholder = 'Write, speak or tap ☆ to add a prompt';
+	export let placeholder = 'Write or speak...';
 
 	const dispatch = createEventDispatcher();
+
+	export let hasMessages = false;
 
 	let textareaEl;
 	let drawerEl;
@@ -151,8 +153,8 @@
 		}
 	}
 
-	function handlePromptDrawer() {
-		dispatch('openPromptDrawer');
+	function handleNewChat() {
+		dispatch('newChat');
 	}
 
 	function handleStop() {
@@ -192,14 +194,16 @@
 		
 		<div class="button-row">
 			<div class="left-buttons">
-				<button
-					class="prompt-button"
-					on:click={handlePromptDrawer}
-					aria-label="Open prompt library"
-					type="button"
-				>
-					<Icon name="prompts" size={20} />
-				</button>
+				{#if hasMessages}
+					<button
+						class="new-chat-btn"
+						on:click={handleNewChat}
+						aria-label="Start new chat"
+						type="button"
+					>
+						<Icon name="newchat" size={15} />
+					</button>
+				{/if}
 				
 				{#if speechSupported}
 					<button
@@ -213,7 +217,7 @@
 							<div class="pulse-ring"></div>
 							<div class="pulse-ring delay"></div>
 						{/if}
-						<Icon name={isListening ? 'mic-fill' : 'mic'} size={20} />
+						<Icon name={isListening ? 'mic-fill' : 'mic'} size={22} />
 					</button>
 				{/if}
 			</div>
@@ -226,7 +230,7 @@
 						aria-label="Stop generating"
 						type="button"
 					>
-						<Icon name="stop-fill" size={20} />
+						<Icon name="stop-fill" size={26} />
 					</button>
 				{:else}
 					<button
@@ -237,7 +241,7 @@
 						aria-label="Send message"
 						type="button"
 					>
-						<Icon name={canSend ? 'send-fill' : 'send'} size={20} />
+						<Icon name={canSend ? 'send-fill' : 'send'} size={22} />
 					</button>
 				{/if}
 			</div>
@@ -283,7 +287,7 @@
 		background: var(--bg-main);
 		border-top-left-radius: var(--radius-lg);
 		border-top-right-radius: var(--radius-lg);
-		padding: var(--spacing-md);
+		padding: var(--spacing-md) var(--spacing-lg);
 		padding-bottom: calc(var(--spacing-md) + env(safe-area-inset-bottom, 0px));
 		box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.15);
 	}
@@ -310,20 +314,6 @@
 		margin-right: -8px;
 	}
 
-	.prompt-button {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		width: 36px;
-		height: 36px;
-		color: var(--color-icon-default);
-		transition: color 0.15s;
-	}
-
-	.prompt-button:hover {
-		color: var(--color-icon-active);
-	}
-
 	.action-button {
 		display: flex;
 		align-items: center;
@@ -335,7 +325,7 @@
 	}
 
 	.action-button.send {
-		color: #777777;
+		color: #555555;
 		opacity: 1;
 	}
 
@@ -354,6 +344,23 @@
 
 	.action-button.stop {
 		color: var(--accent-brand);
+	}
+
+	.new-chat-btn {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 22px;
+		height: 22px;
+		border-radius: 50%;
+		border: none;
+		background: #555555;
+		color: #fff;
+		transition: all 0.15s;
+	}
+
+	.new-chat-btn:hover {
+		background: var(--accent-brand);
 	}
 
 	.left-buttons {
@@ -376,7 +383,7 @@
 		width: 37px;
 		height: 37px;
 		border-radius: 50%;
-		color: var(--color-icon-default);
+		color: #555555;
 		transition: color 0.15s;
 		transform: translateY(2px);
 	}

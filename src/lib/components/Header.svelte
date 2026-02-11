@@ -3,8 +3,6 @@
 	import { Icon } from '$lib/components';
 	import { createEventDispatcher } from 'svelte';
 
-	export let showNewChat = false;
-	export let onNewChat = () => {};
 	export let showNewNote = false;
 	export let onNewNote = () => {};
 
@@ -46,15 +44,6 @@
 		{/each}
 	</nav>
 	
-	{#if showNewChat}
-		<button
-			class="new-chat-button"
-			on:click={onNewChat}
-			aria-label="Start new chat"
-		>
-			<Icon name="newchat" size={20} />
-		</button>
-	{/if}
 	{#if showNewNote}
 		<button
 			class="new-chat-button"
@@ -138,22 +127,7 @@
 		color: #ffffff;
 	}
 
-	.new-chat-button {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		width: 40px;
-		height: 40px;
-		border-radius: 50%;
-		border: none;
-		background: var(--accent-brand);
-		color: #ffffff;
-		transition: background-color 0.15s;
-	}
 
-	.new-chat-button:hover {
-		background: #4a1e9e;
-	}
 
 
 </style>

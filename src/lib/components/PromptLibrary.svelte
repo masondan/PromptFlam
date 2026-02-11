@@ -125,6 +125,11 @@
 		promptLibraryCategory.set(cat);
 		promptLibrarySubcategory.set('all');
 		categoryDropdownOpen = false;
+		// Reset search if active
+		if (activeTab === 'search') {
+			activeTab = 'all';
+			searchQuery = '';
+		}
 	}
 
 	function handleSubcategorySelect(sub) {

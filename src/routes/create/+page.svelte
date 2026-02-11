@@ -5,7 +5,6 @@
 		ChatInput, 
 		ChatMessage, 
 		PromptCard, 
-		PromptDrawer, 
 		SourcesDrawer, 
 		ThinkingDots 
 	} from '$lib/components';
@@ -18,7 +17,6 @@
 	let isStreaming = false;
 	let streamingContent = '';
 	let errorMessage = '';
-	let showPromptDrawer = false;
 	let showSourcesDrawer = false;
 	let currentSources = [];
 	let highlightedSourceIndex = -1;
@@ -149,19 +147,6 @@
 		currentChatSessionId.set(null);
 	}
 
-	function handleOpenPromptDrawer() {
-		showPromptDrawer = true;
-	}
-
-	function handleClosePromptDrawer() {
-		showPromptDrawer = false;
-	}
-
-	function handleInsertPrompt(e) {
-		inputValue = e.detail.prompt;
-		showPromptDrawer = false;
-	}
-
 	function handleOpenSources(e) {
 		currentSources = e.detail.sources || [];
 		highlightedSourceIndex = e.detail.highlightIndex ?? -1;
@@ -270,7 +255,7 @@
 	<title>Create | PromptFlam</title>
 </svelte:head>
 
-<Header showNewChat={hasMessages} onNewChat={handleNewChat} />
+<Header />
 
 <main class="create-page" bind:this={mainEl} style="--chat-input-height: {chatInputHeight}px;">
 	{#if !hasMessages && !isLoading}
@@ -328,16 +313,11 @@
 <ChatInput 
 	bind:value={inputValue}
 	{isLoading}
+	{hasMessages}
 	on:send={handleSend}
-	on:openPromptDrawer={handleOpenPromptDrawer}
+	on:newChat={handleNewChat}
 	on:stop={handleStop}
 	on:resize={(e) => { chatInputHeight = e.detail.height; }}
-/>
-
-<PromptDrawer 
-	isOpen={showPromptDrawer}
-	on:close={handleClosePromptDrawer}
-	on:insert={handleInsertPrompt}
 />
 
 <SourcesDrawer 
