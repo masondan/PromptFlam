@@ -261,7 +261,7 @@
 	{#if !hasMessages && !isLoading}
 		<div class="logo-container">
 			<img 
-				src="/promptflam-purple-logo.png" 
+				src="/logos/logo-promptflam.png" 
 				alt="PromptFlam" 
 				class="logo"
 			/>

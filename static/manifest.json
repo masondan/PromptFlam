@@ -8,13 +8,13 @@
   "description": "A free mobile-first library of AI prompts for content creators and journalists.",
   "icons": [
     {
-      "src": "/promptflam-icon.png",
+      "src": "/logos/logo-promptflam-gen.png",
       "type": "image/png",
       "sizes": "512x512",
       "purpose": "any"
     },
     {
-      "src": "/promptflam-icon-maskable.png",
+      "src": "/logos/logo-promptflam-maskable.png",
       "type": "image/png",
       "sizes": "512x512",
       "purpose": "maskable"

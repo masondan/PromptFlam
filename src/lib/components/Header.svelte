@@ -30,7 +30,7 @@
 
 <header class="header">
 	<div class="logo-container">
-		<img src="/promptflam-purple-logo.png" alt="PromptFlam" class="logo" />
+		<img src="/logos/logo-promptflam.png" alt="PromptFlam" class="logo" />
 	</div>
 
 	<nav class="nav" aria-label="Main navigation">
