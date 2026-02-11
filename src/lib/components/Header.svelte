@@ -51,35 +51,17 @@
 
 <style>
 	.header {
-		position: fixed;
-		top: 0;
-		left: 0;
-		right: 0;
+		position: relative;
 		height: calc(var(--header-height) + var(--spacing-md));
 		background: var(--bg-main);
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
-		padding: var(--spacing-md) var(--spacing-md) var(--spacing-sm);
+		padding: var(--spacing-md) var(--spacing-md) var(--spacing-md);
 		z-index: 101;
-		transform: translateZ(0);
-		-webkit-transform: translateZ(0);
 	}
 
-	@media (min-width: 768px) {
-		.header {
-			left: 50%;
-			right: auto;
-			transform: translateX(-50%) translateZ(0);
-			width: 100%;
-			max-width: var(--app-max-width);
-			-webkit-transform: translateX(-50%) translateZ(0);
-		}
-	}
-
-
-
-	/* Gradient fade at bottom of header */
+	/* Separator under header */
 	.header::after {
 		content: '';
 		position: absolute;
@@ -87,9 +69,10 @@
 		left: 0;
 		right: 0;
 		height: 1px;
-		background: #777777;
+		background: #999999;
 		pointer-events: none;
 	}
+
 
 	.logo-container {
 		display: flex;
