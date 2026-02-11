@@ -310,7 +310,7 @@
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
-		margin-left: -8px;
+		margin-left: 3px;
 		margin-right: -8px;
 	}
 
@@ -366,7 +366,7 @@
 	.left-buttons {
 		display: flex;
 		align-items: center;
-		gap: var(--spacing-xs);
+		gap: var(--spacing-sm);
 	}
 
 	.right-buttons {

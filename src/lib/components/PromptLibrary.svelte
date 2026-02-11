@@ -330,18 +330,18 @@
 									<div class="action-buttons">
 										{#if mode === 'page'}
 											<button
-												class="action-btn add-to-chat-btn"
-												on:click={() => handleAddToChat(prompt)}
-												aria-label="Add to chat"
-											>
-												<Icon name="create" size={20} />
-											</button>
-											<button
 												class="action-btn"
 												on:click={() => handleEdit(prompt)}
 												aria-label="Edit prompt"
 											>
 												<Icon name="edit" size={20} />
+											</button>
+											<button
+												class="action-btn add-to-chat-btn"
+												on:click={() => handleAddToChat(prompt)}
+												aria-label="Add to chat"
+											>
+												<Icon name="create" size={20} />
 											</button>
 										{:else}
 											<button
