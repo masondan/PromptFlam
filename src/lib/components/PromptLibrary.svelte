@@ -17,6 +17,7 @@
 	} from '$lib/stores.js';
 
 	export let mode = 'page';
+	export let onProfileClick = () => {};
 	
 	const dispatch = createEventDispatcher();
 
@@ -246,6 +247,13 @@
 		>
 			<Icon name={activeTab === 'favorites' ? 'heart-fill' : 'heart'} size={20} />
 		</button>
+		<button
+			class="icon-btn profile-btn"
+			on:click={onProfileClick}
+			aria-label="Persona settings"
+		>
+			<Icon name="user" size={20} />
+		</button>
 	</div>
 
 	{#if $promptLibraryCategory !== 'all' && subcategories.length > 0}
@@ -402,6 +410,14 @@
 		background: #EFEFEF;
 		border-color: var(--color-border);
 		color: var(--accent-brand);
+	}
+
+	.icon-btn.profile-btn {
+		color: var(--color-icon-default);
+	}
+
+	.icon-btn.profile-btn:hover {
+		color: var(--color-icon-active);
 	}
 
 	.search-input {

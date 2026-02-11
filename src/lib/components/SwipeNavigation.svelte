@@ -3,7 +3,7 @@
 	import { goto } from '$app/navigation';
 	import { onMount, tick } from 'svelte';
 
-	const pages = ['/prompts', '/', '/notepad', '/archive'];
+	const pages = ['/', '/create', '/notepad', '/archive'];
 	
 	let container;
 	let startX = 0;

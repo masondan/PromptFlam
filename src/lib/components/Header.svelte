@@ -10,15 +10,15 @@
 
 	const dispatch = createEventDispatcher();
 
-	$: isPromptsPage = $page.url.pathname === '/prompts';
+	$: isPromptsPage = $page.url.pathname === '/';
 
 	function handleProfileClick() {
 		dispatch('openPersonaSettings');
 	}
 
 	const navItems = [
-		{ name: 'prompts', path: '/prompts', label: 'Prompts' },
-		{ name: 'create', path: '/', label: 'Create' },
+		{ name: 'prompts', path: '/', label: 'Prompts' },
+		{ name: 'create', path: '/create', label: 'Create' },
 		{ name: 'notepad', path: '/notepad', label: 'Notepad' },
 		{ name: 'archive', path: '/archive', label: 'Saved' }
 	];
@@ -64,15 +64,7 @@
 			<Icon name="newchat" size={20} />
 		</button>
 	{/if}
-	{#if isPromptsPage}
-		<button
-			class="profile-button"
-			on:click={handleProfileClick}
-			aria-label="Persona settings"
-		>
-			<Icon name="user" size={20} />
-		</button>
-	{/if}
+
 </header>
 
 <style>
@@ -163,20 +155,5 @@
 		background: #4a1e9e;
 	}
 
-	.profile-button {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		width: 40px;
-		height: 40px;
-		padding: 0;
-		border: none;
-		background: transparent;
-		color: var(--color-icon-default);
-		transition: color 0.15s;
-	}
 
-	.profile-button:hover {
-		color: var(--color-icon-active);
-	}
 </style>
