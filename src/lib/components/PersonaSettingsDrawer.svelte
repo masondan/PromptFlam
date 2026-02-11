@@ -56,7 +56,7 @@
 		<div class="drawer" transition:fly={{ y: '100%', duration: 250 }}>
 			<div class="content-area">
 				<p class="description">
-					This pre-fills the 'act as a [role]' and '…audience of [who, where]' sections.
+					This pre-fills the 'act as a [role]' and 'audience of [who, where]' sections.
 				</p>
 
 				<div class="input-group">
@@ -126,7 +126,7 @@
 
 	.description {
 		color: #777777;
-		font-size: var(--font-size-base);
+		font-size: 0.9375rem;
 		margin: 0;
 		line-height: var(--line-height);
 	}
@@ -147,7 +147,7 @@
 		padding: 0.75rem;
 		border: 1px solid var(--color-border);
 		border-radius: var(--radius);
-		font-size: var(--font-size-base);
+		font-size: 0.9375rem;
 		background: #fff;
 		color: var(--text-primary);
 	}
@@ -159,6 +159,7 @@
 
 	.text-input::placeholder {
 		color: #999999;
+		font-size: 0.9375rem;
 	}
 
 	.button-row {
@@ -168,13 +169,17 @@
 	}
 
 	.action-btn {
-		padding: 0.625rem 1.25rem;
+		padding: 0.5625rem 1.25rem;
 		border: 1px solid #777777;
 		border-radius: var(--radius);
-		font-size: var(--font-size-base);
+		font-size: 0.9375rem;
 		color: #777777;
 		background: transparent;
 		transition: border-color 0.15s, color 0.15s;
+		height: 38px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
 	}
 
 	.action-btn:hover,

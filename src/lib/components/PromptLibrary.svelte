@@ -237,7 +237,7 @@
 			on:click={() => handleTabClick(activeTab === 'search' ? 'all' : 'search')}
 			aria-label="Search"
 		>
-			<Icon name="search" size={20} />
+			<Icon name="search" size={22} />
 		</button>
 		<button
 			class="icon-btn"
@@ -245,14 +245,14 @@
 			on:click={() => handleTabClick(activeTab === 'favorites' ? 'all' : 'favorites')}
 			aria-label="Favourites"
 		>
-			<Icon name={activeTab === 'favorites' ? 'heart-fill' : 'heart'} size={20} />
+			<Icon name={activeTab === 'favorites' ? 'heart-fill' : 'heart'} size={22} />
 		</button>
 		<button
 			class="icon-btn profile-btn"
 			on:click={onProfileClick}
 			aria-label="Persona settings"
 		>
-			<Icon name="user" size={20} />
+			<Icon name="user" size={22} />
 		</button>
 	</div>
 
@@ -392,14 +392,14 @@
 		height: 46px;
 		padding: 0.65rem;
 		background: #fff;
-		border: 1px solid var(--color-border);
+		border: 1px solid #555555;
 		border-radius: var(--radius);
 		cursor: pointer;
 		display: flex;
 		align-items: center;
 		justify-content: center;
 		transition: all 0.2s ease;
-		color: #999999;
+		color: #555555;
 	}
 
 	.icon-btn:hover {
@@ -456,7 +456,7 @@
 		width: 100%;
 		padding: 0.75rem;
 		background: #fff;
-		border: 1px solid var(--color-border);
+		border: 1px solid #555555;
 		border-radius: var(--radius);
 		display: flex;
 		justify-content: space-between;
@@ -486,7 +486,7 @@
 		left: 0;
 		right: 0;
 		background: #fff;
-		border: 1px solid var(--color-border);
+		border: 1px solid #555555;
 		border-radius: var(--radius);
 		box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 		z-index: 99;
@@ -500,7 +500,7 @@
 		text-align: left;
 		font-size: 1rem;
 		color: var(--text-primary);
-		border-bottom: 1px solid var(--color-border);
+		border-bottom: 1px solid #555555;
 		cursor: pointer;
 		background: none;
 		border-left: none;
