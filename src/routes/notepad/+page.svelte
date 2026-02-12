@@ -211,10 +211,10 @@
 				data-placeholder="Text"
 				on:input={handleContentInput}
 			></div>
+			{#if hasContent}
+				<span class="inline-word-count">{wordCount} {wordCount === 1 ? 'word' : 'words'}</span>
+			{/if}
 		</div>
-		{#if hasContent}
-			<span class="inline-word-count">{wordCount} {wordCount === 1 ? 'word' : 'words'}</span>
-		{/if}
 	</div>
 
 	{#if hasContent}
@@ -244,11 +244,11 @@
 
 <style>
 	.notepad-page {
-		min-height: 100vh;
 		padding-top: var(--spacing-sm);
 		display: flex;
 		flex-direction: column;
 		padding-bottom: var(--spacing-lg);
+		overflow-y: auto;
 	}
 
 	@media (min-width: 768px) {
@@ -259,7 +259,6 @@
 	}
 
 	.editor-container {
-		flex: 1;
 		padding: var(--spacing-md) var(--spacing-md) 0;
 		display: flex;
 		flex-direction: column;
@@ -282,11 +281,10 @@
 	}
 
 	.content-editor {
-		flex: 1;
 		font-size: var(--font-size-base);
 		line-height: 1.6;
 		outline: none;
-		min-height: 300px;
+		min-height: auto;
 	}
 
 	.content-editor:empty::before {
@@ -311,7 +309,9 @@
 	}
 
 	.editor-with-count {
-		flex: 1;
+		display: flex;
+		flex-direction: column;
+		gap: var(--spacing-sm);
 	}
 
 	.inline-word-count {

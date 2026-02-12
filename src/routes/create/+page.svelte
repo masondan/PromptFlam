@@ -343,7 +343,9 @@
 		align-items: center;
 		justify-content: center;
 		padding: var(--spacing-lg);
-		min-height: calc(100vh - var(--header-height) - var(--spacing-md) * 2);
+		transform: translateY(120px);
+		position: relative;
+		z-index: 2;
 	}
 
 	.logo {

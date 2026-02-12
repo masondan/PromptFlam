@@ -180,7 +180,6 @@
 
 <style>
 	.archive-page {
-		min-height: 100vh;
 		padding-top: var(--spacing-md);
 	}
 
