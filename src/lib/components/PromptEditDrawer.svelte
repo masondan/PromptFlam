@@ -101,7 +101,7 @@
 	function handleAddToChat() {
 		pendingChatInput.set(editedText);
 		close();
-		goto('/');
+		goto('/create');
 	}
 </script>
 

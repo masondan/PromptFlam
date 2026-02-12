@@ -160,7 +160,7 @@
 	function handleAddToChat(prompt) {
 		const text = applyPersonaSubstitutions(stripHtml(prompt.prompt));
 		pendingChatInput.set(text);
-		goto('/');
+		goto('/create');
 	}
 
 	function togglePromptExpand(promptId) {
