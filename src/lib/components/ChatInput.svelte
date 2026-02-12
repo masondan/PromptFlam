@@ -230,7 +230,7 @@
 						aria-label="Stop generating"
 						type="button"
 					>
-						<Icon name="stop-fill" size={26} />
+						<Icon name="stop-fill" size={30} />
 					</button>
 				{:else}
 					<button
@@ -318,8 +318,8 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		width: 36px;
-		height: 36px;
+		width: 48px;
+		height: 48px;
 		border-radius: 50%;
 		transition: all 0.15s;
 	}
@@ -350,8 +350,8 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		width: 22px;
-		height: 22px;
+		width: 24px;
+		height: 24px;
 		border-radius: 50%;
 		border: none;
 		background: #5422b0;
@@ -380,8 +380,8 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		width: 37px;
-		height: 37px;
+		width: 48px;
+		height: 58px;
 		border-radius: 50%;
 		color: #555555;
 		transition: color 0.15s;
