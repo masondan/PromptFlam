@@ -261,7 +261,7 @@
 	{#if !hasMessages && !isLoading}
 		<div class="logo-container">
 			<img 
-				src="/logos/logo-promptflam.png" 
+				src="/logos/logo-promptflam-trs.png" 
 				alt="PromptFlam" 
 				class="logo"
 			/>
@@ -343,12 +343,13 @@
 		align-items: center;
 		justify-content: center;
 		padding: var(--spacing-lg);
+		min-height: calc(100vh - var(--header-height) - var(--spacing-md) * 2);
 	}
 
 	.logo {
-		width: 50%;
-		max-width: 220px;
+		width: 40%;
 		height: auto;
+		opacity: 0.15;
 	}
 
 	.chat-content {
