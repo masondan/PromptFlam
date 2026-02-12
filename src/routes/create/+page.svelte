@@ -329,29 +329,12 @@
 
 <style>
 	.create-page {
-		position: fixed;
-		top: 0;
-		left: 0;
-		right: 0;
-		bottom: 0;
-		z-index: 1;
-		padding-top: calc(var(--header-height) + var(--spacing-md) + var(--spacing-md));
+		padding-top: var(--spacing-md);
 		padding-bottom: calc(var(--chat-input-height, var(--input-drawer-min-height)) + 40px);
 		display: flex;
 		flex-direction: column;
-		overflow-y: auto;
 		overflow-x: hidden;
 		-webkit-overflow-scrolling: touch;
-	}
-
-	@media (min-width: 768px) {
-		.create-page {
-			left: 50%;
-			right: auto;
-			transform: translateX(-50%);
-			width: 100%;
-			max-width: var(--app-max-width);
-		}
 	}
 
 	.logo-container {
