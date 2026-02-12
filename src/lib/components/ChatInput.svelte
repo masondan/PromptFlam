@@ -308,7 +308,7 @@
 
 	.button-row {
 		display: flex;
-		align-items: center;
+		align-items: flex-end;
 		justify-content: space-between;
 		margin-left: 3px;
 		margin-right: -8px;
