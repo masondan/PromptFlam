@@ -1,5 +1,13 @@
 /* PromptFlam Global Styles - Unified Design System */
 
+/* FONT LOADING */
+@font-face {
+	font-family: 'Inter';
+	src: url('/fonts/Inter-VariableFont_opsz,wght.ttf') format('truetype-variations');
+	font-weight: 100 900;
+	font-display: swap;
+}
+
 :root {
 	/* 1. COLORS - Inspired by Gemini and user palette */
 	--bg-main: #ffffff;
@@ -16,7 +24,7 @@
 	--color-separator: #e0e0e0;
 
 	/* 2. TYPOGRAPHY - System fonts, simple hierarchy */
-	--font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+	--font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
 	--font-size-base: 1.125rem; /* 17px */
 	--font-size-h3:   1.125rem;  /* 18px */
 	--font-size-h2:   1.25rem;   /* 20px */
