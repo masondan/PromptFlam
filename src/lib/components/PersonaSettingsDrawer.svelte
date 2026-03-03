@@ -76,7 +76,7 @@
 						id="persona-audience"
 						type="text"
 						class="text-input"
-						placeholder="Define your audience"
+						placeholder="Who? Where?"
 						bind:value={localAudience}
 					/>
 				</div>
@@ -139,7 +139,7 @@
 
 	.input-label {
 		font-size: 0.875rem;
-		color: var(--text-secondary);
+		color: #1f1f1f;
 	}
 
 	.text-input {

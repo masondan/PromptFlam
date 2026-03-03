@@ -33,13 +33,28 @@
 
 	const categoryOrder = ['Text', 'Data', 'Audio', 'Video', 'Social Media', 'Website', 'Strategy', 'Co-pilot', 'Image Gen'];
 
+	const subcategoryOrder = {
+		'Text': ['Lists', 'Q&A', 'In quotes', 'Timeline', 'Fact check', 'Feature'],
+		'Data': ['In charts', 'In numbers'],
+		'Audio': ['Mini-podcast'],
+		'Video': ['Slideshow + Titles', 'Slideshow + Voiceover'],
+		'Social Media': ['Posts', 'Carousel', 'Thread', 'Quotes', 'Facts | Myths+Facts', 'Social Media Campaign'],
+		'Website': ['Website Review', 'Landing Page'],
+		'Strategy': ['Comms Plan'],
+		'Co-pilot': ['Editor', 'Interviewer', 'Instructor', 'Prompt Engineer', 'Researcher'],
+		'Image Gen': ['Prompt Tips', 'Logo Design']
+	};
+
 	$: categories = [...new Set(prompts.map(p => p.category))].sort(
 		(a, b) => categoryOrder.indexOf(a) - categoryOrder.indexOf(b)
 	);
 
 	$: subcategories = $promptLibraryCategory === 'all'
 		? []
-		: [...new Set(prompts.filter(p => p.category === $promptLibraryCategory).map(p => p.subCategory))].sort();
+		: [...new Set(prompts.filter(p => p.category === $promptLibraryCategory).map(p => p.subCategory))].sort((a, b) => {
+			const order = subcategoryOrder[$promptLibraryCategory] || [];
+			return order.indexOf(a) - order.indexOf(b);
+		});
 
 	$: filteredPrompts = filterPrompts(prompts, activeTab, searchQuery, $promptLibraryCategory, $promptLibrarySubcategory, $favorites);
 
