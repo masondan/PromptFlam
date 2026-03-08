@@ -172,7 +172,7 @@
     "category": "Data",
     "subCategory": "In numbers",
     "task": "DRAFT",
-    "prompt": "<p>Act as a data journalist. Draft an 'in numbers' article that will engage an online audience of [who, where].<br />Base your draft on: [topic/question] [URL]<br />Provide [x] diverse numbers, each followed by 150 words of explanation and context.<br/>Begin each section with subheading that displays a striking, impactful number (eg 93%, $1m, 10,000) then follow with the explanation for that specific number.<br />Write in a professional, structured, objective style. Use only authoritative sources. Use editorial style to attribute facts and sources inline (eg 'according to...', 'x reported that...'). Use direct quotes only from relevant leaders, not media sources.</p>"
+    "prompt": "<p>Act as a data journalist. Draft an 'in numbers' article that will engage an online audience of [who, where].<br />Base your draft on: [topic/question] [URL]<br />Provide [x] diverse numbers, each followed by 100 words of explanation and context.<br/>Begin each section with subheading that displays a striking, impactful number (eg 93%, $1m, 10,000) then follow with the explanation for that specific number.<br />Write in a professional, structured, objective style. Use only authoritative sources. Use editorial style to attribute facts and sources inline (eg 'according to...', 'x reported that...'). Use direct quotes only from relevant leaders, not media sources.</p>"
   },
   {
     "id": 26,
