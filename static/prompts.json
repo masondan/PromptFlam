@@ -74,7 +74,7 @@
     "category": "Text",
     "subCategory": "Timeline",
     "task": "DRAFT",
-    "prompt": "<p>Act as a [role]. Draft a timeline article that will engage an online audience of [who, where].<br />Base your draft on: [topic/question] [URL]<br />Provide a list of important timeline milestones tracing the development of the story and related events. For each milestone include:<br />- Specific timestamp (eg date/month/year)<br />- A simple, descriptive subheading.<br/>- 100 words of objective explanation and rigorous context.<br />Write in a professional, ethical style. Include a variety of trusted sources for added depth. Use editorial style to attribute facts and sources inline (eg 'according to...', 'x reported that...'). Use direct quotes if available, but prioritise quotes by real people over media sources.</p>"
+    "prompt": "<p>Act as a [role]. Draft a timeline article that will engage an online audience of [who, where].<br />Base your draft on: [topic/question] [URL]<br />Provide a list of timeline milestones tracing the development of the story and related events. Aim for a minimum of [x] milestones.<br />For each milestone include:<br />- Specific timestamp (eg date/month/year)<br />- A simple, descriptive subheading.<br/>- 100 words of objective explanation and rigorous context.<br />Write in a professional, ethical style. Include a variety of trusted sources for added depth. Use editorial style to attribute facts and sources inline (eg 'according to...', 'x reported that...'). Use direct quotes if available, but prioritise quotes by real people over media sources.</p>"
   },
   {
     "id": 17,
