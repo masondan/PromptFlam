@@ -60,7 +60,7 @@ export async function POST({ request }) {
 					...messages.map(m => ({ role: m.role, content: m.content }))
 				],
 				temperature: 0.7,
-				max_tokens: 1500,
+				max_tokens: 4000,
 				stream: true,
 				search_recency_filter: 'month'
 			})
