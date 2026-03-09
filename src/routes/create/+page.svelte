@@ -25,12 +25,49 @@
 	let abortController = null;
 	let chatInputHeight = 120;
 	let shouldPreventAutoScroll = false;
+	let shouldAutoScroll = true;
+	let userHasScrolledUp = false;
 
 	$: hasMessages = $chatMessages.length > 0;
 
+	function checkIfUserScrolledUp() {
+		if (!chatContentRef) return;
+		
+		// Find the last actual message element (ignore spacer)
+		const messages = chatContentRef.querySelectorAll('.prompt-wrapper, :scope > :not(.scroll-spacer):not(.error-message)');
+		const lastMsg = messages[messages.length - 1];
+		if (!lastMsg) return;
+		
+		// Check if the bottom of the last message is within 300px of the viewport bottom
+		const rect = lastMsg.getBoundingClientRect();
+		const isNearBottom = rect.bottom < window.innerHeight + 300;
+		
+		userHasScrolledUp = !isNearBottom;
+		shouldAutoScroll = isNearBottom;
+	}
+
+	function scrollToBottom(smooth = false) {
+		if (!shouldAutoScroll || !chatContentRef) return;
+		
+		requestAnimationFrame(() => {
+			// Find the last actual message (skip the scroll-spacer)
+			const messages = chatContentRef.querySelectorAll('.prompt-wrapper, :scope > :not(.scroll-spacer):not(.error-message)');
+			const lastMsg = messages[messages.length - 1];
+			if (!lastMsg) return;
+			
+			// Scroll so the bottom of the last message is visible at viewport bottom
+			const rect = lastMsg.getBoundingClientRect();
+			const bottomOfMessage = window.scrollY + rect.bottom + 40;
+			window.scrollTo({
+				top: bottomOfMessage - window.innerHeight,
+				behavior: smooth ? 'smooth' : 'auto'
+			});
+		});
+	}
+
 	async function scrollNewPromptToTop() {
 		if (typeof window === 'undefined') return;
-		if (!mainEl || !chatContentRef) return;
+		if (!chatContentRef) return;
 
 		await tick();
 
@@ -39,10 +76,12 @@
 			if (!prompts || !prompts.length) return;
 
 			const lastPrompt = prompts[prompts.length - 1];
-			
-			// Scroll with padding offset for breathing room below header
+			const rect = lastPrompt.getBoundingClientRect();
 			const paddingOffset = 90;
-			mainEl.scrollTop = lastPrompt.offsetTop - paddingOffset;
+			window.scrollTo({
+				top: window.scrollY + rect.top - paddingOffset,
+				behavior: 'auto'
+			});
 		});
 	}
 
@@ -53,6 +92,11 @@
 			inputValue = $pendingChatInput;
 			pendingChatInput.set('');
 		}
+
+		window.addEventListener('scroll', checkIfUserScrolledUp);
+		return () => {
+			window.removeEventListener('scroll', checkIfUserScrolledUp);
+		};
 	});
 
 	async function handleSend(e) {
@@ -67,9 +111,14 @@
 		streamingContent = '';
 		abortController = new AbortController();
 		shouldPreventAutoScroll = true;
+		shouldAutoScroll = true;
+		userHasScrolledUp = false;
 
 		// Wait for DOM update then scroll new prompt to top
 		await scrollNewPromptToTop();
+		// Then scroll to bottom to show response as it arrives
+		await tick();
+		scrollToBottom();
 
 		try {
 			// Prepare messages for API (convert to simple format, filter out non-API roles)
@@ -91,6 +140,8 @@
 				updateLastMessage(fullContent);
 
 				await tick();
+				// Auto-scroll to bottom as response streams in
+				scrollToBottom(true);
     
 			}, abortController.signal);
 
