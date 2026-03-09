@@ -25,7 +25,7 @@
     "category": "Text",
     "subCategory": "Lists",
     "task": "HEADLINE",
-    "prompt": "<p>Provide ten headline options for social media that balance impact with credibility. The headline must contain the number of list items.</p>"
+    "prompt": "<p>For the draft above, provide [x] creative headline options, optimised for search and social media, that balance impact with professional journalistic credibility. The headline must contain the number of list items.. The headline must contain the number of list items.</p>"
   },
    {
     "id": 10,
@@ -46,7 +46,7 @@
     "category": "Text",
     "subCategory": "Q&A",
     "task": "HEADLINE",
-    "prompt": "<p>Provide ten headline options for social media that balance impact with credibility. The headline must contain: Q&A.</p>"
+    "prompt": "<p>For the draft above, provide [x] creative headline options, optimised for search and social media, that balance impact with professional journalistic credibility. The headline must contain: Q&A.</p>"
   },
   {
     "id": 13,
@@ -67,7 +67,7 @@
     "category": "Text",
     "subCategory": "In quotes",
     "task": "HEADLINE",
-    "prompt": "<p>Provide ten headline options for social media that balance impact with credibility. The headline must contain: In quotes</p>"
+    "prompt": "<p>For the draft above, provide [x] creative headline options, optimised for search and social media, that balance impact with professional journalistic credibility. The headline must contain: In quotes</p>"
   },
   {
     "id": 16,
@@ -88,7 +88,7 @@
     "category": "Text",
     "subCategory": "Timeline",
     "task": "HEADLINE",
-    "prompt": "<p>Provide ten headline options for social media that balance impact with credibility. The headline must contain: Timeline</p>"
+    "prompt": "<p>For the draft above, provide [x] creative headline options, optimised for search and social media, that balance impact with professional journalistic credibility. The headline must contain: Timeline</p>"
   },
   {
     "id": 19,
@@ -109,7 +109,7 @@
     "category": "Text",
     "subCategory": "Fact check",
     "task": "HEADLINE",
-    "prompt": "<p>Provide ten headline options for social media that balance impact with credibility. The headline must include: 'Fact check'.</p>"
+    "prompt": "<p>For the draft above, provide [x] creative headline options, optimised for search and social media, that balance impact with professional journalistic credibility. The headline must include: 'Fact check'.</p>"
   },
   {
     "id": 1,
@@ -137,7 +137,7 @@
     "category": "Text",
     "subCategory": "Feature",
     "task": "HEADLINE",
-    "prompt": "<p>Provide 10 headline options for social media that balance impact with credibility.</p>"
+    "prompt": "<p>For the draft above, provide [x] creative headline options, optimised for search and social media, that balance impact with professional journalistic credibility.</p>"
   },
   {
     "id": 5,
@@ -165,7 +165,7 @@
     "category": "Data",
     "subCategory": "In charts",
     "task": "HEADLINE",
-    "prompt": "<p>Provide ten headline options for social media that balance impact with credibility. The headline must contain: 'In charts'</p>"
+    "prompt": "<p>For the draft above, provide [x] creative headline options, optimised for search and social media, that balance impact with professional journalistic credibility. The headline must contain: 'In charts'</p>"
   },
   {
     "id": 25,
@@ -186,7 +186,7 @@
     "category": "Data",
     "subCategory": "In numbers",
     "task": "HEADLINE",
-    "prompt": "<p>Provide ten headline options for social media that balance impact with credibility. The headline must contain: 'In numbers'</p>"
+    "prompt": "<p>For the draft above, provide [x] creative headline options, optimised for search and social media, that balance impact with professional journalistic credibility. The headline must contain: 'In numbers'</p>"
   },
   {
     "id": 28,
