@@ -244,7 +244,8 @@
 						All Prompts
 					</button>
 					{#each categories as cat}
-						<button class="dropdown-item" on:click={() => handleCategorySelect(cat)}>
+						{@const isCoreCategory = ['Text', 'Data', 'Audio', 'Video', 'Social Media'].includes(cat)}
+						<button class="dropdown-item" class:core-category={isCoreCategory} on:click={() => handleCategorySelect(cat)}>
 							{cat}
 						</button>
 					{/each}
@@ -563,6 +564,10 @@
 
 	.dropdown-item:hover {
 		background: var(--color-highlight);
+	}
+
+	.dropdown-item.core-category {
+		font-weight: 700;
 	}
 
 	.loading,
