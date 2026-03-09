@@ -1,11 +1,32 @@
 <script>
 	import { page } from '$app/stores';
 	import { Icon } from '$lib/components';
-	import { createEventDispatcher } from 'svelte';
-
-
+	import { createEventDispatcher, onMount, onDestroy } from 'svelte';
 
 	const dispatch = createEventDispatcher();
+
+	let headerHidden = false;
+	let lastScrollY = 0;
+	const scrollThreshold = 10;
+
+	function handleScroll() {
+		const currentY = window.scrollY;
+		if (Math.abs(currentY - lastScrollY) < scrollThreshold) return;
+
+		headerHidden = currentY > lastScrollY && currentY > 60;
+		lastScrollY = currentY;
+	}
+
+	onMount(() => {
+		lastScrollY = window.scrollY;
+		window.addEventListener('scroll', handleScroll, { passive: true });
+	});
+
+	onDestroy(() => {
+		if (typeof window !== 'undefined') {
+			window.removeEventListener('scroll', handleScroll);
+		}
+	});
 
 	$: isPromptsPage = $page.url.pathname === '/';
 
@@ -28,7 +49,7 @@
 	}
 </script>
 
-<header class="header">
+<header class="header" class:header-hidden={headerHidden}>
 	<div class="logo-container">
 		<img src="/logos/logo-promptflam.png" alt="PromptFlam" class="logo" />
 	</div>
@@ -51,7 +72,8 @@
 
 <style>
 	.header {
-		position: relative;
+		position: sticky;
+		top: 0;
 		height: calc(var(--header-height) + var(--spacing-md));
 		background: var(--bg-main);
 		display: flex;
@@ -59,6 +81,11 @@
 		justify-content: space-between;
 		padding: var(--spacing-md) var(--spacing-md) var(--spacing-md);
 		z-index: 101;
+		transition: transform 0.3s ease;
+	}
+
+	.header-hidden {
+		transform: translateY(-100%);
 	}
 
 	@media (min-width: 768px) {

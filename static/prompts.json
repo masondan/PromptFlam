@@ -193,7 +193,7 @@
     "category": "Audio",
     "subCategory": "Mini-podcast",
     "task": "IDEAS",
-    "prompt": "<p>Act as a professional podcast scriptwriter. Suggest 10 ideas for short explainer podcast episodes that will engage an online audience of [who, where].<br />About the podcast: [name, description]<br />Base ideas on [recent news] [hot topics] [topic/question] [URL]<br />For each idea, provide an explainer hook focused on a question (eg why, how), and a brief content outline based on verified, authoritative facts. Stay audience-focused and include unusual angles supported by credible sources.</p>"
+    "prompt": "<p>Act as a professional podcast scriptwriter. Suggest [x] ideas for short explainer podcast episodes that will engage an online audience of [who, where].<br />[About the podcast:] [name, description]<br />Base ideas on [recent news] [hot topics] [topic/question] [URL]<br />For each idea, provide an explainer hook focused on a question (eg why, how), and a brief content outline based on verified, authoritative facts. Stay audience-focused and include unusual angles supported by credible sources.</p>"
   },
    {
     "id": 29,
