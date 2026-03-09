@@ -11,7 +11,7 @@
     "category": "Text",
     "subCategory": "Lists",
     "task": "DRAFT",
-    "prompt": "<p>Act as a [role]. Draft a compelling, list-based article that will engage an online audience of [who, where]<br />Base the article on: [idea number] [topic/question] [URL]<br />Provide [x] fact-based list items.<br />Begin each list item with a catchy, impactful sub-heading and follow with 150 words of explanation and context.<br />Write in a professional, structured, objective style. Use only authoritative sources. Use editorial style to attribute facts and sources inline.</p>"
+    "prompt": "<p>Act as a [role]. Draft a compelling, list-based article that will engage an online audience of [who, where]<br />Base the article on: [idea number] [topic/question] [URL]<br />Provide [x] fact-based list items.<br />Begin each list item with a catchy, impactful sub-heading and follow with 100 words of explanation and context.<br />Write in a professional, structured, objective style. Use only authoritative sources. Use editorial style to attribute facts and sources inline.</p>"
   },
   {
     "id": 8,
