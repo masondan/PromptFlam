@@ -200,7 +200,7 @@
     "category": "Audio",
     "subCategory": "Mini-podcast",
     "task": "SOLO SCRIPT",
-    "prompt": "<p>Act as a podcast scriptwriter. Draft a script for an [x] [second] [minute] explainer podcast episode with one host that will engage an audience of [who, where]<br />About the podcast: [Description]<br />Base the script on: [idea number] [topic/question] [URL]<br />Format & style:<br />- Open with a question (eg how, why), then provide a fact-based, objective, audio explainer script that will inform and engage the target audience<br />- No intro and outro. No banter. No opinion or speculation.<br />- Deliver the facts in a natural, spoken narrative style. Avoid jargon<br />- Keep the style fast-paced, informative and audience‑focused.<br />- Include a variety of credible sources for more context.</p>"
+    "prompt": "<p>Act as a podcast scriptwriter. Draft a script for an [x] [second] [minute] explainer podcast episode with one host that will engage an audience of [who, where]<br />[About the podcast:] [Description]<br />Base the script on: [idea number] [topic/question] [URL]<br />Format & style:<br />- Open with a question (eg how, why), then provide a fact-based, objective, audio explainer script that will inform and engage the target audience<br />- No intro and outro. No banter. No opinion or speculation.<br />- Deliver the facts in a natural, spoken narrative style. Avoid jargon<br />- Keep the style fast-paced, informative and audience‑focused.<br />- Include a variety of credible sources for more context.</p>"
   },
   {
     "id": 30,
