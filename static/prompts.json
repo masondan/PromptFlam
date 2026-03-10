@@ -32,7 +32,7 @@
     "category": "Text",
     "subCategory": "Q&A",
     "task": "DRAFT",
-    "prompt": "<p>Act as a [role]. Draft a Q&A article that will engage an online audience of [who, where].<br />Base your draft on: [topic/question] [URL]<br />Provide [x] questions and answers, each with 150 words of expert explanation and context, supported by facts.<br />Questions should be in the form of an eye-catching, keyword-rich question (eg how, why). Answers should be concise but deliver trustworthy knowledge and full understanding.<br/>Write in a professional, structured, objective style. Include a variety of trusted sources for added interest and context. Use editorial style to attribute facts and sources inline (eg 'according to...', 'x reported that...'). Use direct quotes only from relevant leaders, not media sources.</p>"
+    "prompt": "<p>Act as a [role]. Draft a Q&A article that will engage an online audience of [who, where].<br />Base your draft on: [topic/question] [URL]<br />Provide [x] questions and answers, each with 100 words of expert explanation and context, supported by facts.<br />Questions should be in the form of an eye-catching, keyword-rich question (eg how, why). Answers should be concise but deliver trustworthy knowledge and full understanding.<br/>Write in a professional, structured, objective style. Include a variety of trusted sources for added interest and context. Use editorial style to attribute facts and sources inline (eg 'according to...', 'x reported that...'). Use direct quotes only from relevant leaders, not media sources.</p>"
   },
   {
     "id": 11,
@@ -74,7 +74,7 @@
     "category": "Text",
     "subCategory": "Timeline",
     "task": "DRAFT",
-    "prompt": "<p>Act as a [role]. Draft a timeline article that will engage an online audience of [who, where].<br />Base your draft on: [topic/question] [URL]<br />Provide a list of timeline milestones tracing the development of the story and related events. Aim for a minimum of [x] milestones.<br />For each milestone include:<br />- Specific timestamp (eg date/month/year)<br />- A simple, descriptive subheading.<br/>- 100 words of objective explanation and rigorous context.<br />Write in a professional, ethical style. Include a variety of trusted sources for added depth. Use editorial style to attribute facts and sources inline (eg 'according to...', 'x reported that...'). Use direct quotes if available, but prioritise quotes by real people over media sources.</p>"
+    "prompt": "<p>Act as a [role]. Draft a timeline article that will engage an online audience of [who, where].<br />Base your draft on: [topic/question] [URL]<br />Provide a list of timeline milestones tracing the development of the story and related events. Aim for a minimum of [x] milestones.<br />For each milestone include:<br />- Specific timestamp (eg date/month/year)<br />- A simple, descriptive subheading.<br/>- 50 words of concise, objective explanation and context.<br />Write in a professional, ethical style. Include a variety of trusted sources for added depth. Use editorial style to attribute facts and sources inline (eg 'according to...', 'x reported that...'). Use direct quotes if available, but prioritise quotes by real people over media sources.</p>"
   },
   {
     "id": 17,
@@ -172,7 +172,7 @@
     "category": "Data",
     "subCategory": "In numbers",
     "task": "DRAFT",
-    "prompt": "<p>Act as a data journalist. Draft an 'in numbers' article that will engage an online audience of [who, where].<br />Base your draft on: [topic/question] [URL]<br />Provide [x] diverse numbers, each followed by 100 words of explanation and context.<br/>Begin each section with subheading that displays a striking, impactful number (eg 93%, $1m, 10,000) then follow with the explanation for that specific number.<br />Write in a professional, structured, objective style. Use only authoritative sources. Use editorial style to attribute facts and sources inline (eg 'according to...', 'x reported that...'). Use direct quotes only from relevant leaders, not media sources.</p>"
+    "prompt": "<p>Act as a data journalist. Draft an 'in numbers' article that will engage an online audience of [who, where].<br />Base your draft on: [topic/question] [URL]<br />Provide [x] diverse numbers, each followed by 100 words of expert explanation and context, based on rigorous research.<br/>Begin each section with subheading that displays a striking, impactful number (eg 93%, $1m, 10,000) then follow with the explanation for that specific number.<br />Write in a professional, structured, objective style. Use only authoritative sources. Use editorial style to attribute facts and sources inline (eg 'according to...', 'x reported that...').</p>"
   },
   {
     "id": 26,
@@ -249,14 +249,14 @@
     "category": "Social Media",
     "subCategory": "Carousel",
     "task": "DRAFT",
-    "prompt": "<p>Act as a social media content expert. Break down the following information into an explainer carousel for an audience of [who, where].<br />Base the carousel on: [topic/question] [URL]<br />Start with a question (eg who, what, why, where, when, how). Continue with fact-based captions of around 20 words to explain the key points in simple, narrative language.<br />Avoid opinion and speculation. Use editorial style to attribute facts and sources inline. Consider other credible sources for added context.<br />Suggest images or visuals for each caption. Total number of slides: [x]</p>"
+    "prompt": "<p>Act as a journalist and social media content expert. Break down the following topic into an explainer carousel for an audience of [who, where].<br />Base the carousel on: [topic/question]<br />Total number of slides: [x]<br />The text for the first slide should pose a question (eg who, what, why, where, when, how).<br />The following slides should feature fact-based captions of around 20 words to explain the topic in concise, narrative language.<br />Avoid opinion and speculation. Use editorial style to attribute facts and sources inline. Consider other credible sources for added depth.<br />Suggest images or visuals for each caption.</p>"
   },
   {
     "id": 38,
     "category": "Social Media",
     "subCategory": "Thread",
     "task": "DRAFT",
-    "prompt": "<p>Act as a social media content expert. Break down the following information into an engaging explainer thread for an audience of [who, where].<br />Base the thread on: [topic/question] [URL]<br />Start with a question (eg who, what, why, where, when, how). Continue with short, fact-based posts (1–2 sentences each) to explain the key points in simple, narrative language. Avoid opinion and speculation. Attribute sources. Consider other credible sources for added context.<br />Suggest images or visuals for each post. End with a takeaway that sparks discussion and sharing.</p>"
+    "prompt": "<p>Act as a journalist and social media content expert. Break down the following topic into an engaging explainer thread for an audience of [who, where].<br />Base the thread on: [topic/question] [URL]<br />Start with an engaging question (eg who, what, why, where, when, how). Continue with short, fact-based posts (1–2 sentences each) to explain the key points in concise, narrative language. Avoid opinion and speculation. Attribute sources. Consider other credible sources for added context.<br />Suggest images or visuals for each post. End with a takeaway that sparks discussion and sharing.</p>"
   },
   {
     "id": 39,
@@ -270,7 +270,7 @@
     "category": "Social Media",
     "subCategory": "Facts | Myths+Facts",
     "task": "DRAFT",
-    "prompt": "<p>Act as a social media content creator. Draft [x] image+text-overlay posts featuring [facts] [myths+facts], targeting an audience of [who, where]. Base answers on: [topic] [URL]<br />Optimise for: [Facebook] [X] [Instagram] [LinkedIn]<br />For each post suggest:<br />1 - Image ideas.<br />2 - Fact-based, authoritative overlay text.<br />3 - An audience-focused caption, with high-engagement hashtags.<br />Make the tone [professional] [informative] [empowering] [motivational] [entertaining] [urgent] [action-oriented] [empathetic].</p>"
+    "prompt": "<p>Act as a journalist and social media content expert. Draft [x] image+text-overlay posts featuring [facts] [myths+facts], targeting an audience of [who, where]. Base answers on: [topic] [URL]<br />Optimise for: [Facebook] [X] [Instagram] [LinkedIn]<br />For each post suggest:<br />1 - Image ideas.<br />2 - Fact-based, authoritative overlay text.<br />3 - An audience-focused caption, with high-engagement hashtags.<br />Make the tone [professional] [informative] [empowering] [motivational] [entertaining] [urgent] [action-oriented] [empathetic].</p>"
   },
   {
     "id": 41,
