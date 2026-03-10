@@ -263,14 +263,14 @@
     "category": "Social Media",
     "subCategory": "Quotes",
     "task": "DRAFT",
-    "prompt": "<p>Act as a social media content creator. Draft [x] image+text-overlay posts featuring authentic, verified quotes by [specific person] [leaders, campaigners or experts], targeting an audience of [who, where].<br />Base answers on: [topic] [URL]<br />For each post provide:<br />1 - The quote.<br />2 - A concise explanation of the context and significance of the quote, including where and when the quote was spoken.<br />3 -  Image ideas.<br />4 - An audience-focused caption, with high-engagement hashtags.<br />Make the tone [professional] [informative] [empowering] [motivational] [entertaining] [urgent] [action-oriented] [empathetic].</p>"
+    "prompt": "<p>Act as a journalist and social media content expert. Draft [x] image+text-overlay posts featuring authentic, verified quotes by [specific person] [leaders, campaigners or experts], targeting an audience of [who, where].<br />Base answers on: [topic] [URL]<br />For each post provide:<br />- The quote.<br />- A concise explanation of the context and significance of the quote, including where and when the quote was spoken.<br />-  Image ideas.<br />- An audience-focused caption, with high-engagement hashtags.<br />Make the tone [professional] [informative] [empowering] [motivational] [entertaining] [urgent] [action-oriented] [empathetic].</p>"
   },
    {
     "id": 40,
     "category": "Social Media",
     "subCategory": "Facts | Myths+Facts",
     "task": "DRAFT",
-    "prompt": "<p>Act as a journalist and social media content expert. Draft [x] image+text-overlay posts featuring [facts] [myths+facts], targeting an audience of [who, where]. Base answers on: [topic] [URL]<br />Optimise for: [Facebook] [X] [Instagram] [LinkedIn]<br />For each post suggest:<br />1 - Image ideas.<br />2 - Fact-based, authoritative overlay text.<br />3 - An audience-focused caption, with high-engagement hashtags.<br />Make the tone [professional] [informative] [empowering] [motivational] [entertaining] [urgent] [action-oriented] [empathetic].</p>"
+    "prompt": "<p>Act as a journalist and social media content expert. Draft [x] image+text-overlay posts with impactful [facts] [myths+facts], targeting an audience of [who, where]. Base answers on: [topic] [URL]<br />Optimise for: [Facebook] [X] [Instagram] [LinkedIn]<br />For each post:<br />- Provide concise, fact-based overlay text<br />- Image or visual ideas.<br /> - An audience-focused caption, with high-engagement hashtags.<br />Make the tone [professional] [informative] [empowering] [motivational] [entertaining] [urgent] [action-oriented] [empathetic].</p>"
   },
   {
     "id": 41,
