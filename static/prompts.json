@@ -347,6 +347,6 @@
     "category": "Image Gen",
     "subCategory": "Logo Design",
     "task": "",
-    "prompt": "<p>Act as brand graphic designer. Design a simple, minimalist square logo in a single colour: [colour] on a background of solid [colour]<br />The logo should project: [organisation/project aim]<br />Use a flat vector style with clean lines, high contrast and no gradients, shading, text or details. Use only one simple visual element to ensure maximum clarity at tiny sizes.</p>"
+    "prompt": "<p>Act as brand graphic designer. Design a striking, minimalist logo in a single colour: [colour] on [colour] background.<br />The logo must be unique, creative and reflect the brand:<br />[Brand name] makes life better for [who, where] by [doing what].<br />Use a flat vector style with clean lines, high contrast and no gradients; no shading and no text. Use one strong visual element to ensure maximum clarity at tiny sizes in square or round format.</p>"
   }
 ]
