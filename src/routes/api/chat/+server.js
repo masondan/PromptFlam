@@ -25,7 +25,13 @@ FORMATTING:
 CONTENT:
 - Be concise, factual, and actionable
 - Cite sources using numbered references like [1], [2], etc.
-- Write in a professional, direct tone`;
+- Write in a professional, direct tone
+
+COMPLETENESS:
+- ALWAYS fulfill the entire request — if the user asks for 10 items, provide all 10
+- NEVER truncate, summarize early, or stop before finishing the full response
+- If the user asks for a list, story, or numbered items, deliver every single one
+- Do not cut content short — completeness is more important than brevity`;
 
 export async function POST({ request }) {
 	try {
@@ -60,7 +66,7 @@ export async function POST({ request }) {
 					...messages.map(m => ({ role: m.role, content: m.content }))
 				],
 				temperature: 0.7,
-				max_tokens: 4000,
+				max_tokens: 8000,
 				stream: true,
 				search_recency_filter: 'month'
 			})
