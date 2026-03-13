@@ -60,7 +60,7 @@ export async function POST({ request }) {
 				'Content-Type': 'application/json'
 			},
 			body: JSON.stringify({
-				model: 'sonar',
+				model: 'sonar-pro',
 				messages: [
 					{ role: 'system', content: SYSTEM_PROMPT },
 					...messages.map(m => ({ role: m.role, content: m.content }))
@@ -132,6 +132,12 @@ export async function POST({ request }) {
 									const content = parsed.choices?.[0]?.delta?.content;
 									if (content) {
 										controller.enqueue(encoder.encode(`data: ${JSON.stringify({ content })}\n\n`));
+									}
+									
+									// Log finish reason for debugging truncation
+									const finishReason = parsed.choices?.[0]?.finish_reason;
+									if (finishReason) {
+										console.log(`[Perplexity] finish_reason: ${finishReason}`);
 									}
 								} catch {
 									// Skip malformed JSON lines
