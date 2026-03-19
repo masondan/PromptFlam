@@ -214,7 +214,7 @@
     "category": "Video",
     "subCategory": "Slideshow + Titles",
     "task": "IDEAS",
-    "prompt": "<p>Act as a social media video creator. Suggest 10 ideas for social media explainer videos that will engage an online audience of [who, where].<br />Base ideas on [recent news] [hot topics] [topic/question] [URL]<br />In each case provide an explainer hook based on a question (eg how or why). Add a brief outline for each idea, with suggested visuals. Include unusual angles supported by facts.</p>"
+    "prompt": "<p>Act as a social media video creator. Suggest [x] ideas for social media explainer videos that will engage an online audience of [who, where].<br />Base ideas on [recent news] [hot topics] [topic/question] [URL]<br />In each case provide an explainer hook based on a question (eg how or why). Add a brief outline for each idea, with suggested visuals. Include unusual angles supported by facts.</p>"
   },
   {
     "id": 33,
@@ -228,7 +228,7 @@
     "category": "Video",
     "subCategory": "Slideshow + Voiceover",
     "task": "IDEAS",
-    "prompt": "<p>Act as a social media video creator. Suggest 10 ideas for lively, factual, social media explainer videos that will engage an audience of [who, where]<br />Base answers on: [recent news] [hot topics]<br />Ideas must suit an image/video clip montage + voiceover format. Include unusual angles designed to spark conversation and informed debate.<br />In each case make the hook a question and give a brief outline. Suggest a list of easily-accessible images to acompany the script.</p>"
+    "prompt": "<p>Act as a social media video creator. Suggest [x] ideas for lively, factual, social media explainer videos that will engage an audience of [who, where]<br />Base answers on: [recent news] [hot topics] [topic/question] [URL]<br />Ideas must suit an image/video clip montage + voiceover format. Include unusual angles designed to spark conversation and informed debate.<br />In each case make the hook a question and give a brief outline. Suggest a list of easily-accessible images to acompany the script.</p>"
   },
   {
     "id": 35,
