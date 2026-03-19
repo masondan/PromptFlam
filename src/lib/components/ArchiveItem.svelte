@@ -1,6 +1,7 @@
 <script>
 	import { createEventDispatcher } from 'svelte';
 	import { formatRelativeTime, getPreviewText, getChatTitle, getChatPreview } from '$lib/utils/formatTime.js';
+	import { formatMarkdownForCopy } from '$lib/utils.js';
 
 	export let item;
 	export let type = 'chat';
@@ -40,13 +41,21 @@
 		showDeleteConfirm = false;
 	}
 
+	function getCleanText() {
+		if (type === 'chat') {
+			const messagesText = item.messages.map(m => `${m.role}: ${m.content}`).join('\n\n');
+			return formatMarkdownForCopy(messagesText);
+		} else {
+			const fullText = `${item.title}\n\n${item.content}`;
+			return formatMarkdownForCopy(fullText);
+		}
+	}
+
 	function handleCopy(e) {
 		e.stopPropagation();
 		copyTapped = true;
 		setTimeout(() => {
-			const text = type === 'chat'
-				? item.messages.map(m => `${m.role}: ${m.content}`).join('\n\n')
-				: `${item.title}\n\n${item.content}`;
+			const text = getCleanText();
 			
 			navigator.clipboard.writeText(text);
 			dispatch('copy', { item });
@@ -59,9 +68,7 @@
 		e.stopPropagation();
 		shareTapped = true;
 		setTimeout(async () => {
-			const text = type === 'chat'
-				? item.messages.map(m => `${m.role}: ${m.content}`).join('\n\n')
-				: `${item.title}\n\n${item.content}`;
+			const text = getCleanText();
 			
 			if (navigator.share) {
 				try {
@@ -85,9 +92,7 @@
 		e.stopPropagation();
 		downloadTapped = true;
 		setTimeout(() => {
-			const text = type === 'chat'
-				? item.messages.map(m => `${m.role}: ${m.content}`).join('\n\n')
-				: `${item.title}\n\n${item.content}`;
+			const text = getCleanText();
 			
 			const filename = type === 'chat'
 				? `chat-${new Date(item.timestamp).toISOString().split('T')[0]}.txt`

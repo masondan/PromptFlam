@@ -49,7 +49,7 @@
 		if (type === 'chat') {
 			chatMessages.set(item.messages);
 			currentChatSessionId.set(item.id);
-			goto('/');
+			goto('/create');
 		} else {
 			restoreNote(item);
 			goto('/notepad');

@@ -53,10 +53,13 @@ export function formatRelativeTime(timestamp) {
 export function getPreviewText(content, maxLength = 100) {
 	if (!content) return '';
 	
+	// Remove HTML tags first (simple regex approach)
+	let cleaned = content.replace(/<[^>]+>/g, ' ');
+	
 	// Remove markdown formatting for cleaner preview
-	const cleaned = content
+	cleaned = cleaned
 		.replace(/[#*_`~\[\]]/g, '')
-		.replace(/\n+/g, ' ')
+		.replace(/\s+/g, ' ')
 		.trim();
 	
 	if (cleaned.length <= maxLength) {

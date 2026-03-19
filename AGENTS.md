@@ -9,7 +9,7 @@
 PromptFlam is a **SvelteKit-based AI writing assistant** for journalists and content creators. Users chat with Perplexity AI, manage prompt templates, and save work locally.
 
 **Key facts:**
-- **Tech**: SvelteKit 2 + Svelte 5, vanilla JavaScript (no TypeScript)
+- **Tech**: SvelteKit + Svelte 5, vanilla JavaScript (no TypeScript)
 - **Data**: localStorage-first architecture (offline-capable)
 - **Hosting**: Cloudflare Pages (auto-deploy on `main` push)
 - **Live**: https://promptflam.pages.dev
@@ -213,7 +213,7 @@ Organized by feature:
 
 ## Pages & Routes
 
-### Create (`src/routes/+page.svelte`)
+### Create (`src/routes/create/+page.svelte` - Main chat interface)
 Main chat interface.
 
 **Key state:**
@@ -408,7 +408,7 @@ $: console.log('Messages updated:', $chatMessages);
 
 ## Testing
 
-**Manual only** (Vitest/Playwright ready but not integrated).
+Manual testing is primary. Vitest/Playwright are available as dependencies but not yet integrated into the CI/testing pipeline.
 
 1. `npm run dev`
 2. Open http://localhost:5173
@@ -425,8 +425,9 @@ $: console.log('Messages updated:', $chatMessages);
 ```
 src/
 ├── routes/
-│   ├── +page.svelte              (Create/Chat page)
+│   ├── +page.svelte              (Prompts library page)
 │   ├── +layout.svelte            (Root layout + header)
+│   ├── create/+page.svelte       (Create/Chat page)
 │   ├── prompts/+page.svelte      (Prompt library)
 │   ├── notepad/+page.svelte      (Text editor)
 │   ├── archive/+page.svelte      (Saved items)
