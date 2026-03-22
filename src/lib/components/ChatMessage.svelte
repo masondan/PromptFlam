@@ -34,6 +34,10 @@
 		dispatch('copy', { index });
 	}
 
+	function handleSendToNotepad() {
+		dispatch('sendToNotepad', { index });
+	}
+
 	function handleCitationClick(index) {
 		// Open drawer with ONLY the clicked source
 		const singleSource = sources[index];
@@ -109,6 +113,9 @@
 			</button>
 			<button class="action-button" on:click={handleCopy} aria-label="Copy response">
 				<Icon name="copy" size={18} />
+			</button>
+			<button class="action-button" on:click={handleSendToNotepad} aria-label="Send to notepad">
+				<Icon name="notepad" size={18} />
 			</button>
 		</div>
 	{/if}

@@ -8,9 +8,11 @@
 		SourcesDrawer, 
 		ThinkingDots 
 	} from '$lib/components';
-	import { chatMessages, addChatMessage, clearChat, archiveCurrentChat, updateLastMessage, autoSaveChat, currentChatSessionId, pendingChatInput } from '$lib/stores';
+	import { goto } from '$app/navigation';
+	import { chatMessages, addChatMessage, clearChat, archiveCurrentChat, updateLastMessage, autoSaveChat, currentChatSessionId, pendingChatInput, currentNoteTitle, currentNoteContent, currentNoteSessionId, startNewNote } from '$lib/stores';
 	import { callPerplexity } from '$lib/services/perplexity.js';
 	import { formatMarkdownForCopy } from '$lib/utils.js';
+	import { marked } from 'marked';
 
 	let inputValue = '';
 	let isLoading = false;
@@ -27,6 +29,8 @@
 	let shouldPreventAutoScroll = false;
 	let shouldAutoScroll = true;
 	let userHasScrolledUp = false;
+	let showNotepadModal = false;
+	let notepadContent = '';
 
 	$: hasMessages = $chatMessages.length > 0;
 
@@ -299,6 +303,44 @@
 		}
 	}
 
+	function stripCitationsFromMarkdown(text) {
+		return text.replace(/\[(\d+)\]/g, '');
+	}
+
+	function handleSendToNotepad(e) {
+		const messageIndex = e.detail?.index;
+		if (messageIndex === undefined) return;
+
+		const message = $chatMessages[messageIndex];
+		if (!message || message.role !== 'assistant') return;
+
+		const cleanMarkdown = stripCitationsFromMarkdown(message.content);
+		notepadContent = marked.parse(cleanMarkdown);
+
+		let existingContent = '';
+		currentNoteContent.subscribe(c => existingContent = c)();
+
+		if (existingContent.trim()) {
+			showNotepadModal = true;
+		} else {
+			sendToNotepadNew();
+		}
+	}
+
+	function sendToNotepadNew() {
+		startNewNote();
+		currentNoteContent.set(notepadContent);
+		showNotepadModal = false;
+		goto('/notepad');
+	}
+
+	function sendToNotepadAppend() {
+		let existing = '';
+		currentNoteContent.subscribe(c => existing = c)();
+		currentNoteContent.set(existing + '<br>' + notepadContent);
+		showNotepadModal = false;
+		goto('/notepad');
+	}
 
 </script>
 
@@ -344,6 +386,7 @@
 						on:openSources={handleOpenSources}
 						on:share={handleShare}
 						on:copy={handleCopy}
+						on:sendToNotepad={handleSendToNotepad}
 					/>
 				{/if}
 			{/each}
@@ -377,6 +420,21 @@
 	highlightIndex={highlightedSourceIndex}
 	on:close={handleCloseSources}
 />
+
+{#if showNotepadModal}
+	<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
+	<div class="modal-overlay" on:click={() => showNotepadModal = false} on:keydown={(e) => e.key === 'Escape' && (showNotepadModal = false)}>
+		<!-- svelte-ignore a11y_click_events_have_key_events a11y_no_static_element_interactions -->
+		<div class="modal" on:click|stopPropagation>
+			<p class="modal-text">Your notepad has content</p>
+			<div class="modal-buttons">
+				<button class="modal-btn" on:click={sendToNotepadNew}>Start new note</button>
+				<button class="modal-btn" on:click={sendToNotepadAppend}>Add to current</button>
+			</div>
+			<button class="modal-cancel" on:click={() => showNotepadModal = false}>Cancel</button>
+		</div>
+	</div>
+{/if}
 
 <style>
 	.create-page {
@@ -462,5 +520,72 @@
 		/* Fill remaining viewport height so we can always scroll last prompt to top */
 		min-height: calc(100vh - var(--header-height) - 150px);
 		flex-shrink: 0;
+	}
+
+	.modal-overlay {
+		position: fixed;
+		inset: 0;
+		background: rgba(0, 0, 0, 0.4);
+		z-index: var(--z-overlay);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		padding: var(--spacing-md);
+	}
+
+	.modal {
+		background: var(--bg-main);
+		border-radius: var(--radius);
+		padding: var(--spacing-lg);
+		max-width: 320px;
+		width: 100%;
+		box-shadow: var(--shadow-md);
+	}
+
+	.modal-text {
+		margin: 0 0 var(--spacing-lg);
+		font-size: 1rem;
+		color: var(--text-primary);
+		text-align: center;
+	}
+
+	.modal-buttons {
+		display: flex;
+		flex-direction: column;
+		gap: var(--spacing-sm);
+	}
+
+	.modal-btn {
+		width: 100%;
+		padding: var(--spacing-md);
+		font-size: 1rem;
+		font-weight: 500;
+		border: 1px solid var(--color-border);
+		border-radius: var(--radius);
+		background: var(--bg-main);
+		color: var(--text-primary);
+		cursor: pointer;
+		transition: background 0.15s;
+	}
+
+	.modal-btn:hover {
+		background: var(--color-highlight);
+	}
+
+	.modal-cancel {
+		display: block;
+		width: 100%;
+		margin-top: var(--spacing-md);
+		padding: var(--spacing-sm);
+		background: none;
+		border: none;
+		color: var(--text-secondary);
+		font-size: 0.9rem;
+		cursor: pointer;
+		text-align: center;
+	}
+
+	.modal-cancel:hover {
+		color: var(--text-primary);
 	}
 </style>
