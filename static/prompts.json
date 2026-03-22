@@ -1,352 +1,184 @@
 [
   {
-    "id": 6,
-    "category": "Text",
-    "subCategory": "Lists",
-    "task": "IDEAS",
-    "prompt": "<p>Act as a [role]. Suggest [x] creative ideas for a factual, list-based explainer articles that will engage an online audience of [who, where].<br />Base the ideas on: [recent news] [hot topics] [topic/question] [URL]<br />In each case provide a brief outline and keyword-rich explainer headline built around a question (eg how, why). Include unusual, fresh angles supported by verifiable facts</p>"
-  },
-   {
-    "id": 7,
-    "category": "Text",
-    "subCategory": "Lists",
-    "task": "DRAFT",
-    "prompt": "<p>Act as a [role]. Draft a compelling, list-based article that will engage an online audience of [who, where]<br />Base the article on: [idea number] [topic/question] [URL]<br />Provide [x] fact-based list items.<br />Begin each list item with a catchy, impactful sub-heading and follow with 100 words of explanation and context.<br />Write in a professional, structured, objective style. Use only authoritative sources. Use editorial style to attribute facts and sources inline.</p>"
-  },
-  {
-    "id": 8,
-    "category": "Text",
-    "subCategory": "Lists",
-    "task": "SUMMARY",
-    "prompt": "<p>Write a news-style introduction in 50 words.</p>"
-  },
-  {
-    "id": 9,
-    "category": "Text",
-    "subCategory": "Lists",
-    "task": "HEADLINE",
-    "prompt": "<p>For the draft above, provide [x] creative headline options, optimised for search and social media, that balance impact with professional journalistic credibility. The headline must contain the number of list items.. The headline must contain the number of list items.</p>"
-  },
-   {
-    "id": 10,
-    "category": "Text",
-    "subCategory": "Q&A",
-    "task": "DRAFT",
-    "prompt": "<p>Act as a [role]. Draft a Q&A article that will engage an online audience of [who, where].<br />Base your draft on: [topic/question] [URL]<br />Provide [x] questions and answers, each with 100 words of expert explanation and context, supported by facts.<br />Questions should be in the form of an eye-catching, keyword-rich question (eg how, why). Answers should be concise but deliver trustworthy knowledge and full understanding.<br/>Write in a professional, structured, objective style. Include a variety of trusted sources for added interest and context. Use editorial style to attribute facts and sources inline (eg 'according to...', 'x reported that...'). Use direct quotes only from relevant leaders, not media sources.</p>"
-  },
-  {
-    "id": 11,
-    "category": "Text",
-    "subCategory": "Q&A",
-    "task": "SUMMARY",
-    "prompt": "<p>Write a news-style introduction for the article in 50 words.</p>"
-  },
-  {
-    "id": 12,
-    "category": "Text",
-    "subCategory": "Q&A",
-    "task": "HEADLINE",
-    "prompt": "<p>For the draft above, provide [x] creative headline options, optimised for search and social media, that balance impact with professional journalistic credibility. The headline must contain: Q&A.</p>"
-  },
-  {
-    "id": 13,
-    "category": "Text",
-    "subCategory": "In quotes",
-    "task": "DRAFT",
-    "prompt": "<p>Act as a [role]. Draft an 'in quotes' article that will engage an online audience of [who, where].<br />Base your draft on: [topic/question] [URL]<br />Provide a list of [x] impactful, verified quotes from the person, people or event specified. Format:<br />- Start each section with the quote itself.<br />Then add the time and place the quote was spoken.<br />- Then give a one-sentence explanation that puts the quote into context.<br/>Write in a professional, structured, objective style. Include a variety of trusted sources for added interest, unusal angles and context.<br />Use editorial style to attribute facts and sources inline (eg 'according to...', 'x reported that...'). Use direct quotes only from relevant leaders, not media sources.</p>"
-  },
-  {
-    "id": 14,
-    "category": "Text",
-    "subCategory": "In quotes",
-    "task": "SUMMARY",
-    "prompt": "<p>Write a news-style introduction for the article in 50 words.</p>"
-  },
-  {
-    "id": 15,
-    "category": "Text",
-    "subCategory": "In quotes",
-    "task": "HEADLINE",
-    "prompt": "<p>For the draft above, provide [x] creative headline options, optimised for search and social media, that balance impact with professional journalistic credibility. The headline must contain: In quotes</p>"
-  },
-  {
-    "id": 16,
-    "category": "Text",
-    "subCategory": "Timeline",
-    "task": "DRAFT",
-    "prompt": "<p>Act as a [role]. Draft a timeline article that will engage an online audience of [who, where].<br />Base your draft on: [topic/question] [URL]<br />Provide a list of timeline milestones tracing the development of the story and related events. Aim for a minimum of [x] milestones.<br />For each milestone include:<br />- Specific timestamp (eg date/month/year)<br />- A simple, descriptive subheading.<br/>- 50 words of concise, objective explanation and context.<br />Write in a professional, ethical style. Include a variety of trusted sources for added depth. Use editorial style to attribute facts and sources inline (eg 'according to...', 'x reported that...'). Use direct quotes if available, but prioritise quotes by real people over media sources.</p>"
-  },
-  {
-    "id": 17,
-    "category": "Text",
-    "subCategory": "Timeline",
-    "task": "SUMMARY",
-    "prompt": "<p>Write a news-style introduction for the article in 50 words.</p>"
-  },
-  {
-    "id": 18,
-    "category": "Text",
-    "subCategory": "Timeline",
-    "task": "HEADLINE",
-    "prompt": "<p>For the draft above, provide [x] creative headline options, optimised for search and social media, that balance impact with professional journalistic credibility. The headline must contain: Timeline</p>"
-  },
-  {
-    "id": 19,
-    "category": "Text",
-    "subCategory": "Fact check",
-    "task": "DRAFT",
-    "prompt": "<p>Act as an investigative journalist. Draft a rigorously objective fact‑check article of approximately 1,000 words that will engage an online audience of [who, where].<br />Base the fact‑check on the following article: [URL]. Conduct a thorough search for additional, credible and up‑to‑date sources to assess and verify the claims made in the specific article and provide deeper context.<br />For each claim identified in the article, use the following structure:<br />CLAIM: Present the claim clearly and succinctly, using neutral language.<br />FACT: Evaluate the claim objectively, drawing on multiple reliable sources. Attribute information to sources in standard editorial style, and carefully note any conflicting evidence, gaps in the record or unresolved questions.<br />VERDICT: State whether the claim is upheld, rejected or partially upheld, and give a brief, clearly reasoned explanation for this judgment.<br />Ensure that the overall tone is professional, the language meets the highest standards of editorial integrity, and the analysis remains fair, balanced and accurate throughout.</p>"
-  },
-  {
-    "id": 20,
-    "category": "Text",
-    "subCategory": "Fact check",
-    "task": "SUMMARY",
-    "prompt": "<p>Write a news-style introduction for the article in 50 words.</p>"
-  },
-  {
-    "id": 21,
-    "category": "Text",
-    "subCategory": "Fact check",
-    "task": "HEADLINE",
-    "prompt": "<p>For the draft above, provide [x] creative headline options, optimised for search and social media, that balance impact with professional journalistic credibility. The headline must include: 'Fact check'.</p>"
-  },
-  {
     "id": 1,
-    "category": "Text",
-    "subCategory": "Feature",
-    "task": "IDEAS",
-    "prompt": "<p>Act as a [role]. Suggest 10 ideas for topical, factual explainer articles that will engage an online audience of [who, where].<br />Base your ideas on: [recent news] [hot topics] [topic/question] [URL]<br />In each case provide a brief outline and keyword-rich explainer headline built around a question (eg how, why). Include unusual, fresh angles supported by verifiable facts.</p>"
+    "category": "Ideas",
+    "subCategory": "Stories",
+    "styleGuideIncluded": true,
+    "prompt": "Act as a [role]. Suggest [x] explainer story ideas that will engage an online audience of [who, where]<br >Base the ideas on: [recent news] [hot trending topics] [specific topic/question] [URL]<br >For each idea provide:<br >- A headline based on a question (eg who, why, where, when, what, how) that balances impact with professional credibility. <br >- A one-sentence outline.<br >- Ideas for images/visuals/graphics.<br >Research and include ideas with unusual, fresh angles, based on verified facts and credible sources."
   },
   {
     "id": 2,
-    "category": "Text",
-    "subCategory": "Feature",
-    "task": "DRAFT",
-    "prompt": "<p>Act as a [role]. Draft a fact-based explainer article of [x] words that will engage an online audience of [who, where]<br />Base the article on: [idea number] [topic/question] [URL]<br />Write in a professional, objective style that delivers knowledge and understanding for the target audience.<br/>Follow a search-friendly, narrative structure. Use only authoritative sources. Avoid opinion and speculation. Use editorial style to attribute facts, quotes and sources inline (eg according to ...)</p>"
+    "category": "Ideas",
+    "subCategory": "Events",
+    "styleGuideIncluded": false,
+    "prompt": "Act as a [role] with a target audience of [who, where] <br >Provide a structured diary list of events, anniversaries, international awareness days and observances, launches, birthdays and premieres that could provide topical and engaging hooks for news, blogs, social media videos, podcasts and explainer articles in the next [week] [month] [year]<br >Follow this structure: <br >- The event name<br >- When and where<br >- Brief explanation of the event<br >Search widely for events that could spark interesting, unusual angles."
   },
   {
     "id": 3,
     "category": "Text",
-    "subCategory": "Feature",
-    "task": "SUMMARY",
-    "prompt": "<p>Write a news-style introduction for the article in 50 words.</p>"
+    "subCategory": "Lists",
+    "styleGuideIncluded": true,
+    "prompt": "Act as a [role]. Draft a list-based article that will engage an online audience of [who, where]<br >Base the draft on: [idea] [topic/question] [URL]<br >Provide [x] fact-based list items.<br >Additionally, provide [x] headline options.<br >Follow this structure: <br >1. Headlines: Insert the specified number of creative headline options. The headlines  must be accurate, optimised for search and social media, and balance impact with professional journalistic credibility. The headlines must contain the number of list items.<br >2. Summary: A news-style introduction of 50 words.<br >3. Draft: The specified number of list (listicle) items. Begin each item with a catchy, impactful sub-heading and follow with ~100 words of fact-based explanation and context from trusted sources."
   },
   {
     "id": 4,
     "category": "Text",
-    "subCategory": "Feature",
-    "task": "HEADLINE",
-    "prompt": "<p>For the draft above, provide [x] creative headline options, optimised for search and social media, that balance impact with professional journalistic credibility.</p>"
+    "subCategory": "Q&A",
+    "styleGuideIncluded": true,
+    "prompt": "Act as a [role]. Draft a Q&A article that will engage an online audience of [who, where].<br >Base the draft on: [idea] [topic/question] [URL]<br >Provide [x] questions and answers. <br >Additionally, provide [x] headline options.<br >Follow this structure: <br >1. Headlines: Insert the specified number of creative headline options. The headlines  must be accurate, optimised for search and social media, and balance impact with professional journalistic credibility. The headlines must contain Q&A:<br >2. Summary: A news-style introduction of 50 words.<br >3. Draft: The specified number of Q&A items. Questions should be displayed as sub-headings, followed by concise answers (~100 words) that deliver fact-based explanation and context from trusted sources."
   },
   {
     "id": 5,
     "category": "Text",
+    "subCategory": "In quotes",
+    "styleGuideIncluded": true,
+    "prompt": "Act as a [role]. Draft an 'in quotes' article that will engage an online audience of [who, where]<br >Base the draft on: [idea] [topic/question] [URL]<br >Provide a list of [x] impactful, verified quotes. Additionally, provide [x] headline options.<br >Follow this structure: <br >1. Headlines: Insert the specified number of creative headline options. The headlines  must be accurate, optimised for search and social media, and balance impact with professional journalistic credibility. The headlines must contain In quotes:<br >2. Summary: A news-style introduction of 50 words.<br >3. Draft: The specified number of quotes, with accompanying text. Start each quote section with the quote itself, followed on a new line by the time and place the quote was spoken. Then give a one-sentence explanation that puts the quote into context. Research widely to find relevant quotes from trusted sources."
+  },
+  {
+    "id": 6,
+    "category": "Text",
+    "subCategory": "Timeline",
+    "styleGuideIncluded": true,
+    "prompt": "Act as a [role]. Draft a timeline article that will engage an online audience of [who, where].<br >Base the draft on: [idea] [topic/question] [URL]<br >Provide a minimum of [x] milestones tracing the development of the story and related events.<br >Additionally, provide [x] headline options.<br >Follow this structure: <br >1. Headlines: Insert the specified number of creative headline options. The headlines  must be accurate, optimised for search and social media, and balance impact with professional journalistic credibility. The headlines must contain Timeline:<br >2. Summary: A news-style introduction of 50 words.<br >3. Draft: At least the specified number of timeline milestones, with accompanying text. For each milestone, include: <br >- A specific timestamp (eg date/month/year).<br >- Short, descriptive subheading.<br >- One sentence of concise explanation and context.<br >Research credible sources to include related events that add context and understanding."
+  },
+  {
+    "id": 7,
+    "category": "Text",
+    "subCategory": "Fact check",
+    "styleGuideIncluded": true,
+    "prompt": "Act as an investigative journalist. Draft a fact\u2011check article of around [x] words that will engage an online audience of [who, where]<br >Base the fact\u2011check article on the following media: [URL]<br >Additionally, provide [x] headline options.<br >Follow this structure: <br >1. Headlines: Insert the specified number of creative headline options. The headlines  must be accurate, optimised for search and social media, and balance impact with professional journalistic credibility. The headlines must contain Fact check:<br >2. Summary: A news-style introduction of 50 words.<br >3. Draft: Write to the length specified. Divide the fact-check article into sections focusing on specific claims in the target media. For each claim identified, use the following format:<br >- Claim: Present the claim clearly and succinctly, using neutral language.<br >- Fact: Evaluate the claim objectively, drawing on multiple reliable sources. Rigorously attribute information to sources in editorial style, and carefully note any conflicting evidence, gaps in the record or unresolved questions.<br >- Verdict: State whether the claim is upheld, rejected or partially upheld (eg Verdict: Upheld), and give a brief, clearly reasoned explanation for this judgment."
+  },
+  {
+    "id": 8,
+    "category": "Text",
     "subCategory": "Feature",
-    "task": "QUOTES (optional)",
-    "prompt": "<p>Provide three quotes by leaders, campaigners or experts relating specifically to the article above. State the name, position and organisation of the person quoted.</p>"
+    "styleGuideIncluded": true,
+    "prompt": "Act as a [role]. Draft a narrative, blog-style explainer article of [x] words that will engage an online audience of [who, where]<br >Base the draft on:  [idea] [topic/question] [URL]<br >[Include three quotes by leaders, campaigners or experts relating specifically to the article. State the name, position and organisation of the person quoted]<br >Additionally, provide [x] headline options.<br >Follow this structure: <br >1. Headlines: Insert the specified number of creative headline options. The headlines  must be accurate, optimised for search and social media, and balance impact with professional journalistic credibility. Base the headlines on questions (eg who, what, why, where, when, how).<br >2. Summary: A news-style introduction of 50 words.<br >3. Draft: The specified number of words, written in a flowing, professional, narrative style. Break up long text with subheadings and bulleted lists."
+  },
+  {
+    "id": 9,
+    "category": "Data",
+    "subCategory": "In charts",
+    "styleGuideIncluded": true,
+    "prompt": "Act as a data journalist. Draft an 'in charts' article with [x] charts that will engage an online audience of [who, where]<br >Base the draft on: [idea] [topic/question] [URL]<br >Additionally, provide [x] headline options.<br >Follow this structure: <br >1. Headlines: Insert the specified number of creative headline options. The headlines  must be accurate, optimised for search and social media, and balance impact with professional journalistic credibility. The headlines must contain In charts:<br >2. Summary: A news-style introduction of 50 words.<br >3. Draft: The specified number of charts, with accompanying text. Suggest only minimalist charts, based on easily-accessible data sources. Research additional trusted sources to cross-check data and add unusual angles, insight and context. <br >For each chart, provide:<br >- A short, descriptive subheading.<br >- The chart type that best represents the data (eg pie, donut, line, bar, icon/pictogram).<br >- The chart data provided as plain CSV text, ready to copy and paste, without any tables or visual formatting. Line charts should have no more than two lines. Grouped/stacked bar charts should have no more than two categories. Pictograms should be in simple x/10 format. Pie/donut charts should have no more than five segments.<br >- 100 words of explanation and interpretation.<br >- The specific data source, with link."
+  },
+  {
+    "id": 10,
+    "category": "Data",
+    "subCategory": "In numbers",
+    "styleGuideIncluded": true,
+    "prompt": "Act as a data journalist. Draft an 'in numbers' article that will engage an online audience of [who, where]<br >Base the draft on:  [idea] [topic/question] [URL]<br >Provide [x] data points (numbers), each with accompanying text. <br >Additionally, provide [x] headline options.<br >Follow this structure: <br >1. Headlines: Insert the specified number of creative headline options. The headlines  must be accurate, optimised for search and social media, and balance impact with professional journalistic credibility. The headlines must contain In numbers:<br >2. Summary: A news-style introduction of 50 words.<br >3. Draft: The specified number of data points (numbers), each with accompanying text. <br >For each number section provide:<br >- A striking, impactful number (eg 93%, $1m, 10,000), displayed as a sub-heading. Make numbers differ widely from each other in form, value and context. Do not allow the numbers to be, for example, a series of percentages or currencies. Ensure a diverse, attention-grabbing mix for maximum impact.<br >- A 100-word explanation of the number, its context and significance."
+  },
+  {
+    "id": 11,
+    "category": "Audio",
+    "subCategory": "Solo pod",
+    "styleGuideIncluded": true,
+    "prompt": "Act as a podcast scriptwriter. Draft a script for an [x] [second] [minute] podcast episode with one host that will engage an audience of [who, where]<br >Base the script on: [idea] [topic/question] [URL]<br >Follow this structure: <br >- Open with a direct question (eg who, what, why, where, when, how).<br >- Then directly answer the question using verified facts from attributed sources.<br >- No podcast intro. No outro. No banter. Just question and answer.<br >- Keep the tone natural and professional.<br >- Keep the style fast-paced and audience\u2011focused."
+  },
+  {
+    "id": 12,
+    "category": "Audio",
+    "subCategory": "Q&A pod",
+    "styleGuideIncluded": true,
+    "prompt": "Act as a podcast scriptwriter. Draft a script for a [x] [second] [minute] podcast episode with two speakers (a host and an expert) that will engage an audience of [who, where].<br >Base the script on: [idea number] [topic/question] [URL]<br >Follow this structure: <br >- The host opens with a punchy first question that grabs attention<br >- The expert replies with an informed, insightful answer.<br >- No podcast  intro. No outro. No banter. Just quick-fire questions and answers.<br >- Pack in as many questions and answers as possible. Vary question and answer length.<br >- Keep the tone natural and professional.<br >- Keep the style fast-paced and audience\u2011focused.<br >Output format:<br >Host: Question<br >Expert: Answer<br >Host: Follow-up<br >Expert: Answer"
+  },
+  {
+    "id": 13,
+    "category": "Video",
+    "subCategory": "Voiceover",
+    "styleGuideIncluded": true,
+    "prompt": "Act as a social media video creator. Draft a voiceover script for a [30-second] [60-second] [90-second] explainer video that will engage an audience of [who, where].<br >The video will comprise a slideshow of images (or video clips) lasting around five seconds each, with accompanying voiceover.<br >Base the script on: [idea] [topic/question] [URL]<br >In addition, suggest [x] easily-accessible images to accompany the script.<br >Follow this structure: <br >- The hook: Start with a direct question (eg who, what, why, where, when, how). <br >- Then directly answer the question in a series of short, fact-based sentences.<br >- Restrict the script to five short sentences (~15 words each) for each 30 seconds of video.<br >- Use simple narrative language, optimised for speaking.<br >- Keep the tone natural and professional.<br >- Keep the style fast-paced and audience\u2011focused."
+  },
+  {
+    "id": 14,
+    "category": "Social media",
+    "subCategory": "Carousel",
+    "styleGuideIncluded": true,
+    "prompt": "Act as a social media content expert. Break down the following topic into an Instagram explainer carousel that will engage an audience of [who, where]<br >Base the carousel on: [idea] [topic/question] [URL]<br >Total number of slides: [x]<br >Tone: [professional] [informative] [empowering] [motivational] [entertaining] [urgent] [action-oriented] [empathetic]<br >Follow this structure: <br >- For the first slide, pose a direct question (eg who, what, why, where, when, how).<br >- For the following slides, write fact-based captions of ~15 words to explain the topic in concise, narrative language.<br >Suggest images or visuals for each caption."
+  },
+  {
+    "id": 15,
+    "category": "Social media",
+    "subCategory": "Thread",
+    "styleGuideIncluded": true,
+    "prompt": "Act as a social media content expert. Break down the following topic into an engaging X (Twitter) explainer thread that will engage an audience of [who, where] <br >Base the thread on: [Idea] [topic/question] [URL]<br >Tone: [professional] [informative] [empowering] [motivational] [entertaining] [urgent] [action-oriented] [empathetic]<br >Follow this structure: <br >- Start with an engaging question (eg who, what, why, where, when, how). <br >- Continue with short, fact-based posts (1\u20132 sentences each) to explain the key points in concise, narrative language. <br >- End with a takeaway that sparks discussion and sharing.<br >- Suggest images or visuals for each post."
+  },
+  {
+    "id": 16,
+    "category": "Social media",
+    "subCategory": "Quotes",
+    "styleGuideIncluded": true,
+    "prompt": "Act as a social media content expert. Draft a series of [x] image+text-overlay posts featuring authentic, verified quotes by [specific person] [leaders, campaigners or experts], that will engage an audience of [who, where]<br >Base answers on: [Idea] [topic/question] [URL]<br >Optimise for: [Facebook] [X] [Instagram] [LinkedIn]<br >Tone: [professional] [informative] [empowering] [motivational] [entertaining] [urgent] [action-oriented] [empathetic]<br >For each post provide:<br >- The quote.<br >- A concise explanation of the context and significance of the quote, including where and when the quote was spoken.<br >- Suggestion for an image or visual.<br >- An audience-focused caption, with high-engagement hashtags."
+  },
+  {
+    "id": 17,
+    "category": "Social media",
+    "subCategory": "Facts | Myths+Facts",
+    "styleGuideIncluded": true,
+    "prompt": "Act as a social media content expert. Draft a series of [x] image+text-overlay posts with impactful [facts] [myths+facts], that will engage an audience of [who, where]<br >Base answers on: [topic/question] [URL]<br >Optimise for: [Facebook] [X] [Instagram] [LinkedIn]<br >Make the tone [professional] [informative] [empowering] [motivational] [entertaining] [urgent] [action-oriented] [empathetic].<br >For each post provide:<br >- Concise, impactful overlay text.<br >- Suggestion for an image or visual.<br >- An audience-focused caption, with high-engagement hashtags."
+  },
+  {
+    "id": 18,
+    "category": "Social media",
+    "subCategory": "Social Media Campaign",
+    "styleGuideIncluded": false,
+    "prompt": "Act as a social media marketing expert working with:<br >[Organisation/Cause/Group]<br >Mission: [Mission statement]<br >Create a social media campaign plan that aims to: [list objective(s)]<br >The target audience is: [who, where]<br >Existing social channels are: [Add social channels + followers]<br >Expected campaign duration: [x weeks/months], [starting x]<br >Campaign title and hashtag: [title/hashtag] [Suggest a campaign title and hashtag]<br >Team resource consists of: [numbers, experience]<br >The budget is [x]<br >Your structured campaign plan should include: Campaign objectives, social media channels to be used and why, campaign milestones, key messages and CTAs, realistic measures, resources required, and a content plan.<br >The content plan should include: A list of high-impact content ideas (and on which channels they will appear) with suggested visuals.<br >For context: [background/market information, website URL].<br >Before answering, ask any questions that will help you provide a more detailed, comprehensive plan."
+  },
+  {
+    "id": 19,
+    "category": "Image",
+    "subCategory": "Image gen",
+    "prompt": "Create an image of [subject - age/gender/attire/appearance/detail \u2026 doing what \u2026 where]<br >Framing: [close-up] [head-and-shoulders] [medium] [wide] [POV] [bird\u2019s-eye]<br >Style: [photorealistic] [photojournalism] [candid] [street photography] [analog film] [mid-century ad] [flat vector illustration] [pencil sketch] [cyberpunk neon] <br >Lighting: [natural] [golden hour] [studio] [harsh]<br >Mood: [optimistic] [gritty] [dramatic] [empowering] [stylish] [serious] [determined]<br >Background: [environment detail] [blurred] [No visible text]<br >Colours: [natural skin tones] [subdued] [vibrant] [soft pastels] [warm tones] [cold tones] [duotone x-colour + y-colour]",
+    "styleGuideIncluded": false
+  },
+  {
+    "id": 20,
+    "category": "Image",
+    "subCategory": "Logo design",
+    "styleGuideIncluded": false,
+    "prompt": "Act as brand graphic designer. Design a minimalist, text-free logo in a single colour: [colour] on [colour] background.<br >The logo must be unique, creative and reflect the mission: [Brand/service/organisation] [does what] for [who, where]<br >Use a flat vector style with clean lines, high contrast and no gradients; no shading and no text. Use one strong visual element to ensure maximum clarity at tiny sizes that will fit neatly into a square or round format."
+  },
+  {
+    "id": 21,
+    "category": "AI Co-pilot",
+    "subCategory": "Editor",
+    "styleGuideIncluded": true,
+    "prompt": "Act as an experienced news editor. Suggest ways the following text can be improved. Check grammar, spelling and structure, following British English journalism best practice. Check that content is objective and free from editorialising or jargon.<br >Follow this structure: <br >1. Repeat the full text, highlighting in bold any issues you find.<br >Immediately following the bold text highlights, add in square brackets a very brief inline explanation and language fix. Do not comment on direct quotes unless they contain spelling or style issues.<br >2. Add a full draft incorporating your suggested improvements.<br >3. Lastly, list any suggestions to maximise the article's search visibility. Here is the text:"
   },
   {
     "id": 22,
-    "category": "Data",
-    "subCategory": "In charts",
-    "task": "DRAFT",
-    "prompt": "<p>Act as a data journalist. Draft an 'in charts' article with [x] charts that will engage an online audience of [who, where].<br />Base your answer on: [topic/question] [URL]<br />Viewed in sequence, the simple charts should tell a compelling data-driven story. Suggest only minimalist charts, based on readily-accessible, credible data sources.<br />Research diverse credible data sources to present additional interesting and unusual angles, insight and context. Write in a professional, structured, objective style.<br />For each chart, provide:<br /> 1. A short, catchy title.<br />2. The chart type that best represents the data (eg pie, line, bar, icon/pictograph chart).<br />3. 150 words of objective, fact-based explanation and interpretation. Use editorial style to attribute facts and sources inline.<br />4. The specific data source, with link.<br />5. The chart data provided as as plain CSV text, ready to copy and paste, without any tables or visual formatting. Prioritise single bar and line charts, pie and pictogram charts. Do not provide data for multi-line charts (two lines max) or grouped/stacked bar charts with more than two categories. Pictograms should be in simple x/10 format.</p>"
+    "category": "AI Co-pilot",
+    "subCategory": "Interviewer",
+    "styleGuideIncluded": false,
+    "prompt": "Act as a journalist preparing to interview [person/role]<br >Your audience is [who,where]<br >The style of the interview will be [conversational] [entertaining] [challenging] [empathetic].<br >- First, list on-point themes/topics that will make for a compelling, audience-focused interview.<br >- Then propose [x] interview questions, with options for an opening icebreaker and memorable final question.<br >For context: [Info] [URL]"
   },
   {
     "id": 23,
-    "category": "Data",
-    "subCategory": "In charts",
-    "task": "SUMMARY",
-    "prompt": "<p>Write a news-style introduction for the article in 50 words.</p>"
+    "category": "AI Co-pilot",
+    "subCategory": "Prompt engineer",
+    "styleGuideIncluded": false,
+    "prompt": "Act as an expert AI prompt engineer. [Craft a prompt to help me:] [Suggest improvements/options for this prompt:]"
   },
   {
     "id": 24,
-    "category": "Data",
-    "subCategory": "In charts",
-    "task": "HEADLINE",
-    "prompt": "<p>For the draft above, provide [x] creative headline options, optimised for search and social media, that balance impact with professional journalistic credibility. The headline must contain: 'In charts'</p>"
+    "category": "Website",
+    "subCategory": "Website review",
+    "prompt": "Act as an SEO and content marketing expert. Analyse this website: [URL]<br >- Review and critique the current website\u2019s on and off page SEO.<br >- Provide practical suggestions to increase [search visibility] [organic traffic and engagement] [newsletter subscriptions] [paid subscriptions] [fundraising] [volunteering]<br >- For each suggestion, explain the practical steps required, with anticipated benefits, and level of complexity.<br >- Prioritise and highlight easy wins.",
+    "styleGuideIncluded": false
   },
   {
     "id": 25,
-    "category": "Data",
-    "subCategory": "In numbers",
-    "task": "DRAFT",
-    "prompt": "<p>Act as a data journalist. Draft an 'in numbers' article that will engage an online audience of [who, where].<br />Base your draft on: [topic/question] [URL]<br />Provide [x] diverse numbers, each followed by 100 words of expert explanation and context, based on rigorous research.<br/>Begin each section with subheading that displays a striking, impactful number (eg 93%, $1m, 10,000) then follow with the explanation for that specific number.<br />Write in a professional, structured, objective style. Use only authoritative sources. Use editorial style to attribute facts and sources inline (eg 'according to...', 'x reported that...').</p>"
+    "category": "Website",
+    "subCategory": "Landing page",
+    "styleGuideIncluded": false,
+    "prompt": "Act as a copywriting expert. Craft compelling, optimised landing page copy for a website targeting an audience of [who, where]<br >The objective is to: [eg promote a service or campaign, drive subscriptions or donations]<br >Website: [URL]. Aim for [wordcount]<br >Tone: [professional] [informative] [empowering] [motivational] [entertaining] [urgent] [action-oriented] [empathetic].<br >Segment the copy with optimised headings for maximum impact. Include calls to action and suggest images/visuals<br >For context: [background/market information, organisation/service mission statement] "
   },
   {
     "id": 26,
-    "category": "Data",
-    "subCategory": "In numbers",
-    "task": "SUMMARY",
-    "prompt": "<p>Write a news-style introduction for the article in 50 words.</p>"
-  },
-  {
-    "id": 27,
-    "category": "Data",
-    "subCategory": "In numbers",
-    "task": "HEADLINE",
-    "prompt": "<p>For the draft above, provide [x] creative headline options, optimised for search and social media, that balance impact with professional journalistic credibility. The headline must contain: 'In numbers'</p>"
-  },
-  {
-    "id": 28,
-    "category": "Audio",
-    "subCategory": "Mini-podcast",
-    "task": "IDEAS",
-    "prompt": "<p>Act as a professional podcast scriptwriter. Suggest [x] ideas for short explainer podcast episodes that will engage an online audience of [who, where].<br />[About the podcast:] [name, description]<br />Base ideas on [recent news] [hot topics] [topic/question] [URL]<br />For each idea, provide an explainer hook focused on a question (eg why, how), and a brief content outline based on verified, authoritative facts. Stay audience-focused and include unusual angles supported by credible sources.</p>"
-  },
-   {
-    "id": 29,
-    "category": "Audio",
-    "subCategory": "Mini-podcast",
-    "task": "SOLO SCRIPT",
-    "prompt": "<p>Act as a podcast scriptwriter. Draft a script for an [x] [second] [minute] explainer podcast episode with one host that will engage an audience of [who, where]<br />[About the podcast:] [Name, Description]<br />Base the script on: [idea number] [topic/question] [URL]<br />Format & style:<br />- Open with a question (eg how, why), then provide a fact-based, objective, audio explainer script that will inform and engage the target audience<br />- No intro and outro. No banter. No opinion or speculation.<br />- Deliver the facts in a natural, spoken narrative style. Avoid jargon<br />- Keep the style fast-paced, informative and audience‑focused.<br />- Include a variety of credible sources for more context.</p>"
-  },
-  {
-    "id": 30,
-    "category": "Audio",
-    "subCategory": "Mini-podcast",
-    "task": "Q&A SCRIPT",
-    "prompt": "<p>Act as a podcast scriptwriter. Draft a script for a [x] [second] [minute] mini‑podcast episode with two speakers (a host and an expert) that will engage an audience of [who, where].<br />[About the podcast:] [Name, description]<br />Base the script on: [idea number] [topic/question] [URL]<br />Format & style:<br />- No banter. No chat. No intro and outro. Just quick-fire, creative questions and straight, factual answers.<br />- Deliver the facts in a natural, spoken narrative style. Avoid jargon<br />Pack in as many direct questions and answers as possible.<br />- The host opens with a punchy first question that grabs attention<br />- The expert replies with expert answers.<br />- Keep the style fast-paced, informative and audience‑focused.<br />- Include a variety of credible sources for more context.<br />Output format:<br />Host: Question<br />Expert: Answer<br />Host: Follow-up<br />Expert: Answer</p>"
-  },
-  {
-    "id": 32,
-    "category": "Video",
-    "subCategory": "Slideshow + Titles",
-    "task": "IDEAS",
-    "prompt": "<p>Act as a social media video creator. Suggest [x] ideas for social media explainer videos that will engage an online audience of [who, where].<br />Base ideas on [recent news] [hot topics] [topic/question] [URL]<br />In each case provide an explainer hook based on a question (eg how or why). Add a brief outline for each idea, with suggested visuals. Include unusual angles supported by facts.</p>"
-  },
-  {
-    "id": 33,
-    "category": "Video",
-    "subCategory": "Slideshow + Titles",
-    "task": "SCRIPT",
-    "prompt": "<p>Act as a social media video creator. Draft a fact-based explainer video script with [x] sentences, that will engage an online audience of [who, where].<br />Base the script on: [idea number] [recent news] [hot topics] [topic/question] [URL]<br />Optimise the script for a slideshow consisting of images and overlay titles, to be viewed on vertical mobile screens.<br />Start with a snappy explainer hook based on a question (why, how etc). Continue with fact-based sentences of around 15 words to explain the key points of the story in concise, simple, narrative language.<br />Avoid opinion and speculation.<br />Use editorial style to attribute facts and sources inline. Include other credible sources to add greater context and detail.<br />Suggest images or visuals to accompany each sentence.</p>"
-  },
-  {
-    "id": 34,
-    "category": "Video",
-    "subCategory": "Slideshow + Voiceover",
-    "task": "IDEAS",
-    "prompt": "<p>Act as a social media video creator. Suggest [x] ideas for lively, factual, social media explainer videos that will engage an audience of [who, where]<br />Base answers on: [recent news] [hot topics] [topic/question] [URL]<br />Ideas must suit an image/video clip montage + voiceover format. Include unusual angles designed to spark conversation and informed debate.<br />In each case make the hook a question and give a brief outline. Suggest a list of easily-accessible images to acompany the script.</p>"
-  },
-  {
-    "id": 35,
-    "category": "Video",
-    "subCategory": "Slideshow + Voiceover",
-    "task": "SCRIPT",
-    "prompt": "<p>Draft a [30-second] [60-second] fact-based explainer script optimised for voiceover, that will engage an audience of [who, where].<br />Base the script on: [idea number] [topic/question] [URL]<br />Start with an explainer hook based on a question (eg why, how). Follow with an objective, fact-based script using simple narrative language.<br />Use verbal source attribution (eg 'according to') for facts and sources. Include other credible sources for added context.<br />Keep the style fast-paced, professional and audience‑focused. Suggest [x] easily-accessible images to accompany the script</p>"
-  },
-  {
-    "id": 36,
-    "category": "Social Media",
-    "subCategory": "Posts",
-    "task": "DRAFT",
-    "prompt": "<p>Act as a social media content expert. Draft [x] social media posts that will engage an audience of [who, where].<br />Base answers on [topic] [URL]<br />Optimise for: [Facebook] [X] [Instagram] [LinkedIn]<br />Post type: [Post], [Story]<br />For each post provide:<br />1 - Attention-grabbing image or visual ideas.<br />2 - High-impact overlay text.<br />3 - An audience-focused caption, with high-engagement hashtags.<br />Make the tone [professional] [informative] [empowering] [motivational] [entertaining] [urgent] [action-oriented] [empathetic].</p>"
-  },
-  {
-    "id": 37,
-    "category": "Social Media",
-    "subCategory": "Carousel",
-    "task": "DRAFT",
-    "prompt": "<p>Act as a journalist and social media content expert. Break down the following topic into an explainer carousel for an audience of [who, where].<br />Base the carousel on: [topic/question]<br />Total number of slides: [x]<br />The text for the first slide should pose a question (eg who, what, why, where, when, how).<br />The following slides should feature fact-based captions of around 20 words to explain the topic in concise, narrative language.<br />Avoid opinion and speculation. Use editorial style to attribute facts and sources inline. Consider other credible sources for added depth.<br />Suggest images or visuals for each caption.</p>"
-  },
-  {
-    "id": 38,
-    "category": "Social Media",
-    "subCategory": "Thread",
-    "task": "DRAFT",
-    "prompt": "<p>Act as a journalist and social media content expert. Break down the following topic into an engaging explainer thread for an audience of [who, where].<br />Base the thread on: [topic/question] [URL]<br />Start with an engaging question (eg who, what, why, where, when, how). Continue with short, fact-based posts (1–2 sentences each) to explain the key points in concise, narrative language. Avoid opinion and speculation. Attribute sources. Consider other credible sources for added context.<br />Suggest images or visuals for each post. End with a takeaway that sparks discussion and sharing.</p>"
-  },
-  {
-    "id": 39,
-    "category": "Social Media",
-    "subCategory": "Quotes",
-    "task": "DRAFT",
-    "prompt": "<p>Act as a journalist and social media content expert. Draft [x] image+text-overlay posts featuring authentic, verified quotes by [specific person] [leaders, campaigners or experts], targeting an audience of [who, where].<br />Base answers on: [topic] [URL]<br />For each post provide:<br />- The quote.<br />- A concise explanation of the context and significance of the quote, including where and when the quote was spoken.<br />-  Image ideas.<br />- An audience-focused caption, with high-engagement hashtags.<br />Make the tone [professional] [informative] [empowering] [motivational] [entertaining] [urgent] [action-oriented] [empathetic].</p>"
-  },
-   {
-    "id": 40,
-    "category": "Social Media",
-    "subCategory": "Facts | Myths+Facts",
-    "task": "DRAFT",
-    "prompt": "<p>Act as a journalist and social media content expert. Draft [x] image+text-overlay posts with impactful [facts] [myths+facts], targeting an audience of [who, where]. Base answers on: [topic] [URL]<br />Optimise for: [Facebook] [X] [Instagram] [LinkedIn]<br />For each post:<br />- Provide concise, fact-based overlay text<br />- Image or visual ideas.<br /> - An audience-focused caption, with high-engagement hashtags.<br />Make the tone [professional] [informative] [empowering] [motivational] [entertaining] [urgent] [action-oriented] [empathetic].</p>"
-  },
-  {
-    "id": 41,
-    "category": "Social Media",
-    "subCategory": "Social Media Campaign",
-    "task": "DRAFT",
-    "prompt": "<p>Act as a social media marketing expert working with:<br />[Organisation/Cause/Group]<br />Mission: [Overall mission]<br />Create a social media campaign plan that aims to: [list objective(s)].<br />The target audience is: [who, where].<br />Existing social channels are: [Add social channels + followers].<br /> Expected campaign duration: [x weeks/months], [starting x].<br />Campaign title and hashtag: [title/hashtag] [Suggest a campaign title and hashtag].<br />Team resource consists of: [numbers, experience].<br />The budget is [x]<br />Your structured campaign plan should include: Campaign objectives, social media channels to be used and why, campaign milestones, key messages and CTAs, realistic measures, resources required, and a content plan.<br />The content plan should include: A list of high-impact content ideas (and on which channels they will appear) with suggested visuals.<br />For context: [background/market information, website URL].<br />Before answering, ask any questions that will help you provide a more detailed, comprehensive plan.</p>"
-  },
-  {
-    "id": 42,
-    "category": "Website",
-    "subCategory": "Website Review",
-    "task": "REPORT",
-    "prompt": "<p>Act as an SEO and content marketing expert. Analyse and review this website: [URL].<br />Provide practical suggestions to increase [search visibility] [organic traffic and engagement] [newsletter subscriptions] [paid subscriptions] [fundraising] [volunteering].<br />For each suggestion, explain the practical steps required, including promotion, and level of complexity. Prioritise and highlight easy wins.</p>"
-  },
-  {
-    "id": 43,
-    "category": "Website",
-    "subCategory": "Landing Page",
-    "task": "DRAFT",
-    "prompt": "<p>Act as a copywriting expert. Craft compelling, optimised landing page copy for a website targeting an audience of [who, where].<br />The objective is to: [eg promote a service or campaign, drive subscriptions or donations].<br />Aim for [wordcount].<br />Include headings, calls to action and suggest images/visuals.<br />Make the tone [professional] [informative] [empowering] [motivational] [entertaining] [urgent] [action-oriented] [empathetic].<br />For context: [URL]</p>"
-  },
-  {
-    "id": 44,
     "category": "Strategy",
-    "subCategory": "Comms Plan",
-    "task": "DRAFT",
-    "prompt": "<p>Act as a content marketing expert, working with:<br />[Organisation/Cause/Group]<br />Mission: [Overall mission].<br />Draft a practical, innovative communications plan that aims to [list objective(s)].<br />The target audience is [who, where].<br />Project title: [project/campaign title] [Suggest a project/campaign title].<br />Expected campaign duration: [x weeks/months], [starting x]<br />Current communication channels: [eg newsletter, website, events, social media + followers].<br />Team resource consists of [numbers, experience]<br />The budget is: [x].<br />Barriers or constraints that could hinder success: [x]<br />Your structured plan should include: A timeline. Proposals for online, offline and social media promotion. Branding, design, media and copywriting requirements. High-impact, creative content ideas. Resources required. Challenges preventing a successful outcome, and ways these might be overcome.<br />For context: [background/market information, website URL].<br />Before answering, ask any questions that will help you provide a more detailed, comprehensive answer.</p>"
-  },
- {
-    "id": 45,
-    "category": "Co-pilot",
-    "subCategory": "Editor",
-    "task": "",
-    "prompt": "<p>Act as an experienced news editor. Suggest ways the following text can be improved. Check grammar, spelling and structure, following [UK English] [US English] journalistic best practice. Check that content is objective, professional and free from editorialising or jargon.<br />Format:<br />1. Repeat the full text, highlighting in bold any issues you find.<br />Immediately following the bold text highlights, add in square brackets a very brief inline explanation and language fix. Do not comment on direct quotes unless they contain spelling or style issues.<br />3. Add a full draft incorporating your suggested improvements.<br />4. Lastly, list any suggestions to maximise the article's search visibility. Here is the text:</p>"
-  },
-  {
-    "id": 46,
-    "category": "Co-pilot",
-    "subCategory": "Interviewer",
-    "task": "",
-    "prompt": "<p>Act as a journalist preparing to interview [person, role].<br />Your audience is [who,where].<br />First, list themes/topics that will make for a compelling, audience-focused interview.<br />Then propose [x] interview questions, with options for an opening icebreaker and memorable final question.<br />The style of the interview should be [conversational] [entertaining] [challenging] [empathetic].<br />For context: [Add info] [URL]</p>"
-  },
-  {
-    "id": 47,
-    "category": "Co-pilot",
-    "subCategory": "Instructor",
-    "task": "",
-    "prompt": "<p>Act as a patient, expert instructor in [topic/skill]. Provide a step-by-step guide to help me [task]. My skill level is [beginner] [intermediate] [advanced].</p>"
-  },
-  {
-    "id": 48,
-    "category": "Co-pilot",
-    "subCategory": "Prompt Engineer",
-    "task": "",
-    "prompt": "<p>Act as an expert AI prompt engineer. [Craft a prompt to help me:] [Suggest improvements/options for this prompt:]</p>"
-  },
-   {
-    "id": 49,
-    "category": "Co-pilot",
-    "subCategory": "Researcher",
-    "task": "",
-    "prompt": "<p>Act as a researcher journalist for news and human-interest media. Provide a structured list of events, anniversaries and famous birthdays related to [where] [topic] that would provide a topical and engaging hook for news, blogs, social media videos, podcasts and explainer articles in the next [week] [month] [year]<br />Use the following format:<br />- The event<br />- The date (and time if relevant)<br />- Brief explanation of the event<br />- Suggest unusual or offbeat angles, including suggestions for interviews and ideal story forms, including short video explainers, podcasts, lists, Q&A, data stories (in charts, in numbers) and guides.<br />Make the list targeted for the following audience: [who, where]</p>"
-  },
-  {
-    "id": 50,
-    "category": "Image Gen",
-    "subCategory": "Prompt Tips",
-    "task": "",
-    "prompt": "<p>Describe the key elements of the image: Subject, background, lighting, colours, mood, framing, style/quality. Use keywords such as:<br />MOOD. Confident, elegant, empowered, heartwarming, beautiful, mysterious, optimistic, happy, dramatic, harmonious.<br />LIGHTING: Natural, hard/soft light, studio, sunset, golden hour, diffused, candlelight.<br />FRAMING: Close-up, panorama, wide/medium shot, head-and-shoulders, bird's eye, POV.<br />STYLE: Photorealistic, editorial, blurred background, abstract, surreal, vintage, watercolour, cinematic, fantasy, impressionist, pencil-sketch, oil painting.</p>"
-  },
-  {
-    "id": 51,
-    "category": "Image Gen",
-    "subCategory": "Logo Design",
-    "task": "",
-    "prompt": "<p>Act as brand graphic designer. Design a striking, minimalist logo in a single colour: [colour] on [colour] background.<br />The logo must be unique, creative and reflect the brand:<br />[Brand name] makes life better for [who, where] by [doing what].<br />Use a flat vector style with clean lines, high contrast and no gradients; no shading and no text. Use one strong visual element to ensure maximum clarity at tiny sizes in square or round format.</p>"
+    "subCategory": "Comms plan",
+    "styleGuideIncluded": false,
+    "prompt": "Act as a content marketing expert, working with: [Organisation/Cause/Group]<br >Draft a practical, innovative communications plan that aims to [list objective(s)]<br >The target audience is [who, where]<br >Project title: [project/campaign title] [Suggest a project/campaign title]<br >Expected campaign duration: [x weeks/months] [starting x]<br >Current communication channels: [eg newsletter, website, events, social media + followers].<br >Team resource consists of [numbers, experience]<br >Budget: [x].<br >Barriers or constraints that could hinder success: [x]<br >Your structured plan should include: A timeline. Proposals for online, offline and social media promotion. Branding, design, media and copywriting requirements. High-impact, creative content ideas. Resources required. Challenges preventing a successful outcome, and ways these might be overcome.<br >Context: [background/market information, organisation/service mission statement]. Website: [URL]<br >Before answering, ask any questions that will help you provide a more detailed, comprehensive answer."
   }
 ]

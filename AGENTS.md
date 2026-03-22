@@ -163,9 +163,9 @@ Simple localStorage wrapper. Currently minimal; stores handle persistence direct
 - Extracts citations from Perplexity response
 
 **Config:**
-- **Model**: `sonar` (Perplexity default)
+- **Model**: `sonar-pro` (Perplexity pro model)
 - **Temperature**: 0.7
-- **Max tokens**: 1500
+- **Max tokens**: 8000
 - **Search recency**: month
 
 ### POST `/api/metadata`
@@ -175,7 +175,7 @@ Fetches Open Graph title/description from citation URLs (5s timeout, 50KB limit)
 
 ---
 
-## Components (`src/lib/components/`, 16 total)
+## Components (`src/lib/components/`, 14 total)
 
 Organized by feature:
 
@@ -197,7 +197,7 @@ Organized by feature:
 
 **Notepad:**
 - `NotepadSelectionMenu.svelte` — Inline menu for text selection in notepad
-- `NotepadToolbar.svelte` — Formatting buttons (bold, italic, list, font size, undo/redo)
+- `NotepadToolbar.svelte` — Sub-component for formatting buttons (bold, italic, list, font size, undo/redo)
 
 **Archive:**
 - `ArchiveItem.svelte` — Chat/note card with menu (restore, download, share, delete)
@@ -213,15 +213,28 @@ Organized by feature:
 
 ## Pages & Routes
 
-### Create (`src/routes/create/+page.svelte` - Main chat interface)
-Main chat interface.
+### Home / Prompts Library (`src/routes/+page.svelte`)
+Browse and search prompt library from `static/prompts.json`.
+
+**Features:**
+- Category filtering and search
+- Favorite toggle (persisted)
+- Copy prompt to clipboard
+- **Tap edit icon on prompt** → Opens `PromptEditDrawer` (overlay modal)
+- Insert prompt into chat (via drawer)
+- Persona settings button (upper right)
+
+**Note on PromptEditDrawer**: When you tap the edit icon on a prompt card, `PromptEditDrawer.svelte` opens as an inline overlay. This is different from the Notepad page.
+
+### Create (`src/routes/create/+page.svelte`)
+Main chat interface with Perplexity AI.
 
 **Key state:**
 - `inputValue` — Chat input text
 - `isLoading` — Waiting for API response
 - `isStreaming` — Actively receiving chunks
 - `streamingContent` — Accumulated streamed response
-- `showPromptDrawer` — Prompt library open
+- `showPromptDrawer` — Prompt library open (fullscreen)
 - `showSourcesDrawer` — Citations drawer open
 - `abortController` — Cancel ongoing requests
 - `errorMessage` — API error display
@@ -234,18 +247,8 @@ Main chat interface.
 5. On complete → `updateLastMessage()` with final content + sources → `autoSaveChat()`
 6. On abort → remove empty message or keep partial response
 
-### Prompts (`src/routes/prompts/+page.svelte`)
-Browse prompt library from `static/prompts.json`.
-
-**Features:**
-- Category filtering
-- Search by title/description
-- Favorite toggle (persisted)
-- Copy to clipboard
-- Insert into chat (via drawer)
-
 ### Notepad (`src/routes/notepad/+page.svelte`)
-Text editor with formatting.
+Full-page text editor with formatting toolbar.
 
 **Features:**
 - Contenteditable divs (title + content)
@@ -276,15 +279,23 @@ Saved chats and notes.
 - Filled: `icon-{name}-fill.svg`
 - All: 24×24px at 2px stroke weight
 
+**Import method:** Icons are imported as **raw SVG strings** (using `?raw` in Vite), not as components. This allows inline SVG rendering with CSS control.
+
 **Usage:**
 ```javascript
-// In src/lib/icons.js (export):
-export { default as IconCreate } from '../../static/icons/icon-create.svg?component';
+// In src/lib/icons.js (export as strings):
+import IconCreate from '../../static/icons/icon-create.svg?raw';
+export const iconMap = {
+  create: IconCreate,
+  // ...
+};
 
 // In component:
 import Icon from '$lib/components/Icon.svelte';
-<Icon name="create" size={24} variant="fill" />
+<Icon name="create" size={24} />
 ```
+
+The `Icon.svelte` component renders the SVG string inline and applies styling via props.
 
 ---
 

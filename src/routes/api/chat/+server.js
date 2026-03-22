@@ -35,7 +35,7 @@ COMPLETENESS:
 
 export async function POST({ request }) {
 	try {
-		const { messages } = await request.json();
+		const { messages, styleGuide } = await request.json();
 
 		if (!messages || !Array.isArray(messages)) {
 			return new Response(JSON.stringify({ error: 'Messages array required' }), {
@@ -53,6 +53,12 @@ export async function POST({ request }) {
 			});
 		}
 
+		// Build system prompt
+		let systemPrompt = SYSTEM_PROMPT;
+		if (styleGuide) {
+			systemPrompt += `\n\n---\n\nEDITORIAL STYLE GUIDE (Follow these guidelines):\n\n${styleGuide}`;
+		}
+
 		const response = await fetch('https://api.perplexity.ai/chat/completions', {
 			method: 'POST',
 			headers: {
@@ -62,7 +68,7 @@ export async function POST({ request }) {
 			body: JSON.stringify({
 				model: 'sonar-pro',
 				messages: [
-					{ role: 'system', content: SYSTEM_PROMPT },
+					{ role: 'system', content: systemPrompt },
 					...messages.map(m => ({ role: m.role, content: m.content }))
 				],
 				temperature: 0.7,

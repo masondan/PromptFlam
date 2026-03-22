@@ -1,5 +1,5 @@
 <script>
-	import { createEventDispatcher, onMount, onDestroy } from 'svelte';
+	import { createEventDispatcher, onMount } from 'svelte';
 	import { Icon } from '$lib/components';
 	import { browser } from '$app/environment';
 	import { goto } from '$app/navigation';
@@ -8,8 +8,6 @@
 		toggleFavorite, 
 		isFavorite,
 		promptLibraryCategory,
-		promptLibrarySubcategory,
-		promptLibraryExpandedId,
 		promptLibraryScrollY,
 		pendingChatInput,
 		personaRole,
@@ -28,39 +26,22 @@
 	let activeTab = 'all';
 	let searchQuery = '';
 	let categoryDropdownOpen = false;
-	let subcategoryDropdownOpen = false;
-	let scrollRestored = false;
 
-	const categoryOrder = ['Text', 'Data', 'Audio', 'Video', 'Social Media', 'Website', 'Strategy', 'Co-pilot', 'Image Gen'];
-
-	const subcategoryOrder = {
-		'Text': ['Lists', 'Q&A', 'In quotes', 'Timeline', 'Fact check', 'Feature'],
-		'Data': ['In charts', 'In numbers'],
-		'Audio': ['Mini-podcast'],
-		'Video': ['Slideshow + Titles', 'Slideshow + Voiceover'],
-		'Social Media': ['Posts', 'Carousel', 'Thread', 'Quotes', 'Facts | Myths+Facts', 'Social Media Campaign'],
-		'Website': ['Website Review', 'Landing Page'],
-		'Strategy': ['Comms Plan'],
-		'Co-pilot': ['Editor', 'Interviewer', 'Instructor', 'Prompt Engineer', 'Researcher'],
-		'Image Gen': ['Prompt Tips', 'Logo Design']
-	};
+	const categoryOrder = ['Ideas', 'Text', 'Data', 'Audio', 'Video', 'Social media', 'Image', 'AI Co-pilot', 'Website', 'Strategy'];
 
 	$: categories = [...new Set(prompts.map(p => p.category))].sort(
-		(a, b) => categoryOrder.indexOf(a) - categoryOrder.indexOf(b)
+		(a, b) => {
+			const ai = categoryOrder.indexOf(a);
+			const bi = categoryOrder.indexOf(b);
+			return (ai === -1 ? 999 : ai) - (bi === -1 ? 999 : bi);
+		}
 	);
 
-	$: subcategories = $promptLibraryCategory === 'all'
-		? []
-		: [...new Set(prompts.filter(p => p.category === $promptLibraryCategory).map(p => p.subCategory))].sort((a, b) => {
-			const order = subcategoryOrder[$promptLibraryCategory] || [];
-			return order.indexOf(a) - order.indexOf(b);
-		});
+	$: filteredPrompts = filterPrompts(prompts, activeTab, searchQuery, $promptLibraryCategory, $favorites);
+	
+	$: groupedByCategory = groupPromptsByCategory(filteredPrompts);
 
-	$: filteredPrompts = filterPrompts(prompts, activeTab, searchQuery, $promptLibraryCategory, $promptLibrarySubcategory, $favorites);
-
-	$: groupedPrompts = groupPrompts(filteredPrompts);
-
-	function filterPrompts(allPrompts, tab, query, category, subcategory, favs) {
+	function filterPrompts(allPrompts, tab, query, category, favs) {
 		let result = allPrompts;
 
 		if (tab === 'favorites') {
@@ -70,7 +51,6 @@
 		if (query.trim()) {
 			const q = query.toLowerCase();
 			result = result.filter(p =>
-				p.task.toLowerCase().includes(q) ||
 				p.prompt.toLowerCase().includes(q) ||
 				p.category.toLowerCase().includes(q) ||
 				p.subCategory.toLowerCase().includes(q)
@@ -81,23 +61,19 @@
 			result = result.filter(p => p.category === category);
 		}
 
-		if (subcategory !== 'all') {
-			result = result.filter(p => p.subCategory === subcategory);
-		}
-
 		return result;
 	}
 
-	function groupPrompts(promptList) {
+	function groupPromptsByCategory(promptList) {
 		const grouped = {};
 		for (const prompt of promptList) {
 			if (!grouped[prompt.category]) {
-				grouped[prompt.category] = {};
+				grouped[prompt.category] = [];
 			}
-			if (!grouped[prompt.category][prompt.subCategory]) {
-				grouped[prompt.category][prompt.subCategory] = [];
+			// Only add one entry per subCategory (since there's now one prompt per subcategory)
+			if (!grouped[prompt.category].find(p => p.subCategory === prompt.subCategory)) {
+				grouped[prompt.category].push(prompt);
 			}
-			grouped[prompt.category][prompt.subCategory].push(prompt);
 		}
 		return grouped;
 	}
@@ -121,15 +97,10 @@
 		return result;
 	}
 
-	function toTitleCase(str) {
-		return str.toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
-	}
-
 	function handleTabClick(tab) {
 		activeTab = tab;
-		if (tab === 'favorites' || tab === 'search') {
+		if (tab === 'favorites') {
 			promptLibraryCategory.set('all');
-			promptLibrarySubcategory.set('all');
 		}
 		if (tab !== 'search') {
 			searchQuery = '';
@@ -138,38 +109,28 @@
 
 	function handleCategorySelect(cat) {
 		promptLibraryCategory.set(cat);
-		promptLibrarySubcategory.set('all');
 		categoryDropdownOpen = false;
-		// Reset search if active
 		if (activeTab === 'search') {
 			activeTab = 'all';
 			searchQuery = '';
 		}
 	}
 
-	function handleSubcategorySelect(sub) {
-		promptLibrarySubcategory.set(sub);
-		subcategoryDropdownOpen = false;
-	}
-
-	function handleFavoriteToggle(category, subCategory) {
-		toggleFavorite(category, subCategory);
-	}
-
-	function handleCopy(prompt) {
-		const text = applyPersonaSubstitutions(stripHtml(prompt.prompt));
-		navigator.clipboard.writeText(text);
-		dispatch('copy', { prompt, text });
-	}
-
-	function handleEdit(prompt) {
+	function handleCardClick(prompt) {
 		const text = applyPersonaSubstitutions(stripHtml(prompt.prompt));
 		dispatch('edit', { prompt, text });
 	}
 
-	function handleInsert(prompt) {
+	function handleCopy(prompt) {
 		const text = applyPersonaSubstitutions(stripHtml(prompt.prompt));
-		dispatch('insert', { prompt: text });
+		
+		let textToCopy = text;
+		if (prompt.styleGuideIncluded) {
+			textToCopy += '\n\nBefore responding, read and apply the editorial style guide at: ' + window.location.origin + '/style-guide';
+		}
+		
+		navigator.clipboard.writeText(textToCopy);
+		dispatch('copy', { prompt, text });
 	}
 
 	function handleAddToChat(prompt) {
@@ -178,18 +139,14 @@
 		goto('/create');
 	}
 
-	function togglePromptExpand(promptId) {
-		promptLibraryExpandedId.set($promptLibraryExpandedId === promptId ? null : promptId);
-	}
-
-	function getPromptId(category, subCategory, task) {
-		return `${category}-${subCategory}-${task}`;
+	function handleInsert(prompt) {
+		const text = applyPersonaSubstitutions(stripHtml(prompt.prompt));
+		dispatch('insert', { prompt: text });
 	}
 
 	function closeDropdowns(e) {
 		if (!e.target.closest('.dropdown')) {
 			categoryDropdownOpen = false;
-			subcategoryDropdownOpen = false;
 		}
 	}
 
@@ -211,7 +168,6 @@
 			if (browser && $promptLibraryScrollY > 0) {
 				requestAnimationFrame(() => {
 					window.scrollTo(0, $promptLibraryScrollY);
-					scrollRestored = true;
 				});
 			}
 		}
@@ -226,13 +182,13 @@
 <svelte:window on:click={closeDropdowns} />
 
 <div class="prompt-library">
-<div class="toolbar">
-	<div class="dropdown category-dropdown" class:open={categoryDropdownOpen}>
+	<!-- Toolbar: matches original design -->
+	<div class="toolbar">
+		<div class="dropdown category-dropdown" class:open={categoryDropdownOpen}>
 			<button
 				class="dropdown-trigger"
 				on:click|stopPropagation={() => {
 					categoryDropdownOpen = !categoryDropdownOpen;
-					subcategoryDropdownOpen = false;
 				}}
 			>
 				<span>{$promptLibraryCategory === 'all' ? 'All Prompts' : $promptLibraryCategory}</span>
@@ -244,7 +200,7 @@
 						All Prompts
 					</button>
 					{#each categories as cat}
-						{@const isCoreCategory = ['Text', 'Data', 'Audio', 'Video', 'Social Media'].includes(cat)}
+						{@const isCoreCategory = ['Ideas', 'Text', 'Data', 'Audio', 'Video', 'Social media'].includes(cat)}
 						<button class="dropdown-item" class:core-category={isCoreCategory} on:click={() => handleCategorySelect(cat)}>
 							{cat}
 						</button>
@@ -277,35 +233,7 @@
 		</button>
 	</div>
 
-	{#if $promptLibraryCategory !== 'all' && subcategories.length > 0}
-		<div class="filters">
-			<div class="dropdown subcategory-dropdown" class:open={subcategoryDropdownOpen}>
-				<button
-					class="dropdown-trigger"
-					on:click|stopPropagation={() => {
-						subcategoryDropdownOpen = !subcategoryDropdownOpen;
-						categoryDropdownOpen = false;
-					}}
-				>
-					<span>{$promptLibrarySubcategory === 'all' ? `All ${$promptLibraryCategory}` : $promptLibrarySubcategory}</span>
-					<Icon name={subcategoryDropdownOpen ? 'collapse' : 'expand'} size={16} />
-				</button>
-				{#if subcategoryDropdownOpen}
-					<div class="dropdown-menu">
-						<button class="dropdown-item" on:click={() => handleSubcategorySelect('all')}>
-							All {$promptLibraryCategory}
-						</button>
-						{#each subcategories as sub}
-							<button class="dropdown-item" on:click={() => handleSubcategorySelect(sub)}>
-								{sub}
-							</button>
-						{/each}
-					</div>
-				{/if}
-			</div>
-		</div>
-	{/if}
-
+	<!-- Search bar (visible when search tab active) -->
 	{#if activeTab === 'search'}
 		<div class="search-bar">
 			<input
@@ -317,77 +245,35 @@
 		</div>
 	{/if}
 
+	<!-- Content -->
 	{#if loading}
 		<div class="loading">Loading prompts...</div>
 	{:else if error}
 		<div class="error">{error}</div>
-	{:else if filteredPrompts.length === 0}
+	{:else if Object.keys(groupedByCategory).length === 0}
 		<div class="empty">No prompts found.</div>
 	{:else}
 		<div class="prompt-list">
-			{#each Object.entries(groupedPrompts) as [category, subcats]}
-				<div class="category-group">
-					{#each Object.entries(subcats) as [subCategory, tasks]}
-						{@const isFav = isFavorite(category, subCategory, $favorites)}
-						<div class="subcategory-card">
-							<div class="subcategory-header">
-								<h2 class="subcategory-title">{subCategory}</h2>
-							</div>
-							{#each tasks as prompt}
-								{@const promptId = getPromptId(category, subCategory, prompt.task)}
-								{@const isExpanded = $promptLibraryExpandedId === promptId}
-								<div class="task-item">
-									<div class="task-header" on:click={() => togglePromptExpand(promptId)}>
-										<button class="expand-btn" aria-label={isExpanded ? 'Collapse' : 'Expand'}>
-											<Icon name={isExpanded ? 'collapse' : 'expand'} size={16} />
-										</button>
-									</div>
-									<p class="prompt-text" class:collapsed={!isExpanded} on:click={() => togglePromptExpand(promptId)}>{#if prompt.task}<span class="task-label">{toTitleCase(prompt.task)}:</span>{' '}{/if}{applyPersonaSubstitutions(stripHtml(prompt.prompt))}</p>
-									<div class="action-buttons">
-										{#if mode === 'page'}
-											<button
-												class="action-btn"
-												on:click={() => handleEdit(prompt)}
-												aria-label="Edit prompt"
-											>
-												<Icon name="edit" size={20} />
-											</button>
-											<button
-												class="action-btn add-to-chat-btn"
-												on:click={() => handleAddToChat(prompt)}
-												aria-label="Add to chat"
-											>
-												<Icon name="create" size={20} />
-											</button>
-										{:else}
-											<button
-												class="action-btn insert-btn"
-												on:click={() => handleInsert(prompt)}
-												aria-label="Insert into chat"
-											>
-												<Icon name="create" size={20} />
-											</button>
-										{/if}
-										<button
-											class="action-btn"
-											on:click={() => handleCopy(prompt)}
-											aria-label="Copy prompt"
-										>
-											<Icon name="copy" size={20} />
-										</button>
-										<button
-											class="action-btn favorite-btn"
-											class:active={isFav}
-											on:click={() => handleFavoriteToggle(category, subCategory)}
-											aria-label={isFav ? 'Remove from favourites' : 'Add to favourites'}
-										>
-											<Icon name={isFav ? 'heart-fill' : 'heart'} size={20} />
-										</button>
-									</div>
-								</div>
-							{/each}
-						</div>
-					{/each}
+			{#each Object.entries(groupedByCategory) as [category, promptList]}
+				<div class="category-section">
+					<h2 class="category-title">{category}</h2>
+
+					<div class="card-list">
+						{#each promptList as prompt}
+							{@const isFav = isFavorite(category, prompt.subCategory, $favorites)}
+							<button
+								class="prompt-card"
+								on:click={() => handleCardClick(prompt)}
+							>
+								<span class="card-label">{prompt.subCategory}</span>
+								{#if isFav}
+									<span class="fav-heart">
+										<Icon name="heart-fill" size={22} />
+									</span>
+								{/if}
+							</button>
+						{/each}
+					</div>
 				</div>
 			{/each}
 		</div>
@@ -401,6 +287,7 @@
 		gap: var(--spacing-md);
 	}
 
+	/* Toolbar */
 	.toolbar {
 		display: flex;
 		gap: var(--spacing-sm);
@@ -441,25 +328,7 @@
 		color: var(--color-icon-active);
 	}
 
-	.search-input {
-		width: 100%;
-		padding: 0.75rem;
-		border: 1px solid var(--color-border);
-		border-radius: var(--radius);
-		font-size: 1rem;
-		background: #fff;
-	}
-
-	.search-input:focus {
-		border-color: var(--color-border);
-		outline: none;
-	}
-
-	.filters {
-		display: flex;
-		gap: var(--spacing-sm);
-	}
-
+	/* Dropdown */
 	.dropdown {
 		position: relative;
 	}
@@ -482,24 +351,6 @@
 	.category-dropdown .dropdown-trigger:hover {
 		background: #6a2ed6;
 		border-color: #6a2ed6;
-	}
-
-	.subcategory-dropdown {
-		width: 100%;
-	}
-
-	.subcategory-dropdown .dropdown-trigger {
-		background: var(--color-highlight);
-		border-color: #555555;
-		color: var(--text-primary);
-	}
-
-	.subcategory-dropdown .dropdown-trigger :global(svg) {
-		color: #777777;
-	}
-
-	.subcategory-dropdown .dropdown-trigger:hover {
-		background: #ece4ff;
 	}
 
 	.dropdown-trigger {
@@ -570,6 +421,22 @@
 		font-weight: 700;
 	}
 
+	/* Search */
+	.search-input {
+		width: 100%;
+		padding: 0.75rem;
+		border: 1px solid var(--color-border);
+		border-radius: var(--radius);
+		font-size: 1rem;
+		background: #fff;
+	}
+
+	.search-input:focus {
+		border-color: var(--color-border);
+		outline: none;
+	}
+
+	/* Loading / Error / Empty */
 	.loading,
 	.error,
 	.empty {
@@ -582,109 +449,64 @@
 		color: #dc2626;
 	}
 
+	/* Prompt list */
 	.prompt-list {
 		display: flex;
 		flex-direction: column;
-		gap: var(--spacing-xl);
-		margin-top: var(--spacing-md);
+		gap: var(--spacing-lg);
+		margin-top: var(--spacing-sm);
 	}
 
-	.category-group {
+	.category-section {
 		display: flex;
 		flex-direction: column;
-		gap: var(--spacing-lg);
+		gap: var(--spacing-sm);
 	}
 
-	.subcategory-card {
-		background: var(--bg-main);
-		padding: 0;
-	}
-
-	.subcategory-header {
-		margin-bottom: var(--spacing-md);
-	}
-
-	.subcategory-title {
+	.category-title {
 		font-size: var(--font-size-h2);
-		font-weight: 600;
-		color: #5422B0;
+		font-weight: 700;
+		color: var(--accent-brand);
 		margin: 0;
 		padding-bottom: var(--spacing-xs);
-		border-bottom: 2px solid #5422B0;
-		display: inline-block;
+		border-bottom: 2px solid #d4c4f0;
 	}
 
-	.task-item {
-		padding: var(--spacing-md) 0;
-		border-bottom: 1px solid var(--color-border);
-	}
-
-	.task-header {
+	/* Subcategory cards */
+	.card-list {
 		display: flex;
-		justify-content: flex-end;
-		align-items: flex-start;
+		flex-direction: column;
+		gap: var(--spacing-sm);
+	}
+
+	.prompt-card {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		width: 100%;
+		padding: var(--spacing-md) var(--spacing-md);
+		background: #f2f2f2;
+		border: 1px solid transparent;
+		border-radius: var(--radius);
 		cursor: pointer;
-		float: right;
-		margin-left: var(--spacing-sm);
+		transition: background 0.15s, border-color 0.15s;
+		text-align: left;
 	}
 
-	.task-label {
-		font-weight: 600;
-		color: #777777;
+	.prompt-card:hover {
+		background: var(--color-highlight);
+		border-color: #d4c4f0;
 	}
 
-	.expand-btn {
-		color: #777777;
-		padding: var(--spacing-xs);
-		flex-shrink: 0;
-	}
-
-	.expand-btn:hover {
-		color: var(--accent-brand);
-	}
-
-	.prompt-text {
+	.card-label {
+		font-size: 1rem;
+		font-weight: 500;
 		color: var(--text-primary);
-		white-space: pre-wrap;
-		margin: 0 0 var(--spacing-md) 0;
-		line-height: 1.6;
-		cursor: pointer;
 	}
 
-	.prompt-text.collapsed {
-		display: -webkit-box;
-		-webkit-line-clamp: 3;
-		-webkit-box-orient: vertical;
-		overflow: hidden;
-		text-overflow: ellipsis;
-	}
-
-	.action-buttons {
+	.fav-heart {
 		display: flex;
-		justify-content: center;
-		gap: var(--spacing-md);
-	}
-
-	.action-btn {
-		color: var(--color-icon-default);
-		padding: var(--spacing-xs);
-		transition: color 0.15s, transform 0.15s;
-	}
-
-	.action-btn:hover {
-		color: var(--color-icon-active);
-		transform: scale(1.1);
-	}
-
-	.action-btn.insert-btn {
-		color: var(--accent-brand);
-	}
-
-	.action-btn.favorite-btn.active {
-		color: var(--accent-brand);
-	}
-
-	.action-btn.favorite-btn.active:hover {
+		align-items: center;
 		color: var(--accent-brand);
 	}
 </style>

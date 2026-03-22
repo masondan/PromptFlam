@@ -3,33 +3,59 @@
 	import { goto } from '$app/navigation';
 	import { Icon } from '$lib/components';
 	import { fade, fly } from 'svelte/transition';
-	import { pendingChatInput } from '$lib/stores.js';
+	import { marked } from 'marked';
+	import { pendingChatInput, favorites, toggleFavorite, isFavorite } from '$lib/stores.js';
 
 	export let isOpen = false;
 	export let text = '';
+	export let prompt = null;
 
 	const dispatch = createEventDispatcher();
 
-	let textareaEl;
+	let editorEl;
 	let editedText = '';
 	let copied = false;
 	let initialized = false;
+	let showStyleGuideDrawer = false;
+	let styleGuideContent = '';
+
+	function textToHtml(text) {
+		return text.split('\n')
+			.map(line => {
+				const escaped = line.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+				return `<p>${escaped || '<br>'}</p>`;
+			})
+			.join('');
+	}
+
+	function syncFromEditor() {
+		if (!editorEl) return;
+		const paragraphs = editorEl.querySelectorAll('p');
+		if (paragraphs.length > 0) {
+			editedText = Array.from(paragraphs).map(p => p.textContent || '').join('\n');
+		} else {
+			editedText = editorEl.innerText || '';
+		}
+	}
 
 	$: if (isOpen && text && !initialized) {
 		editedText = text;
 		initialized = true;
 		
 		setTimeout(() => {
-			if (textareaEl) {
-				textareaEl.focus();
-				textareaEl.setSelectionRange(editedText.length, editedText.length);
+			if (editorEl) {
+				editorEl.innerHTML = textToHtml(editedText);
+				editorEl.focus();
 			}
 		}, 300);
 	}
 
 	$: if (!isOpen) {
 		initialized = false;
+		showStyleGuideDrawer = false;
 	}
+
+	$: isFavorited = prompt ? isFavorite(prompt.category, prompt.subCategory, $favorites) : false;
 
 	function close() {
 		dispatch('close');
@@ -48,26 +74,43 @@
 	}
 
 	async function handleCopy() {
-		await navigator.clipboard.writeText(editedText);
+		const textToCopy = generateExportText(editedText);
+		await navigator.clipboard.writeText(textToCopy);
 		copied = true;
 		setTimeout(() => copied = false, 2000);
 	}
 
 	async function handleShare() {
+		const textToShare = generateExportText(editedText);
+		
 		if (navigator.share) {
 			try {
 				await navigator.share({
-					text: editedText,
+					text: textToShare,
 					title: 'PromptFlam Prompt'
 				});
 			} catch (err) {
 				if (err.name !== 'AbortError') {
-					handleCopy();
+					navigator.clipboard.writeText(textToShare);
+					copied = true;
+					setTimeout(() => copied = false, 2000);
 				}
 			}
 		} else {
-			handleCopy();
+			navigator.clipboard.writeText(textToShare);
+			copied = true;
+			setTimeout(() => copied = false, 2000);
 		}
+	}
+
+	function generateExportText(text) {
+		let result = text;
+		
+		if (prompt?.styleGuideIncluded) {
+			result += '\n\nBefore responding, read and apply the editorial style guide at: ' + window.location.origin + '/style-guide';
+		}
+		
+		return result;
 	}
 
 	function findBracketAtPosition(textContent, cursorPos) {
@@ -85,17 +128,33 @@
 		return null;
 	}
 
-	function handleTextareaClick() {
-		if (!textareaEl) return;
+	function handleEditorClick() {
+		if (!editorEl) return;
 		
 		setTimeout(() => {
-			const cursorPos = textareaEl.selectionStart;
-			const bracket = findBracketAtPosition(editedText, cursorPos);
+			const sel = window.getSelection();
+			if (!sel.rangeCount) return;
 			
+			const range = sel.getRangeAt(0);
+			const textNode = range.startContainer;
+			if (textNode.nodeType !== Node.TEXT_NODE) return;
+			
+			const paraText = textNode.textContent;
+			const offset = range.startOffset;
+			
+			const bracket = findBracketAtPosition(paraText, offset);
 			if (bracket) {
-				textareaEl.setSelectionRange(bracket.start, bracket.end);
+				const newRange = document.createRange();
+				newRange.setStart(textNode, bracket.start);
+				newRange.setEnd(textNode, bracket.end);
+				sel.removeAllRanges();
+				sel.addRange(newRange);
 			}
 		}, 0);
+	}
+
+	function handleEditorInput() {
+		syncFromEditor();
 	}
 
 	function handleAddToChat() {
@@ -103,11 +162,34 @@
 		close();
 		goto('/create');
 	}
+
+	function toggleFav() {
+		if (prompt) {
+			toggleFavorite(prompt.category, prompt.subCategory);
+		}
+	}
+
+	async function openStyleGuide() {
+		showStyleGuideDrawer = true;
+		if (!styleGuideContent) {
+			try {
+				const response = await fetch('/style-guide.md');
+				styleGuideContent = await response.text();
+			} catch (err) {
+				styleGuideContent = 'Error loading style guide';
+			}
+		}
+	}
+
+	function closeStyleGuideDrawer() {
+		showStyleGuideDrawer = false;
+	}
 </script>
 
 <svelte:window on:keydown={handleKeydown} />
 
 {#if isOpen}
+	<!-- Main Edit Drawer -->
 	<!-- svelte-ignore a11y_no_noninteractive_tabindex -->
 	<div 
 		class="overlay" 
@@ -126,14 +208,25 @@
 				</button>
 			</div>
 			
+			<!-- svelte-ignore a11y_click_events_have_key_events -->
 			<div class="content-area">
-				<textarea
-					bind:this={textareaEl}
-					bind:value={editedText}
-					on:click={handleTextareaClick}
+				<div
+					bind:this={editorEl}
+					contenteditable="true"
+					on:click={handleEditorClick}
+					on:input={handleEditorInput}
 					class="edit-textarea"
-					placeholder="Edit your prompt..."
-				></textarea>
+					role="textbox"
+					aria-multiline="true"
+				></div>
+			</div>
+
+			<div class="drawer-footer">
+				{#if prompt?.styleGuideIncluded}
+					<button class="style-guide-link" on:click={openStyleGuide}>
+						Style guide added to prompt
+					</button>
+				{/if}
 
 				<div class="action-buttons">
 					<button class="action-btn add-to-chat-btn" on:click={handleAddToChat} aria-label="Add to chat">
@@ -150,10 +243,33 @@
 					>
 						<Icon name="copy" size={20} />
 					</button>
+					<button 
+						class="action-btn favorite-btn"
+						class:active={isFavorited}
+						on:click={toggleFav}
+						aria-label="Toggle favorite"
+					>
+						<Icon name={isFavorited ? 'heart-fill' : 'heart'} size={20} />
+					</button>
 				</div>
 			</div>
 		</div>
 	</div>
+
+	<!-- Style Guide Drawer -->
+	{#if showStyleGuideDrawer}
+		<div class="style-guide-drawer" transition:fly={{ y: '100%', duration: 250 }}>
+			<div class="guide-header">
+				<button class="close-btn" on:click={closeStyleGuideDrawer} aria-label="Close">
+					<Icon name="close" size={24} />
+				</button>
+				<h3>Editorial Style Guide</h3>
+			</div>
+			<div class="guide-content">
+				{@html marked(styleGuideContent)}
+			</div>
+		</div>
+	{/if}
 {/if}
 
 <style>
@@ -198,6 +314,9 @@
 		justify-content: center;
 		padding: var(--spacing-xs);
 		color: #777777;
+		background: none;
+		border: none;
+		cursor: pointer;
 		transition: color 0.15s, transform 0.15s;
 	}
 
@@ -209,8 +328,15 @@
 	.content-area {
 		flex: 1;
 		overflow-y: auto;
+		padding-top: var(--spacing-md);
+		min-height: 0;
+	}
+
+	.drawer-footer {
+		flex-shrink: 0;
 		display: flex;
 		flex-direction: column;
+		gap: var(--spacing-md);
 		padding-top: var(--spacing-md);
 	}
 
@@ -219,21 +345,40 @@
 		min-height: 200px;
 		padding: 0;
 		font-size: var(--font-size-base);
-		line-height: var(--line-height);
+		line-height: 1.6;
 		font-family: inherit;
 		color: var(--text-primary);
 		background: var(--bg-main);
 		border: none;
-		resize: none;
-		field-sizing: content;
-	}
-
-	.edit-textarea:focus {
 		outline: none;
+		white-space: pre-wrap;
+		word-wrap: break-word;
 	}
 
-	.edit-textarea::selection {
+	.edit-textarea :global(p) {
+		margin: 0 0 6px 0;
+	}
+
+	.edit-textarea ::selection {
 		background-color: var(--color-highlight);
+	}
+
+	.style-guide-link {
+		display: block;
+		width: 100%;
+		padding: 0;
+		background: none;
+		border: none;
+		color: #aaaaaa;
+		font-size: 0.9rem;
+		font-weight: 400;
+		cursor: pointer;
+		text-decoration: underline;
+		text-align: center;
+	}
+
+	.style-guide-link:hover {
+		color: #888888;
 	}
 
 	.action-buttons {
@@ -241,6 +386,7 @@
 		justify-content: center;
 		gap: var(--spacing-md);
 		padding-top: var(--spacing-md);
+		flex-shrink: 0;
 	}
 
 	.action-btn {
@@ -249,6 +395,9 @@
 		justify-content: center;
 		padding: var(--spacing-xs);
 		color: #777777;
+		background: none;
+		border: none;
+		cursor: pointer;
 		transition: color 0.15s, transform 0.15s;
 	}
 
@@ -262,9 +411,87 @@
 		animation: pulse 0.4s ease-in-out;
 	}
 
+	.action-btn.favorite-btn.active {
+		color: var(--accent-brand);
+	}
+
 	@keyframes pulse {
 		0% { transform: scale(1); }
 		50% { transform: scale(1.2); }
 		100% { transform: scale(1); }
+	}
+
+	/* Style Guide Drawer */
+	.style-guide-drawer {
+		position: fixed;
+		inset: 0;
+		background: var(--bg-main);
+		z-index: calc(var(--z-overlay) + 1);
+		display: flex;
+		flex-direction: column;
+		padding: var(--spacing-md);
+	}
+
+	@media (min-width: 768px) {
+		.style-guide-drawer {
+			left: 50%;
+			right: auto;
+			transform: translateX(-50%);
+			width: 100%;
+			max-width: var(--app-max-width);
+		}
+	}
+
+	.guide-header {
+		display: flex;
+		align-items: center;
+		flex-shrink: 0;
+	}
+
+	.guide-header h3 {
+		flex: 1;
+		margin: 0;
+		font-size: 1.1rem;
+		color: var(--accent-brand);
+		text-align: center;
+		padding-right: 32px;
+	}
+
+	.guide-content {
+		flex: 1;
+		overflow-y: auto;
+		padding-top: var(--spacing-md);
+		font-size: 0.9rem;
+		line-height: 1.6;
+		color: var(--text-primary);
+	}
+
+	.guide-content :global(h1),
+	.guide-content :global(h2),
+	.guide-content :global(h3) {
+		color: var(--accent-brand);
+		margin: 1.2em 0 0.4em;
+	}
+
+	.guide-content :global(h1) { font-size: 1.2rem; }
+	.guide-content :global(h2) { font-size: 1.1rem; }
+	.guide-content :global(h3) { font-size: 1rem; }
+
+	.guide-content :global(ul),
+	.guide-content :global(ol) {
+		padding-left: 1.2em;
+		margin: 0.4em 0;
+	}
+
+	.guide-content :global(li) {
+		margin-bottom: 0.3em;
+	}
+
+	.guide-content :global(p) {
+		margin: 0 0 0.6em;
+	}
+
+	.guide-content :global(strong) {
+		font-weight: 600;
 	}
 </style>

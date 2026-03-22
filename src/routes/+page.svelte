@@ -3,17 +3,20 @@
 
 	let showEditDrawer = false;
 	let editText = '';
+	let editPrompt = null;
 	let showPersonaDrawer = false;
 	let personaVersion = 0;
 
 	function handleEdit(e) {
 		editText = e.detail.text;
+		editPrompt = e.detail.prompt;
 		showEditDrawer = true;
 	}
 
 	function handleCloseEditDrawer() {
 		showEditDrawer = false;
 		editText = '';
+		editPrompt = null;
 	}
 
 	function handleCopy(e) {
@@ -45,6 +48,7 @@
 <PromptEditDrawer 
 	isOpen={showEditDrawer}
 	text={editText}
+	prompt={editPrompt}
 	on:close={handleCloseEditDrawer}
 />
 
