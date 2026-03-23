@@ -100,23 +100,33 @@
 	</div>
 	
 	{#if !isStreaming}
-		<div class="message-actions">
-			<span class="word-count">{wordCount} words</span>
-			<button class="action-button" on:click={handleRewrite} aria-label="Rewrite response">
-				<Icon name="rewrite" size={18} />
-			</button>
-			<button class="action-button" on:click={handleSources} aria-label="View sources">
-				<Icon name="sources" size={18} />
-			</button>
-			<button class="action-button" on:click={handleShare} aria-label="Share response">
-				<Icon name="share" size={18} />
-			</button>
-			<button class="action-button" on:click={handleCopy} aria-label="Copy response">
-				<Icon name="copy" size={18} />
-			</button>
-			<button class="action-button" on:click={handleSendToNotepad} aria-label="Send to notepad">
-				<Icon name="notepad" size={18} />
-			</button>
+		<div class="message-toolbar">
+			<!-- Row 1: Sources (left) and Wordcount (right) -->
+			<div class="toolbar-row sources-row">
+				<button class="sources-button" on:click={handleSources} aria-label="View sources">
+					{sources.length} sources
+					<Icon name="sources" size={14} />
+				</button>
+				<span class="word-count">{wordCount} words</span>
+			</div>
+			
+			<!-- Row 2: Action buttons (right-aligned) -->
+			<div class="toolbar-row actions-row">
+				<div class="action-buttons">
+					<button class="action-btn" on:click={handleRewrite} aria-label="Rewrite response">
+						<Icon name="rewrite" size={22} />
+					</button>
+					<button class="action-btn" on:click={handleShare} aria-label="Share response">
+						<Icon name="share" size={22} />
+					</button>
+					<button class="action-btn" on:click={handleCopy} aria-label="Copy response">
+						<Icon name="copy" size={22} />
+					</button>
+					<button class="action-btn" on:click={handleSendToNotepad} aria-label="Send to notepad">
+						<Icon name="notepad" size={22} />
+					</button>
+				</div>
+			</div>
 		</div>
 	{/if}
 </div>
@@ -272,32 +282,71 @@
 		}
 	}
 
-	.message-actions {
+	.message-toolbar {
 		display: flex;
-		align-items: center;
+		flex-direction: column;
 		gap: var(--spacing-sm);
 		margin-top: var(--spacing-xs);
 		padding-top: var(--spacing-xs);
 	}
 
-	.word-count {
-		font-size: 0.875rem; /* Equivalent to old --font-size-sm */
-		font-weight: 700;
-		color: var(--text-secondary);
-		margin-right: auto;
-	}
-
-	.action-button {
+	.toolbar-row {
 		display: flex;
 		align-items: center;
-		justify-content: center;
-		width: 32px;
-		height: 32px;
-		color: var(--color-icon-default);
+		width: 100%;
+	}
+
+	.sources-row {
+		justify-content: space-between;
+	}
+
+	.actions-row {
+		justify-content: flex-end;
+	}
+
+	.sources-button {
+		display: inline-flex;
+		align-items: center;
+		gap: 6px;
+		color: var(--text-secondary);
+		font-size: 0.875rem;
+		font-weight: 400;
+		background: transparent;
+		border: none;
+		padding: 0;
+		cursor: pointer;
 		transition: color 0.15s, transform 0.15s;
 	}
 
-	.action-button:hover {
+	.sources-button:hover {
+		color: var(--color-icon-active);
+		transform: scale(1.05);
+	}
+
+	.word-count {
+		font-size: 0.875rem;
+		font-weight: 400;
+		color: var(--text-secondary);
+	}
+
+	.action-buttons {
+		display: flex;
+		gap: var(--spacing-sm);
+	}
+
+	.action-btn {
+		width: 36px;
+		height: 36px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		border-radius: var(--radius-sm);
+		color: var(--color-icon-default);
+		transition: background-color 0.15s ease, transform 0.15s ease, color 0.15s;
+	}
+
+	.action-btn:hover {
+		background-color: var(--bg-surface-dark);
 		color: var(--color-icon-active);
 		transform: scale(1.1);
 	}
