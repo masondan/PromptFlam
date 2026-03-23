@@ -125,7 +125,7 @@
 			
 			try {
 				await navigator.clipboard.writeText(text);
-				showToastMessage('Copied to clipboard');
+				showToastMessage('Copied');
 			} catch (err) {
 				console.error('Copy failed:', err);
 				showToastMessage('Failed to copy');
@@ -460,7 +460,8 @@
 	.toast {
 		position: fixed;
 		top: calc(var(--header-height) + var(--spacing-md));
-		right: var(--spacing-md);
+		left: 50%;
+		transform: translateX(-50%);
 		background: #efefef;
 		color: var(--text-primary);
 		padding: var(--spacing-sm) var(--spacing-md);

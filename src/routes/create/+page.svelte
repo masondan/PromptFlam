@@ -31,6 +31,8 @@
 	let userHasScrolledUp = false;
 	let showNotepadModal = false;
 	let notepadContent = '';
+	let showToast = false;
+	let toastMessage = '';
 
 	$: hasMessages = $chatMessages.length > 0;
 
@@ -286,6 +288,14 @@
 		}
 	}
 
+	function showToastMessage(msg) {
+		toastMessage = msg;
+		showToast = true;
+		setTimeout(() => {
+			showToast = false;
+		}, 2000);
+	}
+
 	async function handleCopy(e) {
 		const messageIndex = e.detail?.index;
 		if (messageIndex !== undefined) {
@@ -293,6 +303,7 @@
 			if (message && message.role === 'assistant') {
 				const cleanContent = formatMarkdownForCopy(message.content);
 				await navigator.clipboard.writeText(cleanContent);
+				showToastMessage('Copied');
 			}
 		}
 	}
@@ -462,6 +473,10 @@
 	</div>
 {/if}
 
+{#if showToast}
+	<div class="toast">{toastMessage}</div>
+{/if}
+
 <style>
 	.create-page {
 		padding-top: var(--spacing-md);
@@ -613,5 +628,34 @@
 
 	.modal-cancel:hover {
 		color: var(--text-primary);
+	}
+
+	.toast {
+		position: fixed;
+		top: calc(var(--header-height) + var(--spacing-md));
+		left: 50%;
+		transform: translateX(-50%);
+		background: #efefef;
+		color: var(--text-primary);
+		padding: var(--spacing-sm) var(--spacing-md);
+		border-radius: var(--radius);
+		font-size: 0.875rem;
+		font-weight: 400;
+		box-shadow: var(--shadow-lg);
+		animation: fadeInUp 0.2s ease-out;
+		z-index: var(--z-overlay);
+		text-align: center;
+		white-space: pre-line;
+	}
+
+	@keyframes fadeInUp {
+		from {
+			opacity: 0;
+			transform: translateX(-50%) translateY(10px);
+		}
+		to {
+			opacity: 1;
+			transform: translateX(-50%) translateY(0);
+		}
 	}
 </style>

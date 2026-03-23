@@ -18,6 +18,8 @@
 	let initialized = false;
 	let showStyleGuideDrawer = false;
 	let styleGuideContent = '';
+	let showToast = false;
+	let toastMessage = '';
 
 	function textToHtml(text) {
 		return text.split('\n')
@@ -73,10 +75,19 @@
 		}
 	}
 
+	function showToastMessage(msg) {
+		toastMessage = msg;
+		showToast = true;
+		setTimeout(() => {
+			showToast = false;
+		}, 2000);
+	}
+
 	async function handleCopy() {
 		const textToCopy = generateExportText(editedText);
 		await navigator.clipboard.writeText(textToCopy);
 		copied = true;
+		showToastMessage('Copied');
 		setTimeout(() => copied = false, 2000);
 	}
 
@@ -269,6 +280,10 @@
 				{@html marked(styleGuideContent)}
 			</div>
 		</div>
+	{/if}
+
+	{#if showToast}
+		<div class="toast">{toastMessage}</div>
 	{/if}
 {/if}
 
@@ -495,5 +510,34 @@
 
 	.guide-content :global(strong) {
 		font-weight: 600;
+	}
+
+	.toast {
+		position: fixed;
+		top: calc(var(--header-height) + var(--spacing-md));
+		left: 50%;
+		transform: translateX(-50%);
+		background: #efefef;
+		color: var(--text-primary);
+		padding: var(--spacing-sm) var(--spacing-md);
+		border-radius: var(--radius);
+		font-size: 0.875rem;
+		font-weight: 400;
+		box-shadow: var(--shadow-lg);
+		animation: fadeInUp 0.2s ease-out;
+		z-index: calc(var(--z-overlay) + 2);
+		text-align: center;
+		white-space: pre-line;
+	}
+
+	@keyframes fadeInUp {
+		from {
+			opacity: 0;
+			transform: translateX(-50%) translateY(10px);
+		}
+		to {
+			opacity: 1;
+			transform: translateX(-50%) translateY(0);
+		}
 	}
 </style>
