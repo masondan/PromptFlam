@@ -1,5 +1,5 @@
 <script>
-	import { onMount } from 'svelte';
+	import { onMount, onDestroy } from 'svelte';
 	import { Header, Icon } from '$lib/components';
 	import { 
 		currentNoteTitle, 
@@ -17,6 +17,7 @@
 	let shareTapped = false;
 	let downloadTapped = false;
 	let copyTapped = false;
+	let isBoldActive = false;
 
 	$: title = $currentNoteTitle;
 	$: content = $currentNoteContent;
@@ -159,6 +160,33 @@
 		}, 150);
 	}
 
+	function handleBold() {
+		editorRef?.focus();
+		document.execCommand('bold', false, null);
+		updateBoldState();
+		handleContentInput();
+	}
+
+	function handleUndo() {
+		editorRef?.focus();
+		document.execCommand('undo', false, null);
+		handleContentInput();
+	}
+
+	function handleRedo() {
+		editorRef?.focus();
+		document.execCommand('redo', false, null);
+		handleContentInput();
+	}
+
+	function updateBoldState() {
+		isBoldActive = document.queryCommandState('bold');
+	}
+
+	function handleSelectionChange() {
+		updateBoldState();
+	}
+
 	function showToastMessage(msg) {
 		toastMessage = msg;
 		showToast = true;
@@ -167,15 +195,18 @@
 		}, 2000);
 	}
 
-
-
 	onMount(() => {
+		document.addEventListener('selectionchange', handleSelectionChange);
 		if (editorRef && content && content.trim()) {
 			editorRef.innerHTML = content;
 		}
 		if (titleRef && title && title.trim()) {
 			titleRef.textContent = title;
 		}
+	});
+
+	onDestroy(() => {
+		document.removeEventListener('selectionchange', handleSelectionChange);
 	});
 </script>
 
@@ -219,10 +250,21 @@
 
 	{#if hasContent}
 		<div class="content-footer">
-			<button class="new-note-btn" on:click={handleStartOver} aria-label="Start new note">
-				<Icon name="newchat" size={18} />
-				<span>New note</span>
-			</button>
+			<div class="toolbar-left">
+				<button class="new-note-btn" on:click={handleStartOver} aria-label="Start new note">
+					<Icon name="newchat" size={18} />
+				</button>
+				<span class="toolbar-separator"></span>
+				<button class="action-btn" class:active={isBoldActive} on:click={handleBold} aria-label="Bold">
+					<img src="/icons/icon-bold.svg" alt="" class="action-icon" />
+				</button>
+				<button class="action-btn" on:click={handleUndo} aria-label="Undo">
+					<img src="/icons/icon-undo.svg" alt="" class="action-icon" />
+				</button>
+				<button class="action-btn" on:click={handleRedo} aria-label="Redo">
+					<img src="/icons/icon-redo.svg" alt="" class="action-icon" />
+				</button>
+			</div>
 			<div class="action-buttons">
 				<button class="action-btn" class:tapped={shareTapped} on:click={handleShare} aria-label="Share">
 					<img src="/icons/icon-share.svg" alt="" class="action-icon" />
@@ -329,23 +371,40 @@
 		justify-content: space-between;
 		padding: var(--spacing-xs) var(--spacing-md);
 		margin-top: 0;
+		position: sticky;
+		bottom: 0;
+		background: var(--bg-main);
+		z-index: var(--z-input-drawer);
+	}
+
+	.toolbar-left {
+		display: flex;
+		align-items: center;
+		gap: var(--spacing-xs);
+	}
+
+	.toolbar-separator {
+		width: 1px;
+		height: 20px;
+		background: var(--color-border);
+		margin: 0 var(--spacing-xs);
 	}
 
 	.new-note-btn {
+		width: 36px;
+		height: 36px;
 		display: flex;
 		align-items: center;
-		gap: var(--spacing-sm);
-		color: #555555;
-		font-size: 0.9375rem;
-		font-weight: 500;
+		justify-content: center;
 		transition: all 0.15s;
 		background: transparent;
 		border: none;
 		cursor: pointer;
+		border-radius: var(--radius-sm);
 	}
 
 	.new-note-btn:hover {
-		color: var(--accent-brand);
+		background-color: var(--bg-surface-dark);
 	}
 
 	.new-note-btn :global(svg) {
@@ -382,6 +441,14 @@
 
 	.action-btn.tapped {
 		transform: scale(1.15);
+	}
+
+	.action-btn.active {
+		background-color: var(--bg-surface-dark);
+	}
+
+	.action-btn.active .action-icon {
+		filter: brightness(0) saturate(100%) invert(15%) sepia(80%) saturate(4500%) hue-rotate(260deg) brightness(90%) contrast(100%);
 	}
 
 	.action-icon {

@@ -11,7 +11,7 @@
 	import { goto } from '$app/navigation';
 	import { chatMessages, addChatMessage, clearChat, archiveCurrentChat, updateLastMessage, autoSaveChat, currentChatSessionId, pendingChatInput, currentNoteTitle, currentNoteContent, currentNoteSessionId, startNewNote } from '$lib/stores';
 	import { callPerplexity } from '$lib/services/perplexity.js';
-	import { formatMarkdownForCopy } from '$lib/utils.js';
+	import { formatMarkdownForCopy, stripMarkdownFormatting, normalizeLineBreaks } from '$lib/utils.js';
 	import { marked } from 'marked';
 
 	let inputValue = '';
@@ -314,8 +314,32 @@
 		const message = $chatMessages[messageIndex];
 		if (!message || message.role !== 'assistant') return;
 
+		// First strip citations
 		const cleanMarkdown = stripCitationsFromMarkdown(message.content);
-		notepadContent = marked.parse(cleanMarkdown);
+		
+		// Use formatMarkdownForCopy to get clean text with proper formatting
+		const plainText = formatMarkdownForCopy(cleanMarkdown);
+		
+		// Convert plain text to HTML with proper paragraph breaks
+		// This mimics how copy/paste works by preserving paragraph structure
+		// Add a full blank line between paragraphs for better readability
+		const formattedContent = plainText
+			.split('\n\n')
+			.map(para => para.trim())
+			.filter(para => para.length > 0)
+			.map(para => {
+				// Check if this is a list item
+				if (para.startsWith('- ')) {
+					return `<div>${para}</div><div><br></div>`;
+				}
+				return `<div>${para}</div><div><br></div>`;
+			})
+			.join('')
+			// Remove the last <div><br></div> to avoid extra space at the end
+			.replace(/<div><br><\/div>$/, '');
+		
+		// Set the formatted content
+		notepadContent = formattedContent;
 
 		let existingContent = '';
 		currentNoteContent.subscribe(c => existingContent = c)();
@@ -329,6 +353,7 @@
 
 	function sendToNotepadNew() {
 		startNewNote();
+		// Set formatted content to the notepad
 		currentNoteContent.set(notepadContent);
 		showNotepadModal = false;
 		goto('/notepad');
@@ -337,7 +362,8 @@
 	function sendToNotepadAppend() {
 		let existing = '';
 		currentNoteContent.subscribe(c => existing = c)();
-		currentNoteContent.set(existing + '<br>' + notepadContent);
+		// Append with proper spacing between existing content and new content
+		currentNoteContent.set(existing + notepadContent);
 		showNotepadModal = false;
 		goto('/notepad');
 	}

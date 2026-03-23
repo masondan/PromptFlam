@@ -114,16 +114,16 @@
 			<div class="toolbar-row actions-row">
 				<div class="action-buttons">
 					<button class="action-btn" on:click={handleRewrite} aria-label="Rewrite response">
-						<Icon name="rewrite" size={22} />
+						<img src="/icons/icon-rewrite.svg" alt="" class="action-icon" />
 					</button>
 					<button class="action-btn" on:click={handleShare} aria-label="Share response">
-						<Icon name="share" size={22} />
+						<img src="/icons/icon-share.svg" alt="" class="action-icon" />
 					</button>
 					<button class="action-btn" on:click={handleCopy} aria-label="Copy response">
-						<Icon name="copy" size={22} />
+						<img src="/icons/icon-copy.svg" alt="" class="action-icon" />
 					</button>
 					<button class="action-btn" on:click={handleSendToNotepad} aria-label="Send to notepad">
-						<Icon name="notepad" size={22} />
+						<img src="/icons/icon-notepad.svg" alt="" class="action-icon" />
 					</button>
 				</div>
 			</div>
@@ -341,13 +341,17 @@
 		align-items: center;
 		justify-content: center;
 		border-radius: var(--radius-sm);
-		color: var(--color-icon-default);
-		transition: background-color 0.15s ease, transform 0.15s ease, color 0.15s;
+		transition: background-color 0.15s ease, transform 0.15s ease;
 	}
 
 	.action-btn:hover {
 		background-color: var(--bg-surface-dark);
-		color: var(--color-icon-active);
 		transform: scale(1.1);
+	}
+	
+	.action-icon {
+		width: 22px;
+		height: 22px;
+		filter: brightness(0) saturate(100%) invert(33%);
 	}
 </style>
