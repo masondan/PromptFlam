@@ -222,36 +222,36 @@
 			</div>
 
 			<div class="drawer-footer">
-				{#if prompt?.styleGuideIncluded}
-					<button class="style-guide-link" on:click={openStyleGuide}>
-						Style guide added to prompt
-					</button>
-				{/if}
-
 				<div class="action-buttons">
 					<button class="action-btn add-to-chat-btn" on:click={handleAddToChat} aria-label="Add to chat">
-						<Icon name="create" size={20} />
+						<Icon name="create" size={24} />
 					</button>
 					<button class="action-btn" on:click={handleShare} aria-label="Share">
-						<Icon name="share" size={20} />
+						<Icon name="share" size={24} />
 					</button>
-					<button 
-						class="action-btn" 
-						class:copied 
-						on:click={handleCopy} 
+					<button
+						class="action-btn"
+						class:copied
+						on:click={handleCopy}
 						aria-label="Copy"
 					>
-						<Icon name="copy" size={20} />
+						<Icon name="copy" size={24} />
 					</button>
-					<button 
+					<button
 						class="action-btn favorite-btn"
 						class:active={isFavorited}
 						on:click={toggleFav}
 						aria-label="Toggle favorite"
 					>
-						<Icon name={isFavorited ? 'heart-fill' : 'heart'} size={20} />
+						<Icon name={isFavorited ? 'heart-fill' : 'heart'} size={24} />
 					</button>
 				</div>
+				
+				{#if prompt?.styleGuideIncluded}
+					<button class="style-guide-link" on:click={openStyleGuide}>
+						Style guide added to prompt
+					</button>
+				{/if}
 			</div>
 		</div>
 	</div>
@@ -338,6 +338,7 @@
 		flex-direction: column;
 		gap: var(--spacing-md);
 		padding-top: var(--spacing-md);
+		position: relative;
 	}
 
 	.edit-textarea {
@@ -367,6 +368,7 @@
 		display: block;
 		width: 100%;
 		padding: 0;
+		margin-top: var(--spacing-xs);
 		background: none;
 		border: none;
 		color: #aaaaaa;
@@ -384,8 +386,8 @@
 	.action-buttons {
 		display: flex;
 		justify-content: center;
-		gap: var(--spacing-md);
-		padding-top: var(--spacing-md);
+		gap: var(--spacing-lg);
+		padding: var(--spacing-md) 0;
 		flex-shrink: 0;
 	}
 
@@ -393,7 +395,7 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		padding: var(--spacing-xs);
+		padding: var(--spacing-sm);
 		color: #777777;
 		background: none;
 		border: none;

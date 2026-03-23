@@ -469,7 +469,7 @@
 		color: var(--accent-brand);
 		margin: 0;
 		padding-bottom: var(--spacing-xs);
-		border-bottom: 2px solid #d4c4f0;
+		padding-left: var(--spacing-md); /* Add left padding to align with subcategory buttons */
 	}
 
 	/* Subcategory cards */
