@@ -1,17 +1,17 @@
 [
-  {
+   {
     "id": 1,
     "category": "Ideas",
     "subCategory": "Stories",
     "styleGuideIncluded": true,
-    "prompt": "Act as a [role]. Suggest [x] explainer story ideas that will engage an online audience of [who, where]<br >Base the ideas on: [recent news] [hot trending topics] [specific topic/question] [URL]<br >For each idea provide:<br >- A headline based on a question (eg who, why, where, when, what, how) that balances impact with professional credibility. <br >- A one-sentence outline.<br >- Ideas for images/visuals/graphics.<br >Research and include ideas with unusual, fresh angles, based on verified facts and credible sources."
+    "prompt": "Act as a [role]. Suggest [x] explainer story ideas that will engage an online audience of [who, where]<br >Base the ideas on: [recent news] [hot trending topics] [specific topic/question] [URL]<br >Present the ideas as a numbered list, following this format:<br >- Idea number + suggested headline based on a question (eg who, why, where, when, what, how) that balances impact with professional credibility. <br >- A one-sentence outline.<br >- Ideas for images/visuals/graphics.<br >Research widely to include ideas with unusual, fresh angles for digital stories, based on verified facts and credible sources."
   },
   {
     "id": 2,
     "category": "Ideas",
     "subCategory": "Events",
-    "styleGuideIncluded": false,
-    "prompt": "Act as a [role] with a target audience of [who, where] <br >Provide a structured diary list of events, anniversaries, international awareness days and observances, launches, birthdays and premieres that could provide topical and engaging hooks for news, blogs, social media videos, podcasts and explainer articles in the next [week] [month] [year]<br >Follow this structure: <br >- The event name<br >- When and where<br >- Brief explanation of the event<br >Search widely for events that could spark interesting, unusual angles."
+    "styleGuideIncluded": true,
+    "prompt": "Act as a [role] with a target audience of [who, where] <br >Provide a diary list of events, anniversaries, international awareness days and observances, launches, birthdays and premieres that could provide topical and engaging hooks for news, blogs, social media videos, podcasts and explainer articles in the next [week] [month] [year]<br >Present the ideas as a numbered list, following this format:<br >- Number + the event name<br >- When and where<br >- A one-sentence explanation of the event<br >- Working, clickable links to the event or directly-related information.<br >Search widely for events that could spark unusual, fresh angles for digital stories, based on credible sources."
   },
   {
     "id": 3,
