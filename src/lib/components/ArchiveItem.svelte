@@ -315,7 +315,7 @@
 	.toolbar-wrapper {
 		display: flex;
 		justify-content: center;
-		margin-top: var(--spacing-sm);
+		margin-top: var(--spacing-xs);
 		margin-bottom: 0;
 		padding-top: 0;
 		padding-bottom: 0;

@@ -276,8 +276,8 @@
 		display: flex;
 		align-items: center;
 		gap: var(--spacing-sm);
-		margin-top: var(--spacing-md);
-		padding-top: var(--spacing-sm);
+		margin-top: var(--spacing-xs);
+		padding-top: var(--spacing-xs);
 	}
 
 	.word-count {

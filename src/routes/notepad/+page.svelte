@@ -327,8 +327,8 @@
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
-		padding: var(--spacing-sm) var(--spacing-md);
-		margin-top: var(--spacing-md);
+		padding: var(--spacing-xs) var(--spacing-md);
+		margin-top: 0;
 	}
 
 	.new-note-btn {

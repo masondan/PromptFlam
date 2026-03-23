@@ -336,8 +336,8 @@
 		flex-shrink: 0;
 		display: flex;
 		flex-direction: column;
-		gap: var(--spacing-md);
-		padding-top: var(--spacing-md);
+		gap: var(--spacing-xs);
+		padding-top: var(--spacing-xs);
 		position: relative;
 	}
 
@@ -387,7 +387,7 @@
 		display: flex;
 		justify-content: center;
 		gap: var(--spacing-lg);
-		padding: var(--spacing-md) 0;
+		padding: var(--spacing-xs) 0;
 		flex-shrink: 0;
 	}
 
