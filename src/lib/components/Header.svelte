@@ -117,7 +117,7 @@
 	}
 
 	.logo {
-		height: 38px;
+		height: 26px;
 		width: auto;
 	}
 
@@ -131,25 +131,23 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		width: 38px;
-		height: 38px;
+		width: 36px;
+		height: 36px;
 		border-radius: 50%;
-		border: 1px solid var(--color-icon-default);
-		color: var(--color-icon-default);
+		border: none;
+		background-color: #f0f0f0;
+		color: #444;
 		text-decoration: none;
-		transition: border-color 0.15s, color 0.15s, box-shadow 0.15s;
-		box-shadow: none;
+		transition: background-color 0.15s, color 0.15s;
 	}
 
 	.nav-button:hover {
-		border-color: var(--color-icon-active);
-		color: var(--color-icon-active);
+		background-color: #e4e4e4;
+		color: #333;
 		text-decoration: none;
-		box-shadow: 0 0 0 1px var(--color-icon-active);
 	}
 
 	.nav-button.active {
-		border: none;
 		background: var(--accent-brand);
 		color: #ffffff;
 	}
