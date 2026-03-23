@@ -50,7 +50,8 @@
 </script>
 
 <header class="header" class:header-hidden={headerHidden}>
-	<div class="logo-container">
+	<div class="header-left">
+		<flam-nav current="promptflam"></flam-nav>
 		<img src="/logos/logo-promptflam.png" alt="PromptFlam" class="logo" />
 	</div>
 
@@ -108,9 +109,10 @@
 	}
 
 
-	.logo-container {
+	.header-left {
 		display: flex;
 		align-items: center;
+		gap: var(--spacing-sm);
 		flex-shrink: 0;
 	}
 
