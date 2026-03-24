@@ -32,9 +32,17 @@ class FlamNav extends HTMLElement {
 	}
 
 	_getAppContainer() {
-		let el = this.closest('.app-container, .app, .page, [class*="max-w"]');
+		// PromptFlam uses .app-shell; check for it first
+		let el = this.closest('.app-shell');
+		if (!el) {
+			el = this.closest('.app-container, .app, .page, [class*="max-w"]');
+		}
 		if (!el) {
 			el = this.closest('[style*="max-width"]');
+		}
+		if (!el) {
+			// Fallback to body if within a centered container
+			el = document.body;
 		}
 		return el;
 	}
@@ -45,15 +53,24 @@ class FlamNav extends HTMLElement {
 		const overlay = this.shadowRoot.querySelector('.overlay');
 		const container = this._getAppContainer();
 
-		if (container) {
+		if (container && container !== document.body) {
 			const rect = container.getBoundingClientRect();
 			drawer.style.left = rect.left + 'px';
 			drawer.style.top = rect.top + 'px';
-			drawer.style.bottom = (window.innerHeight - rect.bottom) + 'px';
+			drawer.style.height = rect.height + 'px';
 			overlay.style.left = rect.left + 'px';
 			overlay.style.width = rect.width + 'px';
 			overlay.style.top = rect.top + 'px';
-			overlay.style.bottom = (window.innerHeight - rect.bottom) + 'px';
+			overlay.style.height = rect.height + 'px';
+		} else {
+			// Full viewport positioning for mobile or fallback
+			drawer.style.left = '0';
+			drawer.style.top = '0';
+			drawer.style.height = '100vh';
+			overlay.style.left = '0';
+			overlay.style.width = '100%';
+			overlay.style.top = '0';
+			overlay.style.height = '100vh';
 		}
 
 		drawer.classList.add('open');
@@ -67,6 +84,16 @@ class FlamNav extends HTMLElement {
 		const overlay = this.shadowRoot.querySelector('.overlay');
 		drawer.classList.remove('open');
 		overlay.classList.remove('open');
+		// Delay clearing inline styles until after fade transition completes
+		setTimeout(() => {
+			drawer.style.left = '';
+			drawer.style.top = '';
+			drawer.style.height = '';
+			overlay.style.left = '';
+			overlay.style.width = '';
+			overlay.style.top = '';
+			overlay.style.height = '';
+		}, 250);
 		document.removeEventListener('keydown', this._onKeyDown);
 	}
 
@@ -85,6 +112,13 @@ class FlamNav extends HTMLElement {
 
 		this.shadowRoot.innerHTML = `
 			<style>
+				@font-face {
+					font-family: 'Saira';
+					src: url('/fonts/saira.ttf') format('truetype');
+					font-weight: 400;
+					font-display: swap;
+				}
+
 				:host {
 					display: flex;
 					align-items: center;
@@ -103,7 +137,7 @@ class FlamNav extends HTMLElement {
 				}
 
 				.menu-btn:hover {
-					color: #5422b0;
+					color: var(--flam-nav-hover, #5422b0);
 				}
 
 				.menu-btn svg {
@@ -130,24 +164,27 @@ class FlamNav extends HTMLElement {
 					position: fixed;
 					top: 0;
 					left: 0;
-					bottom: 0;
 					width: 180px;
 					background: #fff;
 					z-index: 9999;
-					transform: translateX(-100%);
-					transition: transform 250ms ease;
+					opacity: 0;
+					visibility: hidden;
+					transition: opacity 250ms ease, visibility 250ms ease;
 					display: flex;
 					flex-direction: column;
 					box-shadow: 2px 0 12px rgba(0, 0, 0, 0.15);
+					overflow: hidden;
 				}
 
 				.drawer.open {
-					transform: translateX(0);
+					opacity: 1;
+					visibility: visible;
 				}
 
 				.drawer-header {
 					padding: 20px 16px 12px;
 					border-bottom: 1px solid #eee;
+					flex-shrink: 0;
 				}
 
 				.drawer-header a {
@@ -156,7 +193,7 @@ class FlamNav extends HTMLElement {
 					gap: 8px;
 					text-decoration: none;
 					color: #5422b0;
-					font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+					font-family: 'Saira', -apple-system, BlinkMacSystemFont, sans-serif;
 					font-size: 15px;
 					font-weight: 600;
 				}
@@ -178,9 +215,9 @@ class FlamNav extends HTMLElement {
 					display: block;
 					padding: 10px 16px;
 					text-decoration: none;
-					font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+					font-family: 'Saira', -apple-system, BlinkMacSystemFont, sans-serif;
 					font-size: 15px;
-					font-weight: 450;
+					font-weight: 400;
 					color: #333;
 					transition: background-color 150ms ease;
 				}

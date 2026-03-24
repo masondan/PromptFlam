@@ -8,6 +8,13 @@
 	font-display: swap;
 }
 
+@font-face {
+	font-family: 'Saira';
+	src: url('/fonts/saira.ttf') format('truetype');
+	font-weight: 400;
+	font-display: swap;
+}
+
 :root {
 	/* 1. COLORS - Inspired by Gemini and user palette */
 	--bg-main: #ffffff;
