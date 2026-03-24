@@ -195,7 +195,7 @@ class FlamNav extends HTMLElement {
 					color: #5422b0;
 					font-family: 'Saira', -apple-system, BlinkMacSystemFont, sans-serif;
 					font-size: 15px;
-					font-weight: 600;
+					font-weight: 800;
 				}
 
 				.drawer-header img {
@@ -217,7 +217,7 @@ class FlamNav extends HTMLElement {
 					text-decoration: none;
 					font-family: 'Saira', -apple-system, BlinkMacSystemFont, sans-serif;
 					font-size: 15px;
-					font-weight: 400;
+					font-weight: 600;
 					color: #333;
 					transition: background-color 150ms ease;
 				}
@@ -228,12 +228,12 @@ class FlamNav extends HTMLElement {
 
 				.drawer-list li a.current {
 					color: #5422b0;
-					font-weight: 600;
+					font-weight: 800;
 					background-color: #f0e6f7;
 				}
 
 				.drawer-list li a.training {
-					color: #999;
+					color: #777;
 				}
 
 				.drawer-list li a.training.current {
