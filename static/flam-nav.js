@@ -21,10 +21,13 @@ class FlamNav extends HTMLElement {
 	connectedCallback() {
 		this.render();
 		this._onKeyDown = (e) => { if (e.key === 'Escape') this.close(); };
+		this._onReposition = () => { if (this._open) this._updatePosition(); };
 	}
 
 	disconnectedCallback() {
 		document.removeEventListener('keydown', this._onKeyDown);
+		window.removeEventListener('scroll', this._onReposition);
+		window.removeEventListener('resize', this._onReposition);
 	}
 
 	toggle() {
@@ -47,8 +50,7 @@ class FlamNav extends HTMLElement {
 		return el;
 	}
 
-	open() {
-		this._open = true;
+	_updatePosition() {
 		const drawer = this.shadowRoot.querySelector('.drawer');
 		const overlay = this.shadowRoot.querySelector('.overlay');
 		const container = this._getAppContainer();
@@ -63,7 +65,6 @@ class FlamNav extends HTMLElement {
 			overlay.style.top = rect.top + 'px';
 			overlay.style.height = rect.height + 'px';
 		} else {
-			// Full viewport positioning for mobile or fallback
 			drawer.style.left = '0';
 			drawer.style.top = '0';
 			drawer.style.height = '100vh';
@@ -72,10 +73,19 @@ class FlamNav extends HTMLElement {
 			overlay.style.top = '0';
 			overlay.style.height = '100vh';
 		}
+	}
 
+	open() {
+		this._open = true;
+		this._updatePosition();
+
+		const drawer = this.shadowRoot.querySelector('.drawer');
+		const overlay = this.shadowRoot.querySelector('.overlay');
 		drawer.classList.add('open');
 		overlay.classList.add('open');
 		document.addEventListener('keydown', this._onKeyDown);
+		window.addEventListener('scroll', this._onReposition, { passive: true });
+		window.addEventListener('resize', this._onReposition, { passive: true });
 	}
 
 	close() {
@@ -95,6 +105,8 @@ class FlamNav extends HTMLElement {
 			overlay.style.height = '';
 		}, 250);
 		document.removeEventListener('keydown', this._onKeyDown);
+		window.removeEventListener('scroll', this._onReposition);
+		window.removeEventListener('resize', this._onReposition);
 	}
 
 	render() {
@@ -115,7 +127,7 @@ class FlamNav extends HTMLElement {
 				@font-face {
 					font-family: 'Saira';
 					src: url('/fonts/saira.ttf') format('truetype');
-					font-weight: 400;
+					font-weight: 100 900;
 					font-display: swap;
 				}
 

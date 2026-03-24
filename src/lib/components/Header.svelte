@@ -104,7 +104,7 @@
 		left: 0;
 		right: 0;
 		height: 1px;
-		background: #999999;
+		background: #e0e0e0;
 		pointer-events: none;
 	}
 
