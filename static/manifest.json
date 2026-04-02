@@ -2,7 +2,7 @@
   "name": "PromptFlam",
   "short_name": "PromptFlam",
   "start_url": "/",
-  "display": "standalone",
+  "display": "browser",
   "background_color": "#5422B0",
   "theme_color": "#5422B0",
   "scope": "/",
