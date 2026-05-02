@@ -13,16 +13,19 @@
 
 	$: wordCount = content ? content.trim().split(/\s+/).filter(w => w.length > 0).length : 0;
 
-	const renderer = {
-		link(token) {
-			return `<a href="${token.href}" target="_blank" rel="noopener noreferrer">${token.text}</a>`;
+	// Configure marked to open links in new tabs
+	// Use marked.use() for renderer (not setOptions, which doesn't support renderer in v17)
+	marked.use({
+		renderer: {
+			link(token) {
+				return `<a href="${token.href}" target="_blank" rel="noopener noreferrer">${token.text}</a>`;
+			}
 		}
-	};
+	});
 
 	marked.setOptions({
 		breaks: true,
-		gfm: true,
-		renderer
+		gfm: true
 	});
 
 	function handleRewrite() {
