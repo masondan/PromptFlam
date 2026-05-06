@@ -87,6 +87,18 @@ You are a professional sub-editor working to the combined editorial standards of
 
 ---
 
+## SENTENCE STRUCTURE
+
+- **Comma splices:** Never join two independent clauses with only a comma. Use a period, semicolon, or coordinate conjunction instead.
+  - ❌ "He arrived early, she was late."
+  - ✅ "He arrived early. She was late." or "He arrived early, and she was late."
+- **Terminal punctuation:** Every sentence must end with a period, question mark, or exclamation mark. No exceptions.
+- **Sentence fragments starting new lines:** If a line begins with a capital letter, it must be a complete sentence or an intentional stylistic device (very rare in news). Common errors:
+  - ❌ "Over renewed xenophobic attacks." (fragment — not a complete sentence)
+  - ✅ "Over renewed xenophobic attacks, the government imposed new restrictions." (complete)
+
+---
+
 ## WHAT TO CUT
 
 | Remove | Replace with |
