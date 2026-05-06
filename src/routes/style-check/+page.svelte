@@ -1,4 +1,5 @@
 <script>
+	import { goto } from '$app/navigation';
 	import { Header, ThinkingDots, StyleCheckDrawer, Icon } from '$lib/components';
 	import {
 		styleCheckInputText,
@@ -115,6 +116,7 @@
 	function handleSaveToNotepad() {
 		startNewNote();
 		currentNoteContent.set(editedText);
+		goto('/notepad');
 	}
 
 	async function handleCopy() {
@@ -185,7 +187,19 @@
 			<div class="panel-section">
 				<span class="panel-label">Checked</span>
 				<div class="panel-card edited-card" class:panel-collapsed={expandedPanel !== 'edited'}>
-					<p class="panel-text edited-text">{editedText}</p>
+					<div
+						class="panel-text edited-text"
+						contenteditable="true"
+						onblur={(e) => {
+							editedText = e.currentTarget.textContent || '';
+							styleCheckEditedText.set(editedText);
+						}}
+						oninput={(e) => {
+							editedText = e.currentTarget.textContent || '';
+						}}
+					>
+						{editedText}
+					</div>
 					<button
 						class="chevron-btn"
 						aria-label={expandedPanel === 'edited' ? 'Collapse edited' : 'Expand edited'}
@@ -214,7 +228,7 @@
 
 			<!-- New check button -->
 			<button class="new-check-btn" onclick={handleNewCheck}>
-				New Style Check
+				Check new article
 			</button>
 
 		{:else}
@@ -518,6 +532,11 @@
 
 	.edited-text {
 		white-space: pre-wrap;
+		outline: none;
+	}
+
+	.edited-text:focus {
+		outline: none;
 	}
 
 	.edited-card {
@@ -557,6 +576,7 @@
 		display: flex;
 		gap: var(--spacing-sm);
 		margin-top: var(--spacing-sm);
+		justify-content: center;
 	}
 
 	.action-btn {
@@ -584,19 +604,18 @@
 	.new-check-btn {
 		width: 100%;
 		padding: var(--spacing-md);
-		background: transparent;
-		color: var(--accent-brand);
-		border: 1px solid var(--accent-brand);
+		background: var(--accent-brand);
+		color: #fff;
+		border: none;
 		border-radius: var(--radius);
 		font-size: var(--font-size-base);
 		font-weight: 600;
 		cursor: pointer;
-		transition: background 0.15s, color 0.15s;
+		transition: background 0.15s;
 		min-height: 52px;
 	}
 
 	.new-check-btn:hover {
-		background: var(--accent-brand);
-		color: #fff;
+		background: #4a1d9e;
 	}
 </style>

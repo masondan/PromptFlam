@@ -27,22 +27,6 @@
 		})
 	);
 
-	// Index of activeSuggestion within navigableSuggestions
-	let activeNavIndex = $derived(
-		activeSuggestion ? navigableSuggestions.findIndex(s => s.id === activeSuggestion.id) : -1
-	);
-
-	function goToPrev() {
-		if (activeNavIndex > 0) {
-			activeSuggestion = navigableSuggestions[activeNavIndex - 1];
-		}
-	}
-
-	function goToNext() {
-		if (activeNavIndex < navigableSuggestions.length - 1) {
-			activeSuggestion = navigableSuggestions[activeNavIndex + 1];
-		}
-	}
 
 	// Normalise whitespace within a single line/sentence (not across paragraphs)
 	function normalise(str) {
@@ -91,57 +75,73 @@
 		return suggestions.filter(s => !dismissed.has(s.id) && s.type === type).length;
 	}
 
-	// Count actual visible blocks (sentences) with rendered highlights
-	// Since annotate() only renders ONE highlight per sentence, we count sentences
+	// Count pending (not dismissed) suggestions per type
 	function blockCount(type) {
-		const active = suggestions.filter(s => !dismissed.has(s.id) && (type === 'none' ? false : s.type === type));
-		const blockSet = new Set();
-		
-		for (const para of paragraphs) {
-			for (const sentence of para) {
-				const normSentence = normalise(sentence);
-				for (const s of active) {
-					const normOriginal = normalise(s.original);
-					if (normSentence.indexOf(normOriginal) !== -1) {
-						blockSet.add(sentence); // unique sentence = unique block
-						break; // only one match per sentence
-					}
-				}
-			}
-		}
-		return blockSet.size;
+		return suggestions.filter(s => !dismissed.has(s.id) && s.type === type).length;
 	}
 
 	// Build annotated segments for a sentence
 	// Returns array of { text, suggestion | null }
+	// Finds ALL matches in the sentence, not just the first one
 	function annotate(sentence) {
 		const normSentence = normalise(sentence);
 		const active = visibleSuggestions(activeFilter);
 
-		// Find first matching suggestion in this sentence
+		// Find all matches in this sentence with their positions
+		const matches = [];
 		for (const s of active) {
 			const normOriginal = normalise(s.original);
-			const idx = normSentence.indexOf(normOriginal);
-			if (idx !== -1) {
-				const before = normSentence.slice(0, idx);
-				const after = normSentence.slice(idx + normOriginal.length);
-				const segments = [];
-				if (before) segments.push({ text: before, suggestion: null });
-				
-				// If accepted, show the replacement text; otherwise show original
-				const displayText = accepted.has(s.id) ? accepted.get(s.id) : normOriginal;
-				segments.push({ text: displayText, suggestion: s });
-				
-				if (after) segments.push({ text: after, suggestion: null });
-				return segments;
+			let searchPos = 0;
+			while (true) {
+				const idx = normSentence.indexOf(normOriginal, searchPos);
+				if (idx === -1) break;
+				matches.push({
+					suggestion: s,
+					start: idx,
+					end: idx + normOriginal.length,
+					text: normOriginal
+				});
+				searchPos = idx + 1; // Move past this match to find overlapping ones
 			}
 		}
-		return [{ text: normSentence, suggestion: null }];
+
+		// Return empty array if no matches
+		if (matches.length === 0) {
+			return [{ text: normSentence, suggestion: null }];
+		}
+
+		// Sort matches by start position
+		matches.sort((a, b) => a.start - b.start);
+
+		// Build segments by walking through the sentence
+		const segments = [];
+		let pos = 0;
+		for (const match of matches) {
+			// Add text before this match
+			if (match.start > pos) {
+				segments.push({ text: normSentence.slice(pos, match.start), suggestion: null });
+			}
+			// Add the matched text (with replacement if accepted)
+			const displayText = accepted.has(match.suggestion.id) ? accepted.get(match.suggestion.id) : match.text;
+			segments.push({ text: displayText, suggestion: match.suggestion });
+			pos = match.end;
+		}
+
+		// Add remaining text after last match
+		if (pos < normSentence.length) {
+			segments.push({ text: normSentence.slice(pos), suggestion: null });
+		}
+
+		return segments;
 	}
 
 	// Category filter toggle
 	function toggleFilter(type) {
 		activeFilter = activeFilter === type ? 'none' : type;
+		// Close modal if open when user changes filters
+		if (activeSuggestion) {
+			activeSuggestion = null;
+		}
 	}
 
 	// Accept a suggestion
@@ -159,11 +159,22 @@
 		newDismissed.add(s.id);
 		dismissed = newDismissed;
 
-		// Move to next suggestion if available, otherwise stay open
-		const nextSug = navigableSuggestions[activeNavIndex + 1];
-		if (nextSug) {
-			activeSuggestion = nextSug;
+		// Find current suggestion's position in full suggestions array
+		const currentPos = suggestions.findIndex(sug => sug.id === s.id);
+		
+		// Find next navigable suggestion after current position
+		for (let i = currentPos + 1; i < suggestions.length; i++) {
+			const candidate = suggestions[i];
+			if (!newDismissed.has(candidate.id)) {
+				if (activeFilter === 'none' || candidate.type === activeFilter) {
+					activeSuggestion = candidate;
+					return;
+				}
+			}
 		}
+		
+		// No next suggestion found, close modal
+		activeSuggestion = null;
 	}
 
 	// Reject a suggestion
@@ -188,6 +199,20 @@
 		
 		// No next suggestion found, close modal
 		activeSuggestion = null;
+	}
+
+	// Revert an accepted suggestion back to pending state
+	function revertSuggestion(s) {
+		const newAccepted = new Map(accepted);
+		newAccepted.delete(s.id);
+		accepted = newAccepted;
+
+		const newDismissed = new Set(dismissed);
+		newDismissed.delete(s.id);
+		dismissed = newDismissed;
+
+		// Keep modal open with suggestion in pending state
+		activeSuggestion = s;
 	}
 
 	// Fetch rewrites
@@ -385,6 +410,7 @@
 	{@const colors = typeColors[s.type]}
 	{@const rewriteArr = rewrites.get(s.id)}
 	{@const rIdx = rewriteIndex.get(s.id) ?? 0}
+	{@const isAcceptedState = isAccepted(s)}
 	<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
 	<div
 		class="modal-backdrop"
@@ -393,7 +419,7 @@
 		onkeydown={() => {}}
 	>
 		<div class="modal-sheet">
-			<!-- Modal header: [close button] [< Prev] [Next >] -->
+			<!-- Modal header: [close button] -->
 			<div class="modal-header">
 				<button
 					class="modal-close-btn"
@@ -402,59 +428,73 @@
 				>
 					<Icon name="close" size={20} />
 				</button>
-				<div class="modal-nav-btns">
-					<button
-						class="modal-nav-btn"
-						onclick={goToPrev}
-						disabled={activeNavIndex <= 0}
-						aria-label="Previous suggestion"
-					>‹ Prev</button>
-					<button
-						class="modal-nav-btn"
-						onclick={goToNext}
-						disabled={activeNavIndex >= navigableSuggestions.length - 1}
-						aria-label="Next suggestion"
-					>Next ›</button>
-				</div>
 			</div>
 
-			<!-- Suggested text / rewrite -->
-			<div class="modal-body">
-				{#if rewriteLoading}
-					<ThinkingDots />
-				{:else if rewriteArr && rewriteArr.length > 0}
-					<p class="modal-suggested">{rewriteArr[rIdx]}</p>
-					<!-- Rewrite navigation -->
-					{#if rewriteArr.length > 1}
-						<div class="rewrite-nav">
-							<button
-								class="rewrite-nav-btn"
-								disabled={rIdx === 0}
-								onclick={() => prevRewrite(s)}
-								aria-label="Previous rewrite"
-							>‹</button>
-							<span class="rewrite-counter">{rIdx + 1} / {rewriteArr.length}</span>
-							<button
-								class="rewrite-nav-btn"
-								disabled={rIdx === rewriteArr.length - 1}
-								onclick={() => nextRewrite(s)}
-								aria-label="Next rewrite"
-							>›</button>
+			<!-- Two-deck format for accepted suggestions -->
+			{#if isAcceptedState}
+				<div class="modal-body">
+					<div class="two-deck">
+						<div class="deck original-deck">
+							<p class="deck-label">Original</p>
+							<p class="deck-text strikethrough">{s.original}</p>
 						</div>
+						<div class="deck accepted-deck">
+							<p class="deck-label">Accepted</p>
+							<p class="deck-text">{accepted.get(s.id)}</p>
+						</div>
+					</div>
+				</div>
+			{:else}
+				<!-- Suggested text / rewrite for pending suggestions -->
+				<div class="modal-body">
+					{#if rewriteLoading}
+						<ThinkingDots />
+					{:else if rewriteArr && rewriteArr.length > 0}
+						<p class="modal-suggested">{rewriteArr[rIdx]}</p>
+						<!-- Rewrite navigation -->
+						{#if rewriteArr.length > 1}
+							<div class="rewrite-nav">
+								<button
+									class="rewrite-nav-btn"
+									disabled={rIdx === 0}
+									onclick={() => prevRewrite(s)}
+									aria-label="Previous rewrite"
+								>‹</button>
+								<span class="rewrite-counter">{rIdx + 1} / {rewriteArr.length}</span>
+								<button
+									class="rewrite-nav-btn"
+									disabled={rIdx === rewriteArr.length - 1}
+									onclick={() => nextRewrite(s)}
+									aria-label="Next rewrite"
+								>›</button>
+							</div>
+						{/if}
+					{:else}
+						<p class="modal-suggested">{s.suggested}</p>
 					{/if}
-				{:else}
-					<p class="modal-suggested">{s.suggested}</p>
-				{/if}
 
-				{#if s.reason}
-					<p class="modal-reason"><strong>Why:</strong> {s.reason}</p>
-				{/if}
-			</div>
+					{#if s.reason}
+						<p class="modal-reason"><strong>Why:</strong> {s.reason}</p>
+					{/if}
+				</div>
+			{/if}
 
 			<!-- Action row -->
 			<div class="modal-actions">
-				<!-- Rewrite button (style type only, left-aligned) -->
-				{#if s.type === 'style'}
+				<!-- Revert button (only for accepted, left-aligned) or Rewrite button (style type only) -->
+				{#if isAcceptedState}
+					<button
+						class="revert-btn"
+						onclick={() => revertSuggestion(s)}
+						aria-label="Revert this change"
+					>
+						<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+							<path d="M3 7v6h6"></path>
+							<path d="M21 17a9 9 0 00-9-9 9 9 0 00-6 2.3L3 13"></path>
+						</svg>
+						Revert
+					</button>
+				{:else if s.type === 'style'}
 					<button
 						class="rewrite-btn"
 						onclick={() => fetchRewrites(s)}
@@ -464,16 +504,18 @@
 					<span></span>
 				{/if}
 	
-				<!-- Change / Ignore -->
+				<!-- Change / Ignore (disabled when accepted) -->
 				<div class="action-btns">
 					<button
 						class="action-btn ignore-btn"
 						onclick={() => rejectSuggestion(s)}
+						disabled={isAcceptedState}
 						aria-label="Ignore this suggestion"
 					>Ignore</button>
 					<button
 						class="action-btn change-btn"
 						onclick={() => acceptSuggestion(s)}
+						disabled={isAcceptedState}
 						aria-label="Change and accept"
 					>
 						Change
@@ -652,11 +694,6 @@
 		text-decoration-thickness: 2px;
 	}
 
-	/* Active highlight: scroll into view cue */
-	.highlight.active-highlight {
-		outline: 1px solid rgba(22, 163, 74, 0.6);
-		outline-offset: 1px;
-	}
 
 	/* Modal backdrop — no overlay so article text stays readable */
 	.modal-backdrop {
@@ -720,35 +757,6 @@
 		background: var(--bg-surface);
 	}
 
-	/* Prev / Next navigation buttons in modal header */
-	.modal-nav-btns {
-		display: flex;
-		align-items: center;
-		gap: var(--spacing-xs);
-	}
-
-	.modal-nav-btn {
-		padding: var(--spacing-xs) var(--spacing-sm);
-		border: 1px solid var(--accent-brand);
-		border-radius: var(--radius-sm);
-		background: transparent;
-		color: var(--accent-brand);
-		font-size: 0.9375rem;
-		font-weight: 500;
-		cursor: pointer;
-		transition: background 0.15s;
-		line-height: 1.4;
-	}
-
-	.modal-nav-btn:hover:not(:disabled) {
-		background: var(--color-highlight);
-	}
-
-	.modal-nav-btn:disabled {
-		opacity: 0.35;
-		cursor: not-allowed;
-	}
-
 	.modal-body {
 		display: flex;
 		flex-direction: column;
@@ -801,12 +809,79 @@
 		color: var(--text-secondary);
 	}
 
+	/* Two-deck format for accepted suggestions */
+	.two-deck {
+		display: flex;
+		flex-direction: column;
+		gap: var(--spacing-md);
+	}
+
+	.deck {
+		display: flex;
+		flex-direction: column;
+		gap: var(--spacing-xs);
+	}
+
+	.deck-label {
+		font-size: 0.875rem;
+		font-weight: 600;
+		color: var(--text-secondary);
+		margin: 0;
+		text-transform: uppercase;
+		letter-spacing: 0.5px;
+	}
+
+	.deck-text {
+		font-size: var(--font-size-base);
+		color: var(--text-primary);
+		margin: 0;
+		line-height: 1.5;
+		padding: var(--spacing-sm);
+		background: var(--bg-surface);
+		border-radius: var(--radius-sm);
+		max-height: 120px;
+		overflow-y: auto;
+	}
+
+	.original-deck .deck-text {
+		color: var(--text-secondary);
+	}
+
+	.deck-text.strikethrough {
+		text-decoration: line-through;
+		text-decoration-color: var(--text-secondary);
+	}
+
 	/* Action row */
 	.modal-actions {
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
 		padding-bottom: var(--spacing-sm);
+	}
+
+	.revert-btn {
+		padding: var(--spacing-xs) var(--spacing-md);
+		border: 1px solid #dc2626;
+		border-radius: var(--radius-sm);
+		background: transparent;
+		color: #dc2626;
+		font-size: 0.9375rem;
+		font-weight: 500;
+		cursor: pointer;
+		display: flex;
+		align-items: center;
+		gap: 6px;
+		transition: background 0.15s;
+	}
+
+	.revert-btn:hover {
+		background: rgba(220, 38, 38, 0.1);
+	}
+
+	.revert-btn svg {
+		width: 16px;
+		height: 16px;
 	}
 
 	.rewrite-btn {

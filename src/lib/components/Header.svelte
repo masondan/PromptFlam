@@ -153,6 +153,10 @@
 		color: #ffffff;
 	}
 
+	.nav-button.active :global(.icon svg) {
+		filter: brightness(0) invert(1);
+	}
+
 
 
 
