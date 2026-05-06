@@ -381,3 +381,35 @@ export function isFavorite(category, subCategory, favsList) {
 // These replace [role] and [who, where] tags in prompts
 export const personaRole = createPersistentStore('personaRole', '');
 export const personaAudience = createPersistentStore('personaAudience', '');
+
+// Style Check session state (persists across tab changes and page refreshes)
+// Schema: text content of the article being checked
+export const styleCheckInputText = createPersistentStore('styleCheckInputText', '');
+
+// Language preference for style checking
+export const styleCheckLanguage = createPersistentStore('styleCheckLanguage', 'British English');
+
+// Suggestions array from Claude API
+// Schema: [{id, type, original, suggested, reason, sentenceIndex}]
+export const styleCheckSuggestions = createPersistentStore('styleCheckSuggestions', []);
+
+// Edited text after accepting suggestions
+export const styleCheckEditedText = createPersistentStore('styleCheckEditedText', '');
+
+// Original text (before editing) for comparison
+export const styleCheckOriginalText = createPersistentStore('styleCheckOriginalText', '');
+
+// Whether showing results view or input view
+export const styleCheckShowResults = createPersistentStore('styleCheckShowResults', false);
+
+/**
+ * Clear the style check session (called when "New Style Check" is tapped)
+ */
+export function clearStyleCheckSession() {
+	styleCheckInputText.set('');
+	styleCheckLanguage.set('British English');
+	styleCheckSuggestions.set([]);
+	styleCheckEditedText.set('');
+	styleCheckOriginalText.set('');
+	styleCheckShowResults.set(false);
+}

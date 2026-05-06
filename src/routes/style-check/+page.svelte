@@ -1,19 +1,37 @@
 <script>
 	import { Header, ThinkingDots, StyleCheckDrawer, Icon } from '$lib/components';
+	import {
+		styleCheckInputText,
+		styleCheckLanguage,
+		styleCheckSuggestions,
+		styleCheckEditedText,
+		styleCheckOriginalText,
+		styleCheckShowResults,
+		clearStyleCheckSession
+	} from '$lib/stores';
 
+	// Subscribe to persistent stores
 	let inputText = $state('');
 	let language = $state('British English');
-	let isLoading = $state(false);
-	let showDrawer = $state(false);
-	let errorMessage = $state('');
 	let suggestions = $state([]);
 	let editedText = $state('');
 	let originalText = $state('');
 	let showResults = $state(false);
 
-	// Results view state
+	// Component-local transient state
+	let isLoading = $state(false);
+	let showDrawer = $state(false);
+	let errorMessage = $state('');
 	let expandedPanel = $state('edited'); // 'original' | 'edited'
 	let copyLabel = $state('Copy');
+
+	// Sync persistent stores to component state
+	styleCheckInputText.subscribe(val => inputText = val);
+	styleCheckLanguage.subscribe(val => language = val);
+	styleCheckSuggestions.subscribe(val => suggestions = val);
+	styleCheckEditedText.subscribe(val => editedText = val);
+	styleCheckOriginalText.subscribe(val => originalText = val);
+	styleCheckShowResults.subscribe(val => showResults = val);
 
 	// Strip HTML tags and normalise paragraph spacing on paste
 	function handlePaste(e) {
@@ -44,6 +62,7 @@
 			.replace(/\n{3,}/g, '\n\n')  // max one blank line between paragraphs
 			.trim();
 
+		styleCheckInputText.set(text);
 		inputText = text;
 	}
 
@@ -53,6 +72,7 @@
 		isLoading = true;
 		errorMessage = '';
 		originalText = inputText;
+		styleCheckOriginalText.set(inputText);
 
 		try {
 			const res = await fetch('/api/style-check', {
@@ -68,6 +88,7 @@
 
 			const data = await res.json();
 			suggestions = data;
+			styleCheckSuggestions.set(data);
 			showDrawer = true;
 		} catch (err) {
 			errorMessage = err.message || 'Style check failed — please try again';
@@ -78,7 +99,9 @@
 
 	function handleSave(text) {
 		editedText = text;
+		styleCheckEditedText.set(text);
 		showResults = true;
+		styleCheckShowResults.set(true);
 		showDrawer = false;
 		expandedPanel = 'edited';
 	}
@@ -114,6 +137,7 @@
 	}
 
 	function handleNewCheck() {
+		clearStyleCheckSession();
 		inputText = '';
 		language = 'British English';
 		suggestions = [];
@@ -138,9 +162,6 @@
 
 		{#if showResults}
 			<!-- ── Results View ── -->
-			<div class="results-header">
-				<h1 class="page-title">Style Check</h1>
-			</div>
 
 			<!-- Original panel -->
 			<div class="panel-section">
@@ -159,7 +180,7 @@
 
 			<!-- Edited panel -->
 			<div class="panel-section">
-				<span class="panel-label">Edited</span>
+				<span class="panel-label">Checked</span>
 				<div class="panel-card edited-card" class:panel-collapsed={expandedPanel !== 'edited'}>
 					<p class="panel-text edited-text">{editedText}</p>
 					<button
@@ -203,7 +224,15 @@
 				<textarea
 						class="article-input"
 						placeholder="Paste your article here…"
-						bind:value={inputText}
+						value={inputText}
+						onchange={(e) => {
+							inputText = e.target.value;
+							styleCheckInputText.set(e.target.value);
+						}}
+						oninput={(e) => {
+							inputText = e.target.value;
+							styleCheckInputText.set(e.target.value);
+						}}
 						disabled={isLoading}
 						onpaste={handlePaste}
 					></textarea>
@@ -220,14 +249,20 @@
 				<button
 					class="lang-btn"
 					class:active={language === 'British English'}
-					onclick={() => (language = 'British English')}
+					onclick={() => {
+						language = 'British English';
+						styleCheckLanguage.set('British English');
+					}}
 				>
 					British English
 				</button>
 				<button
 					class="lang-btn"
 					class:active={language === 'American English'}
-					onclick={() => (language = 'American English')}
+					onclick={() => {
+						language = 'American English';
+						styleCheckLanguage.set('American English');
+					}}
 				>
 					US English
 				</button>
@@ -283,11 +318,6 @@
 		gap: var(--spacing-md);
 		align-items: center;
 		text-align: center;
-	}
-
-	.results-header {
-		display: flex;
-		align-items: center;
 	}
 
 	.page-title {
@@ -452,16 +482,17 @@
 	}
 
 	.panel-label {
-		font-size: 0.75rem;
+		font-size: 1.125rem;
 		font-weight: 600;
-		text-transform: uppercase;
-		letter-spacing: 0.06em;
+		text-transform: none;
+		letter-spacing: 0;
 		color: var(--text-secondary);
 	}
 
 	.panel-card {
 		position: relative;
-		background: var(--bg-surface);
+		background: transparent;
+		border: 1px solid var(--color-border);
 		border-radius: var(--radius);
 		padding: var(--spacing-md);
 		padding-bottom: calc(var(--spacing-md) + 28px); /* room for chevron */

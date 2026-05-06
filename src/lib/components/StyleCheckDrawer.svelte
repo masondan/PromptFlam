@@ -309,7 +309,7 @@
 			<Icon name="close" size={24} />
 		</button>
 		<span class="drawer-title">Style Check</span>
-		<button class="save-btn" onclick={handleSave}>Save</button>
+		<button class="save-btn" onclick={handleSave}>Done</button>
 	</div>
 
 	<!-- Category filter bar -->
@@ -654,7 +654,8 @@
 
 	/* Active highlight: scroll into view cue */
 	.highlight.active-highlight {
-		box-shadow: 0 0 0 2px var(--accent-brand);
+		outline: 1px solid rgba(22, 163, 74, 0.6);
+		outline-offset: 1px;
 	}
 
 	/* Modal backdrop — no overlay so article text stays readable */
