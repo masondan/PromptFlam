@@ -18,6 +18,32 @@
 	let rewriteLoading = $state(false);
 	let rewriteIndex = $state(new Map());   // id → current rewrite index shown
 
+	// Ordered list of navigable (non-dismissed) suggestions, respecting activeFilter
+	let navigableSuggestions = $derived(
+		suggestions.filter(s => {
+			if (dismissed.has(s.id) && !accepted.has(s.id)) return false;
+			if (activeFilter !== 'none' && s.type !== activeFilter) return false;
+			return true;
+		})
+	);
+
+	// Index of activeSuggestion within navigableSuggestions
+	let activeNavIndex = $derived(
+		activeSuggestion ? navigableSuggestions.findIndex(s => s.id === activeSuggestion.id) : -1
+	);
+
+	function goToPrev() {
+		if (activeNavIndex > 0) {
+			activeSuggestion = navigableSuggestions[activeNavIndex - 1];
+		}
+	}
+
+	function goToNext() {
+		if (activeNavIndex < navigableSuggestions.length - 1) {
+			activeSuggestion = navigableSuggestions[activeNavIndex + 1];
+		}
+	}
+
 	// Normalise whitespace within a single line/sentence (not across paragraphs)
 	function normalise(str) {
 		return str.replace(/[ \t]+/g, ' ').trim();
@@ -298,21 +324,24 @@
 								{#if seg.suggestion}
 									{@const s = seg.suggestion}
 									{@const colors = typeColors[s.type]}
+									{@const isActive = activeSuggestion?.id === s.id}
 									{#if isAccepted(s)}
 										<!-- Accepted: green underline -->
 										<mark
 											class="highlight accepted"
+											class:active-highlight={isActive}
 											onclick={() => (activeSuggestion = s)}
 											role="button"
 											tabindex="0"
 											onkeydown={(e) => e.key === 'Enter' && (activeSuggestion = s)}
 										>{seg.text}</mark>
 									{:else}
-										<!-- Pending highlight -->
+										<!-- Pending highlight: outline only on active suggestion -->
 										<mark
 											class="highlight"
+											class:active-highlight={isActive}
 											style:background={colors.bg}
-											style:outline={`1px solid ${colors.border}`}
+											style:outline={isActive ? `1px solid ${colors.border}` : 'none'}
 											onclick={() => (activeSuggestion = s)}
 											role="button"
 											tabindex="0"
@@ -344,11 +373,25 @@
 		onkeydown={() => {}}
 	>
 		<div class="modal-sheet">
-			<!-- Modal header -->
+			<!-- Modal header: [colour circle + label]  [< Prev] [Next >] -->
 			<div class="modal-header">
 				<span class="modal-type-label">
 					{colors.emoji} {colors.label}
 				</span>
+				<div class="modal-nav-btns">
+					<button
+						class="modal-nav-btn"
+						onclick={goToPrev}
+						disabled={activeNavIndex <= 0}
+						aria-label="Previous suggestion"
+					>‹ Prev</button>
+					<button
+						class="modal-nav-btn"
+						onclick={goToNext}
+						disabled={activeNavIndex >= navigableSuggestions.length - 1}
+						aria-label="Next suggestion"
+					>Next ›</button>
+				</div>
 			</div>
 
 			<!-- Suggested text / rewrite -->
@@ -588,14 +631,24 @@
 		text-decoration-thickness: 2px;
 	}
 
-	/* Modal backdrop */
+	/* Active highlight: scroll into view cue */
+	.highlight.active-highlight {
+		box-shadow: 0 0 0 2px var(--accent-brand);
+	}
+
+	/* Modal backdrop — no overlay so article text stays readable */
 	.modal-backdrop {
 		position: fixed;
 		inset: 0;
 		z-index: calc(var(--z-drawer) + 10);
-		background: rgba(0, 0, 0, 0.25);
+		background: transparent;
 		display: flex;
 		align-items: flex-end;
+		pointer-events: none;
+	}
+
+	.modal-backdrop > .modal-sheet {
+		pointer-events: all;
 	}
 
 	/* Desktop constraint */
@@ -614,7 +667,7 @@
 		background: var(--bg-main);
 		border-top-left-radius: var(--radius-lg);
 		border-top-right-radius: var(--radius-lg);
-		box-shadow: var(--shadow-lg);
+		box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.1), var(--shadow-lg);
 		padding: var(--spacing-md);
 		display: flex;
 		flex-direction: column;
@@ -624,12 +677,42 @@
 	.modal-header {
 		display: flex;
 		align-items: center;
+		justify-content: space-between;
 	}
 
 	.modal-type-label {
 		font-size: var(--font-size-base);
 		font-weight: 700;
 		color: var(--text-primary);
+	}
+
+	/* Prev / Next navigation buttons in modal header */
+	.modal-nav-btns {
+		display: flex;
+		align-items: center;
+		gap: var(--spacing-xs);
+	}
+
+	.modal-nav-btn {
+		padding: var(--spacing-xs) var(--spacing-sm);
+		border: 1px solid var(--accent-brand);
+		border-radius: var(--radius-sm);
+		background: transparent;
+		color: var(--accent-brand);
+		font-size: var(--font-size-base);
+		font-weight: 500;
+		cursor: pointer;
+		transition: background 0.15s;
+		line-height: 1.4;
+	}
+
+	.modal-nav-btn:hover:not(:disabled) {
+		background: var(--color-highlight);
+	}
+
+	.modal-nav-btn:disabled {
+		opacity: 0.35;
+		cursor: not-allowed;
 	}
 
 	.modal-body {
