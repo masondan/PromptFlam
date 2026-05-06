@@ -235,13 +235,15 @@
 
 			<button
 				class="check-btn"
-				disabled={!inputText.trim() || isLoading}
+				class:loading={isLoading}
+				disabled={!inputText.trim()}
 				onclick={handleCheckStyle}
 			>
 				{#if isLoading}
-					<ThinkingDots />
+					Proofreading...
+					<span class="spinner"></span>
 				{:else}
-					Check Style
+					Check Writing
 				{/if}
 			</button>
 		{/if}
@@ -289,9 +291,9 @@
 	}
 
 	.page-title {
-		font-size: 1.25rem;
+		font-size: 1.125rem;
 		font-weight: 700;
-		color: var(--text-primary);
+		color: #555555;
 		margin: 0;
 	}
 
@@ -372,20 +374,42 @@
 		font-size: var(--font-size-base);
 		font-weight: 600;
 		cursor: pointer;
-		transition: opacity 0.15s;
+		transition: background 150ms ease;
 		display: flex;
 		align-items: center;
 		justify-content: center;
+		gap: 0.5rem;
 		min-height: 52px;
 	}
 
+	.check-btn:hover:not(:disabled) {
+		background: #4a1d9e;
+	}
+
 	.check-btn:disabled {
-		opacity: 0.45;
+		background: #efefef;
+		color: #777777;
 		cursor: not-allowed;
 	}
 
-	.check-btn:not(:disabled):hover {
-		opacity: 0.9;
+	.check-btn.loading {
+		background: var(--accent-brand);
+		color: #fff;
+		cursor: not-allowed;
+	}
+
+	.spinner {
+		display: inline-block;
+		width: 16px;
+		height: 16px;
+		border: 2px solid rgba(255, 255, 255, 0.3);
+		border-top-color: #ffffff;
+		border-radius: 50%;
+		animation: spin 0.8s linear infinite;
+	}
+
+	@keyframes spin {
+		to { transform: rotate(360deg); }
 	}
 
 	.error-message {

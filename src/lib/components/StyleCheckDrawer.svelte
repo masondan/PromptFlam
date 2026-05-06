@@ -159,7 +159,11 @@
 		newDismissed.add(s.id);
 		dismissed = newDismissed;
 
-		activeSuggestion = null;
+		// Move to next suggestion if available, otherwise stay open
+		const nextSug = navigableSuggestions[activeNavIndex + 1];
+		if (nextSug) {
+			activeSuggestion = nextSug;
+		}
 	}
 
 	// Reject a suggestion
@@ -167,6 +171,22 @@
 		const newDismissed = new Set(dismissed);
 		newDismissed.add(s.id);
 		dismissed = newDismissed;
+
+		// Find current suggestion's position in full suggestions array
+		const currentPos = suggestions.findIndex(sug => sug.id === s.id);
+		
+		// Find next navigable suggestion after current position
+		for (let i = currentPos + 1; i < suggestions.length; i++) {
+			const candidate = suggestions[i];
+			if (!newDismissed.has(candidate.id)) {
+				if (activeFilter === 'none' || candidate.type === activeFilter) {
+					activeSuggestion = candidate;
+					return;
+				}
+			}
+		}
+		
+		// No next suggestion found, close modal
 		activeSuggestion = null;
 	}
 
@@ -341,7 +361,7 @@
 											class="highlight"
 											class:active-highlight={isActive}
 											style:background={colors.bg}
-											style:outline={isActive ? `1px solid ${colors.border}` : 'none'}
+											style:box-shadow={isActive ? `inset 0 0 0 1px ${colors.border}` : 'none'}
 											onclick={() => (activeSuggestion = s)}
 											role="button"
 											tabindex="0"
@@ -373,11 +393,15 @@
 		onkeydown={() => {}}
 	>
 		<div class="modal-sheet">
-			<!-- Modal header: [colour circle + label]  [< Prev] [Next >] -->
+			<!-- Modal header: [close button] [< Prev] [Next >] -->
 			<div class="modal-header">
-				<span class="modal-type-label">
-					{colors.emoji} {colors.label}
-				</span>
+				<button
+					class="modal-close-btn"
+					onclick={() => (activeSuggestion = null)}
+					aria-label="Close modal"
+				>
+					<Icon name="close" size={20} />
+				</button>
 				<div class="modal-nav-btns">
 					<button
 						class="modal-nav-btn"
@@ -439,23 +463,21 @@
 				{:else}
 					<span></span>
 				{/if}
-
-				<!-- Accept / Reject -->
+	
+				<!-- Change / Ignore -->
 				<div class="action-btns">
 					<button
-						class="action-circle reject-btn"
+						class="action-btn ignore-btn"
 						onclick={() => rejectSuggestion(s)}
-						aria-label="Reject"
-					>
-						<Icon name="close" size={18} />
-					</button>
+						aria-label="Ignore this suggestion"
+					>Ignore</button>
 					<button
-						class="action-circle accept-btn"
+						class="action-btn change-btn"
 						onclick={() => acceptSuggestion(s)}
-						aria-label="Accept"
+						aria-label="Change and accept"
 					>
-						<!-- Tick SVG inline -->
-						<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+						Change
+						<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
 							<polyline points="20 6 9 17 4 12"></polyline>
 						</svg>
 					</button>
@@ -542,8 +564,7 @@
 	.filter-bar {
 		display: flex;
 		gap: var(--spacing-sm);
-		padding: var(--spacing-sm) var(--spacing-md);
-		border-bottom: 1px solid var(--color-border);
+		padding: var(--spacing-lg) var(--spacing-md) var(--spacing-sm) var(--spacing-md);
 		flex-shrink: 0;
 		overflow-x: auto;
 		background: var(--bg-main);
@@ -614,7 +635,7 @@
 	.highlight {
 		border-radius: 3px;
 		cursor: pointer;
-		padding: 1px 0;
+		padding: 1px var(--spacing-xs);
 		transition: opacity 0.15s;
 	}
 
@@ -680,10 +701,22 @@
 		justify-content: space-between;
 	}
 
-	.modal-type-label {
-		font-size: var(--font-size-base);
-		font-weight: 700;
+	/* Close button in modal header */
+	.modal-close-btn {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		padding: var(--spacing-xs);
 		color: var(--text-primary);
+		background: transparent;
+		border: none;
+		cursor: pointer;
+		border-radius: var(--radius-sm);
+		transition: background 0.15s;
+	}
+
+	.modal-close-btn:hover {
+		background: var(--bg-surface);
 	}
 
 	/* Prev / Next navigation buttons in modal header */
@@ -699,7 +732,7 @@
 		border-radius: var(--radius-sm);
 		background: transparent;
 		color: var(--accent-brand);
-		font-size: var(--font-size-base);
+		font-size: 0.9375rem;
 		font-weight: 500;
 		cursor: pointer;
 		transition: background 0.15s;
@@ -802,30 +835,41 @@
 		gap: var(--spacing-sm);
 	}
 
-	.action-circle {
-		width: 36px;
-		height: 36px;
-		border-radius: 50%;
-		border: none;
+	.action-btn {
+		padding: var(--spacing-xs) var(--spacing-sm);
+		border: 1px solid currentColor;
+		border-radius: var(--radius-sm);
+		background: transparent;
+		font-size: 0.9375rem;
+		font-weight: 500;
+		cursor: pointer;
 		display: flex;
 		align-items: center;
-		justify-content: center;
-		cursor: pointer;
-		transition: opacity 0.15s;
-		flex-shrink: 0;
+		gap: 6px;
+		transition: background 0.15s;
+		line-height: 1.4;
 	}
 
-	.action-circle:hover {
+	.action-btn:hover:not(:disabled) {
 		opacity: 0.85;
 	}
 
-	.reject-btn {
-		background: var(--color-reject);
-		color: #fff;
+	.action-btn:disabled {
+		opacity: 0.5;
+		cursor: not-allowed;
 	}
 
-	.accept-btn {
-		background: var(--color-accept);
-		color: #fff;
+	.ignore-btn {
+		color: var(--color-reject);
+	}
+
+	.change-btn {
+		color: var(--color-accept);
+		gap: 6px;
+	}
+
+	.change-btn svg {
+		width: 16px;
+		height: 16px;
 	}
 </style>
