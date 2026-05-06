@@ -17,6 +17,27 @@ PromptFlam is a **SvelteKit-based AI writing assistant** for journalists and con
 
 ---
 
+## Tech Stack
+
+| Layer | Technology | Notes |
+|-------|-----------|-------|
+| **Framework** | SvelteKit 2.0 | Full-stack meta-framework |
+| **UI** | Svelte 5 (runes mode) | Reactive components, no TypeScript |
+| **Styling** | Vanilla CSS + design tokens | No Tailwind/SCSS |
+| **State** | Svelte stores + localStorage | Auto-persisted, offline-capable |
+| **API** | Perplexity AI (sonar-pro) | Server-side proxy for security |
+| **Hosting** | Cloudflare Pages | Auto-deploy on `main` push |
+| **Build** | Vite 6 + SvelteKit adapter | ~70KB gzipped bundle |
+
+**Dependencies**:
+- `@sveltejs/kit` (2.0.0)
+- `@sveltejs/adapter-cloudflare` (4.0.0)
+- `svelte` (5.0.0)
+- `marked` (17.0.1) — Markdown parsing
+- `vite` (6.0.0)
+
+---
+
 ## Setup & Development
 
 ### Prerequisites
@@ -63,6 +84,23 @@ git push origin feature/your-name
 3. **Services** (`src/lib/services/`) — API clients (Perplexity, storage, utilities)
 
 **Data flow**: User action → Component → Store update → localStorage auto-sync
+
+---
+
+## Project Overview
+
+PromptFlam is a **SvelteKit-based AI writing assistant** designed for journalists and content creators. It provides:
+
+- **Real-time chat** with Perplexity AI (sonar-pro model)
+- **Prompt library** with 100+ categorized templates
+- **Full-featured notepad** with formatting and export
+- **Local-first storage** via localStorage (offline-capable)
+- **Citation management** with source tracking
+- **Persona settings** for customized prompt responses
+- **Archive system** with auto-cleanup (max 10 items, 30-day retention)
+
+**Live**: https://promptflam.pages.dev
+**GitHub**: https://github.com/masondan/PromptFlam
 
 ---
 
@@ -175,39 +213,39 @@ Fetches Open Graph title/description from citation URLs (5s timeout, 50KB limit)
 
 ---
 
-## Components (`src/lib/components/`, 14 total)
+## Components (`src/lib/components/`, 17 total)
 
 Organized by feature:
 
 **Page-wide:**
-- `Header.svelte` — Fixed nav with 4 page buttons + logo
+- [`Header.svelte`](src/lib/components/Header.svelte) — Fixed nav with 4 page buttons + logo
 
 **Chat (Create page):**
-- `ChatInput.svelte` — Message input + bracket-chip system
-- `ChatMessage.svelte` — Individual message + citations + action menu
-- `PromptCard.svelte` — User prompt display (search result style)
-- `PromptDrawer.svelte` — Fullscreen prompt library overlay
-- `SourcesDrawer.svelte` — Citation details drawer
-- `TextSelectionMenu.svelte` — Inline menu on text selection (copy, rewrite, expand, shorten)
-- `ThinkingDots.svelte` — Loading animation while waiting for AI
+- [`ChatInput.svelte`](src/lib/components/ChatInput.svelte) — Message input + bracket-chip system
+- [`ChatMessage.svelte`](src/lib/components/ChatMessage.svelte) — Individual message + citations + action menu
+- [`PromptCard.svelte`](src/lib/components/PromptCard.svelte) — User prompt display (search result style)
+- [`PromptDrawer.svelte`](src/lib/components/PromptDrawer.svelte) — Fullscreen prompt library overlay
+- [`SourcesDrawer.svelte`](src/lib/components/SourcesDrawer.svelte) — Citation details drawer
+- [`TextSelectionMenu.svelte`](src/lib/components/TextSelectionMenu.svelte) — Inline menu on text selection (copy, rewrite, expand, shorten)
+- [`ThinkingDots.svelte`](src/lib/components/ThinkingDots.svelte) — Loading animation while waiting for AI
 
 **Prompts Library:**
-- `PromptLibrary.svelte` — Main library UI (filter, search, favorites)
-- `PromptEditDrawer.svelte` — Drawer version of library (for inserting)
+- [`PromptLibrary.svelte`](src/lib/components/PromptLibrary.svelte) — Main library UI (filter, search, favorites)
+- [`PromptEditDrawer.svelte`](src/lib/components/PromptEditDrawer.svelte) — Drawer version of library (for inserting)
 
 **Notepad:**
-- `NotepadSelectionMenu.svelte` — Inline menu for text selection in notepad
-- `NotepadToolbar.svelte` — Sub-component for formatting buttons (bold, italic, list, font size, undo/redo)
+- [`NotepadSelectionMenu.svelte`](src/lib/components/NotepadSelectionMenu.svelte) — Inline menu for text selection in notepad
+- [`NotepadToolbar.svelte`](src/lib/components/NotepadToolbar.svelte) — Sub-component for formatting buttons (bold, italic, list, font size, undo/redo)
 
 **Archive:**
-- `ArchiveItem.svelte` — Chat/note card with menu (restore, download, share, delete)
+- [`ArchiveItem.svelte`](src/lib/components/ArchiveItem.svelte) — Chat/note card with menu (restore, download, share, delete)
 
 **UI Utilities:**
-- `Icon.svelte` — SVG icon renderer by name
-- `SwipeNavigation.svelte` — Touch swipe navigation between pages
-- `PersonaSettingsDrawer.svelte` — Persona settings modal
+- [`Icon.svelte`](src/lib/components/Icon.svelte) — SVG icon renderer by name
+- [`SwipeNavigation.svelte`](src/lib/components/SwipeNavigation.svelte) — Touch swipe navigation between pages
+- [`PersonaSettingsDrawer.svelte`](src/lib/components/PersonaSettingsDrawer.svelte) — Persona settings modal
 
-**Export:** `src/lib/components/index.js` — Barrel export all components
+**Export:** [`src/lib/components/index.js`](src/lib/components/index.js) — Barrel export all components
 
 ---
 
@@ -267,6 +305,9 @@ Saved chats and notes.
 - Three-dot menu → Download, Share, Delete
 - "Clear All" with confirmation
 - Timestamp + preview text
+
+### Style Guide (`src/routes/style-guide/+page.svelte`)
+Editorial style guide reference page (static content from `static/style-guide.md`)
 
 ---
 
@@ -478,6 +519,38 @@ static/
 
 ---
 
+## File Structure Details
+
+### src/routes/
+- **`+page.svelte`** — Prompts library page (home)
+- **`+layout.svelte`** — Root layout with Header component
+- **`create/+page.svelte`** — Main chat interface with Perplexity AI
+- **`notepad/+page.svelte`** — Full-page text editor with formatting
+- **`archive/+page.svelte`** — Saved chats and notes with restore/delete
+- **`style-guide/+page.svelte`** — Editorial guidelines reference
+- **`api/chat/+server.js`** — Perplexity API proxy (server-side)
+- **`api/metadata/+server.js`** — URL metadata fetcher (infrastructure ready)
+
+### src/lib/
+- **`stores.js`** — Centralized state management (15+ stores, all auto-persisted)
+- **`utils.js`** — Shared utility functions
+- **`icons.js`** — Icon barrel export (raw SVG strings)
+- **`services/perplexity.js`** — AI client with streaming support
+- **`services/storage.js`** — localStorage wrapper
+- **`utils/formatTime.js`** — Timestamp formatter
+- **`components/`** — 17 reusable Svelte components
+
+### static/
+- **`prompts.json`** — Prompt library data (100+ templates)
+- **`style-guide.md`** — Editorial guidelines (markdown)
+- **`flam-nav.js`** — Navigation configuration
+- **`icons/`** — 40+ SVG icons (24×24px, 2px stroke)
+- **`fonts/`** — Saira and Inter variable fonts
+- **`logos/`** — App icons, favicons, OG images
+- **`manifest.json`** — PWA metadata
+
+---
+
 ## Key Conventions
 
 ### Naming
@@ -500,13 +573,74 @@ static/
 
 ---
 
+## Development Workflow
+
+### Build & Deploy
+```bash
+npm run build              # Production build → .svelte-kit/cloudflare
+npm run preview           # Test production build locally
+```
+
+**Auto-Deploy**: Push to `main` → Cloudflare Pages builds & deploys in ~2 min
+**Rollback**: `git revert HEAD && git push origin main`
+
+---
+
+## Performance
+
+- **Bundle size**: ~70KB gzipped (SvelteKit + marked + dependencies)
+- **Streaming**: Token-by-token animation prevents UI freeze
+- **localStorage**: Synchronous but fast; ~5MB typical max
+- **Icons**: Imported as raw SVG strings; tree-shaken by Vite
+- **Code splitting**: Page components split by route (automatic)
+
+---
+
+## Browser Support
+
+- Chrome/Edge 90+
+- Firefox 88+
+- Safari 14+ (desktop & iOS)
+- Android Chrome 90+
+
+**Not supported**: IE 11, older mobile browsers
+
+---
+
+## Testing
+
+Manual testing is primary. Vitest/Playwright are available as dependencies but not yet integrated into the CI/testing pipeline.
+
+**Test Checklist**:
+1. `npm run dev`
+2. Open http://localhost:5173
+3. Send message → watch streaming
+4. Open DevTools Network → see `/api/chat` stream
+5. Switch pages (Prompts, Notepad, Archive)
+6. Refresh → check localStorage persistence
+7. Test on mobile
+
+---
+
+## Cost
+
+- **Perplexity API**: $0.50–2/month (light usage)
+- **Cloudflare Pages**: Free
+- **Domain**: Free (`.pages.dev` subdomain)
+- **Total**: ~$1–2/month
+
+---
+
 ## Useful Links
 
 - **Live app**: https://promptflam.pages.dev
 - **GitHub repo**: https://github.com/masondan/PromptFlam
 - **Perplexity docs**: https://docs.perplexity.ai/
 - **SvelteKit docs**: https://kit.svelte.dev/
+- **Svelte 5 docs**: https://svelte.dev/docs/svelte/5-migration-guide
 
 ---
 
-**Last Updated**: Feb 11, 2026
+**Maintained by**: Dan Mason
+**License**: ISC
+**Last Updated**: May 5, 2026

@@ -38,7 +38,8 @@
 		{ name: 'prompts', path: '/', label: 'Prompts' },
 		{ name: 'create', path: '/create', label: 'Create' },
 		{ name: 'notepad', path: '/notepad', label: 'Notepad' },
-		{ name: 'archive', path: '/archive', label: 'Saved' }
+		{ name: 'archive', path: '/archive', label: 'Saved' },
+		{ name: 'stylecheck', path: '/style-check', label: 'Style' }
 	];
 
 	function isActive(itemPath) {

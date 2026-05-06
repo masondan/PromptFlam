@@ -22,3 +22,4 @@ export { default as ArchiveItem } from './ArchiveItem.svelte';
 export { default as NotepadSelectionMenu } from './NotepadSelectionMenu.svelte';
 export { default as SwipeNavigation } from './SwipeNavigation.svelte';
 export { default as PersonaSettingsDrawer } from './PersonaSettingsDrawer.svelte';
+export { default as StyleCheckDrawer } from './StyleCheckDrawer.svelte';

@@ -1,0 +1,673 @@
+<script>
+	import { Header, ThinkingDots, StyleCheckDrawer, Icon } from '$lib/components';
+
+	let inputText = $state('');
+	let language = $state('British English');
+	let isLoading = $state(false);
+	let showDrawer = $state(false);
+	let showFetchInput = $state(false);
+	let fetchUrl = $state('');
+	let fetchError = $state('');
+	let isFetching = $state(false);
+	let errorMessage = $state('');
+	let suggestions = $state([]);
+	let editedText = $state('');
+	let originalText = $state('');
+	let showResults = $state(false);
+
+	// Results view state
+	let expandedPanel = $state('edited'); // 'original' | 'edited'
+	let copyLabel = $state('Copy');
+
+	// Strip HTML tags and normalise paragraph spacing on paste
+	function handlePaste(e) {
+		e.preventDefault();
+		const html = e.clipboardData.getData('text/html');
+		const plain = e.clipboardData.getData('text/plain');
+
+		let text;
+		if (html) {
+			const tmp = document.createElement('div');
+			tmp.innerHTML = html;
+			// Remove noise elements
+			tmp.querySelectorAll('script, style, nav, header, footer, aside, [class*="ad"], [class*="related"], [class*="promo"]').forEach(el => el.remove());
+			// Insert double newline after block-level elements so paragraphs are preserved
+			tmp.querySelectorAll('p, div, h1, h2, h3, h4, h5, h6, li, br, section, article').forEach(el => {
+				el.insertAdjacentText('afterend', '\n\n');
+			});
+			text = tmp.innerText || tmp.textContent || '';
+		} else {
+			text = plain;
+		}
+
+		// Normalise line endings, collapse 3+ newlines to 2 (single blank line between paragraphs)
+		text = text
+			.replace(/\r\n/g, '\n')
+			.replace(/\r/g, '\n')
+			.replace(/[^\S\n]+/g, ' ')   // collapse horizontal whitespace within lines
+			.replace(/\n{3,}/g, '\n\n')  // max one blank line between paragraphs
+			.trim();
+
+		inputText = text;
+	}
+
+	async function handleCheckStyle() {
+		if (!inputText.trim() || isLoading) return;
+
+		isLoading = true;
+		errorMessage = '';
+		originalText = inputText;
+
+		try {
+			const res = await fetch('/api/style-check', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ text: inputText, language })
+			});
+
+			if (!res.ok) {
+				const data = await res.json().catch(() => ({}));
+				throw new Error(data.message || 'Style check failed — please try again');
+			}
+
+			const data = await res.json();
+			suggestions = data;
+			showDrawer = true;
+		} catch (err) {
+			errorMessage = err.message || 'Style check failed — please try again';
+		} finally {
+			isLoading = false;
+		}
+	}
+
+	async function handleFetch() {
+		if (!fetchUrl.trim() || isFetching) return;
+		isFetching = true;
+		fetchError = '';
+
+		try {
+			const res = await fetch('/api/fetch-article', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ url: fetchUrl })
+			});
+			const data = await res.json();
+			if (data.success && data.text) {
+				inputText = data.text;
+				showFetchInput = false;
+				fetchUrl = '';
+			} else {
+				fetchError = data.error || "We couldn't extract the article cleanly — please paste the text instead";
+			}
+		} catch {
+			fetchError = "We couldn't extract the article cleanly — please paste the text instead";
+		} finally {
+			isFetching = false;
+		}
+	}
+
+	function handleSave(text) {
+		editedText = text;
+		showResults = true;
+		showDrawer = false;
+		expandedPanel = 'edited';
+	}
+
+	function handleDrawerClose() {
+		showDrawer = false;
+	}
+
+	function handleEdit() {
+		showDrawer = true;
+	}
+
+	async function handleCopy() {
+		try {
+			await navigator.clipboard.writeText(editedText);
+			copyLabel = 'Copied ✓';
+			setTimeout(() => (copyLabel = 'Copy'), 1500);
+		} catch {
+			copyLabel = 'Copy';
+		}
+	}
+
+	async function handleShare() {
+		if (navigator.share) {
+			try {
+				await navigator.share({ text: editedText });
+				return;
+			} catch {
+				// fall through to copy
+			}
+		}
+		handleCopy();
+	}
+
+	function handleNewCheck() {
+		inputText = '';
+		language = 'British English';
+		suggestions = [];
+		editedText = '';
+		originalText = '';
+		showResults = false;
+		showDrawer = false;
+		errorMessage = '';
+		fetchUrl = '';
+		fetchError = '';
+		showFetchInput = false;
+		expandedPanel = 'edited';
+		copyLabel = 'Copy';
+	}
+</script>
+
+<svelte:head>
+	<title>Style Check | PromptFlam</title>
+</svelte:head>
+
+<Header />
+
+<main class="style-check-page">
+	<div class="page-content">
+
+		{#if showResults}
+			<!-- ── Results View ── -->
+			<div class="results-header">
+				<h1 class="page-title">Style Check</h1>
+			</div>
+
+			<!-- Original panel -->
+			<div class="panel-section">
+				<span class="panel-label">Original</span>
+				<div class="panel-card" class:panel-collapsed={expandedPanel !== 'original'}>
+					<p class="panel-text">{originalText}</p>
+					<button
+						class="chevron-btn"
+						aria-label={expandedPanel === 'original' ? 'Collapse original' : 'Expand original'}
+						onclick={() => (expandedPanel = expandedPanel === 'original' ? 'edited' : 'original')}
+					>
+						<Icon name={expandedPanel === 'original' ? 'collapse' : 'expand'} size={20} />
+					</button>
+				</div>
+			</div>
+
+			<!-- Edited panel -->
+			<div class="panel-section">
+				<span class="panel-label">Edited</span>
+				<div class="panel-card edited-card" class:panel-collapsed={expandedPanel !== 'edited'}>
+					<p class="panel-text edited-text">{editedText}</p>
+					<button
+						class="chevron-btn"
+						aria-label={expandedPanel === 'edited' ? 'Collapse edited' : 'Expand edited'}
+						onclick={() => (expandedPanel = expandedPanel === 'edited' ? 'original' : 'edited')}
+					>
+						<Icon name={expandedPanel === 'edited' ? 'collapse' : 'expand'} size={20} />
+					</button>
+				</div>
+
+				<!-- Bottom action bar -->
+				<div class="action-bar">
+					<button class="action-btn" onclick={handleCopy}>
+						<Icon name="copy" size={18} />
+						{copyLabel}
+					</button>
+					<button class="action-btn" onclick={handleShare}>
+						<Icon name="share" size={18} />
+						Share
+					</button>
+					<button class="action-btn" onclick={handleEdit}>
+						<Icon name="edit" size={18} />
+						Edit
+					</button>
+				</div>
+			</div>
+
+			<!-- New check button -->
+			<button class="new-check-btn" onclick={handleNewCheck}>
+				New Style Check
+			</button>
+
+		{:else}
+			<!-- ── Input View ── -->
+			<div class="page-header">
+				<h1 class="page-title">Spelling, Grammar &amp; Style</h1>
+				<div class="language-toggle">
+					<button
+						class="lang-btn"
+						class:active={language === 'British English'}
+						onclick={() => (language = 'British English')}
+					>
+						British English
+					</button>
+					<button
+						class="lang-btn"
+						class:active={language === 'American English'}
+						onclick={() => (language = 'American English')}
+					>
+						US English
+					</button>
+				</div>
+			</div>
+
+			<div class="input-area">
+				<textarea
+						class="article-input"
+						placeholder="Paste your article here…"
+						bind:value={inputText}
+						disabled={isLoading}
+						onpaste={handlePaste}
+					></textarea>
+
+				<button
+					class="fetch-link-btn"
+					onclick={() => { showFetchInput = !showFetchInput; fetchError = ''; }}
+				>
+					{showFetchInput ? 'Cancel' : 'Fetch from URL'}
+				</button>
+
+				{#if showFetchInput}
+					<div class="fetch-row">
+						<input
+							class="fetch-input"
+							type="url"
+							placeholder="https://… paste URL here"
+							bind:value={fetchUrl}
+							disabled={isFetching}
+							onkeydown={(e) => e.key === 'Enter' && handleFetch()}
+						/>
+						<button class="fetch-btn" onclick={handleFetch} disabled={!fetchUrl.trim() || isFetching}>
+							{#if isFetching}
+								<ThinkingDots />
+							{:else}
+								Fetch
+							{/if}
+						</button>
+					</div>
+					{#if fetchError}
+						<p class="fetch-error">{fetchError}</p>
+					{/if}
+				{/if}
+			</div>
+
+			{#if errorMessage}
+				<div class="error-message">
+					<p>{errorMessage}</p>
+					<button onclick={() => (errorMessage = '')}>Dismiss</button>
+				</div>
+			{/if}
+
+			<button
+				class="check-btn"
+				disabled={!inputText.trim() || isLoading}
+				onclick={handleCheckStyle}
+			>
+				{#if isLoading}
+					<ThinkingDots />
+				{:else}
+					Check Style
+				{/if}
+			</button>
+		{/if}
+
+	</div>
+</main>
+
+{#if showDrawer}
+	<StyleCheckDrawer
+		{originalText}
+		{suggestions}
+		{language}
+		onSave={handleSave}
+		onClose={handleDrawerClose}
+	/>
+{/if}
+
+<style>
+	.style-check-page {
+		padding-top: var(--spacing-md);
+		padding-bottom: var(--spacing-xl);
+		min-height: 100vh;
+	}
+
+	.page-content {
+		max-width: var(--max-content-width, 680px);
+		margin: 0 auto;
+		padding: var(--spacing-md);
+		display: flex;
+		flex-direction: column;
+		gap: var(--spacing-md);
+	}
+
+	.page-header {
+		display: flex;
+		flex-direction: column;
+		gap: var(--spacing-md);
+	}
+
+	.results-header {
+		display: flex;
+		align-items: center;
+	}
+
+	.page-title {
+		font-size: var(--font-size-h1);
+		font-weight: 700;
+		color: var(--text-primary);
+		margin: 0;
+	}
+
+	.language-toggle {
+		display: flex;
+		gap: var(--spacing-sm);
+	}
+
+	.lang-btn {
+		padding: var(--spacing-xs) var(--spacing-md);
+		border-radius: var(--radius-full, 9999px);
+		border: 1px solid var(--color-border);
+		background: transparent;
+		color: var(--text-primary);
+		font-size: 0.875rem;
+		font-weight: 500;
+		cursor: pointer;
+		transition: background 0.15s, color 0.15s, border-color 0.15s;
+	}
+
+	.lang-btn.active {
+		background: var(--accent-brand);
+		color: #fff;
+		border-color: var(--accent-brand);
+	}
+
+	.lang-btn:not(.active):hover {
+		background: var(--bg-surface);
+	}
+
+	/* ── Input area ── */
+	.input-area {
+		display: flex;
+		flex-direction: column;
+		gap: var(--spacing-sm);
+	}
+
+	.article-input {
+		width: 100%;
+		min-height: 200px;
+		padding: var(--spacing-md);
+		border: 1px solid var(--color-border);
+		border-radius: var(--radius);
+		background: var(--bg-main);
+		color: var(--text-primary);
+		font-family: var(--font-family);
+		font-size: var(--font-size-base);
+		line-height: var(--line-height);
+		resize: vertical;
+		box-sizing: border-box;
+		transition: border-color 0.15s;
+	}
+
+	.article-input:focus {
+		outline: none;
+		border-color: var(--accent-brand);
+	}
+
+	.article-input:disabled {
+		opacity: 0.6;
+		cursor: not-allowed;
+	}
+
+	.article-input::placeholder {
+		color: var(--text-secondary);
+	}
+
+	.fetch-link-btn {
+		background: transparent;
+		border: none;
+		color: var(--accent-brand);
+		font-size: 0.875rem;
+		font-weight: 500;
+		cursor: pointer;
+		padding: 0;
+		text-align: left;
+		text-decoration: underline;
+		text-underline-offset: 2px;
+	}
+
+	.fetch-link-btn:hover {
+		opacity: 0.8;
+	}
+
+	.fetch-row {
+		display: flex;
+		gap: var(--spacing-sm);
+	}
+
+	.fetch-input {
+		flex: 1;
+		padding: var(--spacing-sm) var(--spacing-md);
+		border: 1px solid var(--color-border);
+		border-radius: var(--radius);
+		background: var(--bg-main);
+		color: var(--text-primary);
+		font-size: var(--font-size-base);
+		font-family: var(--font-family);
+		box-sizing: border-box;
+		transition: border-color 0.15s;
+	}
+
+	.fetch-input:focus {
+		outline: none;
+		border-color: var(--accent-brand);
+	}
+
+	.fetch-input:disabled {
+		opacity: 0.6;
+	}
+
+	.fetch-btn {
+		padding: var(--spacing-sm) var(--spacing-md);
+		background: var(--accent-brand);
+		color: #fff;
+		border: none;
+		border-radius: var(--radius);
+		font-size: 0.875rem;
+		font-weight: 600;
+		cursor: pointer;
+		white-space: nowrap;
+		display: flex;
+		align-items: center;
+		min-width: 64px;
+		justify-content: center;
+		transition: opacity 0.15s;
+	}
+
+	.fetch-btn:disabled {
+		opacity: 0.45;
+		cursor: not-allowed;
+	}
+
+	.fetch-error {
+		color: var(--color-reject);
+		font-size: 0.875rem;
+		margin: 0;
+	}
+
+	.check-btn {
+		width: 100%;
+		padding: var(--spacing-md);
+		background: var(--accent-brand);
+		color: #fff;
+		border: none;
+		border-radius: var(--radius);
+		font-size: var(--font-size-base);
+		font-weight: 600;
+		cursor: pointer;
+		transition: opacity 0.15s;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		min-height: 52px;
+	}
+
+	.check-btn:disabled {
+		opacity: 0.45;
+		cursor: not-allowed;
+	}
+
+	.check-btn:not(:disabled):hover {
+		opacity: 0.9;
+	}
+
+	.error-message {
+		background: var(--color-spelling-bg);
+		border: 1px solid var(--color-spelling-border);
+		border-radius: var(--radius);
+		padding: var(--spacing-md);
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: var(--spacing-sm);
+	}
+
+	.error-message p {
+		color: var(--color-reject);
+		margin: 0;
+		font-size: 0.875rem;
+	}
+
+	.error-message button {
+		background: transparent;
+		color: var(--color-reject);
+		font-size: 0.875rem;
+		padding: var(--spacing-xs) var(--spacing-sm);
+		border-radius: var(--radius-sm);
+		border: none;
+		cursor: pointer;
+		flex-shrink: 0;
+	}
+
+	.error-message button:hover {
+		background: rgba(220, 38, 38, 0.1);
+	}
+
+	/* ── Results View ── */
+	.panel-section {
+		display: flex;
+		flex-direction: column;
+		gap: var(--spacing-xs);
+	}
+
+	.panel-label {
+		font-size: 0.75rem;
+		font-weight: 600;
+		text-transform: uppercase;
+		letter-spacing: 0.06em;
+		color: var(--text-secondary);
+	}
+
+	.panel-card {
+		position: relative;
+		background: var(--bg-surface);
+		border-radius: var(--radius);
+		padding: var(--spacing-md);
+		padding-bottom: calc(var(--spacing-md) + 28px); /* room for chevron */
+		overflow: hidden;
+	}
+
+	.panel-collapsed .panel-text {
+		display: -webkit-box;
+		-webkit-line-clamp: 4;
+		-webkit-box-orient: vertical;
+		overflow: hidden;
+	}
+
+	.panel-text {
+		margin: 0;
+		font-size: var(--font-size-base);
+		color: var(--text-primary);
+		line-height: var(--line-height, 1.6);
+	}
+
+	.edited-text {
+		white-space: pre-wrap;
+	}
+
+	.edited-card {
+		max-height: none;
+	}
+
+	.panel-collapsed.edited-card .panel-text {
+		display: -webkit-box;
+		-webkit-line-clamp: 4;
+		-webkit-box-orient: vertical;
+		overflow: hidden;
+	}
+
+	.chevron-btn {
+		position: absolute;
+		bottom: var(--spacing-sm);
+		right: var(--spacing-sm);
+		background: transparent;
+		border: none;
+		cursor: pointer;
+		padding: 4px;
+		color: var(--text-secondary);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		border-radius: var(--radius-sm);
+		transition: color 0.15s, background 0.15s;
+	}
+
+	.chevron-btn:hover {
+		color: var(--text-primary);
+		background: var(--color-border);
+	}
+
+	/* ── Action bar ── */
+	.action-bar {
+		display: flex;
+		gap: var(--spacing-sm);
+		margin-top: var(--spacing-sm);
+	}
+
+	.action-btn {
+		display: flex;
+		align-items: center;
+		gap: var(--spacing-xs);
+		padding: var(--spacing-xs) var(--spacing-md);
+		border: 1px solid var(--color-border);
+		border-radius: var(--radius);
+		background: var(--bg-surface);
+		color: var(--text-primary);
+		font-size: 0.875rem;
+		font-weight: 500;
+		cursor: pointer;
+		transition: background 0.15s, border-color 0.15s;
+	}
+
+	.action-btn:hover {
+		background: var(--color-highlight);
+		border-color: var(--accent-brand);
+		color: var(--accent-brand);
+	}
+
+	/* ── New check button ── */
+	.new-check-btn {
+		width: 100%;
+		padding: var(--spacing-md);
+		background: transparent;
+		color: var(--accent-brand);
+		border: 1px solid var(--accent-brand);
+		border-radius: var(--radius);
+		font-size: var(--font-size-base);
+		font-weight: 600;
+		cursor: pointer;
+		transition: background 0.15s, color 0.15s;
+		min-height: 52px;
+	}
+
+	.new-check-btn:hover {
+		background: var(--accent-brand);
+		color: #fff;
+	}
+</style>

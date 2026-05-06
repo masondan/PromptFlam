@@ -30,6 +30,16 @@
 	--color-icon-active: #5422b0;
 	--color-separator: #e0e0e0;
 
+	/* Style Check highlight colours */
+	--color-spelling-bg: #FEE2E2;
+	--color-spelling-border: #EF4444;
+	--color-grammar-bg: #FEF9C3;
+	--color-grammar-border: #EAB308;
+	--color-style-bg: #DBEAFE;
+	--color-style-border: #3B82F6;
+	--color-accept: #16A34A;
+	--color-reject: #DC2626;
+
 	/* 2. TYPOGRAPHY - System fonts, simple hierarchy */
 	--font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
 	--font-size-base: 1.125rem; /* 17px */

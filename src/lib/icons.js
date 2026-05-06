@@ -38,6 +38,7 @@ import IconSearch from '../../static/icons/icon-search.svg?raw';
 import IconMic from '../../static/icons/icon-mic.svg?raw';
 import IconMicFill from '../../static/icons/icon-mic-fill.svg?raw';
 import IconUser from '../../static/icons/icon-user.svg?raw';
+import IconStylecheck from '../../static/icons/icon-stylecheck.svg?raw';
 
 // Icon map - maps icon names to their SVG strings
 export const iconMap = {
@@ -47,6 +48,7 @@ export const iconMap = {
 	edit: IconEdit,
 	notepad: IconNotepad,
 	archive: IconArchive,
+	stylecheck: IconStylecheck,
 	
 	// Chat/Create page icons
 	send: IconSend,
