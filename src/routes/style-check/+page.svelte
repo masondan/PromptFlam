@@ -7,7 +7,9 @@
 		styleCheckEditedText,
 		styleCheckOriginalText,
 		styleCheckShowResults,
-		clearStyleCheckSession
+		clearStyleCheckSession,
+		currentNoteContent,
+		startNewNote
 	} from '$lib/stores';
 
 	// Subscribe to persistent stores
@@ -110,8 +112,9 @@
 		showDrawer = false;
 	}
 
-	function handleEdit() {
-		showDrawer = true;
+	function handleSaveToNotepad() {
+		startNewNote();
+		currentNoteContent.set(editedText);
 	}
 
 	async function handleCopy() {
@@ -194,6 +197,10 @@
 
 				<!-- Bottom action bar -->
 				<div class="action-bar">
+					<button class="action-btn" onclick={handleSaveToNotepad}>
+						<Icon name="notepad" size={18} />
+						Save
+					</button>
 					<button class="action-btn" onclick={handleCopy}>
 						<Icon name="copy" size={18} />
 						{copyLabel}
@@ -201,10 +208,6 @@
 					<button class="action-btn" onclick={handleShare}>
 						<Icon name="share" size={18} />
 						Share
-					</button>
-					<button class="action-btn" onclick={handleEdit}>
-						<Icon name="edit" size={18} />
-						Edit
 					</button>
 				</div>
 			</div>
