@@ -5,10 +5,6 @@
 	let language = $state('British English');
 	let isLoading = $state(false);
 	let showDrawer = $state(false);
-	let showFetchInput = $state(false);
-	let fetchUrl = $state('');
-	let fetchError = $state('');
-	let isFetching = $state(false);
 	let errorMessage = $state('');
 	let suggestions = $state([]);
 	let editedText = $state('');
@@ -80,32 +76,6 @@
 		}
 	}
 
-	async function handleFetch() {
-		if (!fetchUrl.trim() || isFetching) return;
-		isFetching = true;
-		fetchError = '';
-
-		try {
-			const res = await fetch('/api/fetch-article', {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ url: fetchUrl })
-			});
-			const data = await res.json();
-			if (data.success && data.text) {
-				inputText = data.text;
-				showFetchInput = false;
-				fetchUrl = '';
-			} else {
-				fetchError = data.error || "We couldn't extract the article cleanly — please paste the text instead";
-			}
-		} catch {
-			fetchError = "We couldn't extract the article cleanly — please paste the text instead";
-		} finally {
-			isFetching = false;
-		}
-	}
-
 	function handleSave(text) {
 		editedText = text;
 		showResults = true;
@@ -152,9 +122,6 @@
 		showResults = false;
 		showDrawer = false;
 		errorMessage = '';
-		fetchUrl = '';
-		fetchError = '';
-		showFetchInput = false;
 		expandedPanel = 'edited';
 		copyLabel = 'Copy';
 	}
@@ -230,22 +197,6 @@
 			<!-- ── Input View ── -->
 			<div class="page-header">
 				<h1 class="page-title">Spelling, Grammar &amp; Style</h1>
-				<div class="language-toggle">
-					<button
-						class="lang-btn"
-						class:active={language === 'British English'}
-						onclick={() => (language = 'British English')}
-					>
-						British English
-					</button>
-					<button
-						class="lang-btn"
-						class:active={language === 'American English'}
-						onclick={() => (language = 'American English')}
-					>
-						US English
-					</button>
-				</div>
 			</div>
 
 			<div class="input-area">
@@ -256,36 +207,6 @@
 						disabled={isLoading}
 						onpaste={handlePaste}
 					></textarea>
-
-				<button
-					class="fetch-link-btn"
-					onclick={() => { showFetchInput = !showFetchInput; fetchError = ''; }}
-				>
-					{showFetchInput ? 'Cancel' : 'Fetch from URL'}
-				</button>
-
-				{#if showFetchInput}
-					<div class="fetch-row">
-						<input
-							class="fetch-input"
-							type="url"
-							placeholder="https://… paste URL here"
-							bind:value={fetchUrl}
-							disabled={isFetching}
-							onkeydown={(e) => e.key === 'Enter' && handleFetch()}
-						/>
-						<button class="fetch-btn" onclick={handleFetch} disabled={!fetchUrl.trim() || isFetching}>
-							{#if isFetching}
-								<ThinkingDots />
-							{:else}
-								Fetch
-							{/if}
-						</button>
-					</div>
-					{#if fetchError}
-						<p class="fetch-error">{fetchError}</p>
-					{/if}
-				{/if}
 			</div>
 
 			{#if errorMessage}
@@ -294,6 +215,23 @@
 					<button onclick={() => (errorMessage = '')}>Dismiss</button>
 				</div>
 			{/if}
+
+			<div class="language-toggle">
+				<button
+					class="lang-btn"
+					class:active={language === 'British English'}
+					onclick={() => (language = 'British English')}
+				>
+					British English
+				</button>
+				<button
+					class="lang-btn"
+					class:active={language === 'American English'}
+					onclick={() => (language = 'American English')}
+				>
+					US English
+				</button>
+			</div>
 
 			<button
 				class="check-btn"
@@ -341,6 +279,8 @@
 		display: flex;
 		flex-direction: column;
 		gap: var(--spacing-md);
+		align-items: center;
+		text-align: center;
 	}
 
 	.results-header {
@@ -349,7 +289,7 @@
 	}
 
 	.page-title {
-		font-size: var(--font-size-h1);
+		font-size: 1.25rem;
 		font-weight: 700;
 		color: var(--text-primary);
 		margin: 0;
@@ -358,6 +298,7 @@
 	.language-toggle {
 		display: flex;
 		gap: var(--spacing-sm);
+		justify-content: center;
 	}
 
 	.lang-btn {
@@ -391,7 +332,8 @@
 
 	.article-input {
 		width: 100%;
-		min-height: 200px;
+		min-height: 60vh;
+		max-height: 60vh;
 		padding: var(--spacing-md);
 		border: 1px solid var(--color-border);
 		border-radius: var(--radius);
@@ -403,6 +345,7 @@
 		resize: vertical;
 		box-sizing: border-box;
 		transition: border-color 0.15s;
+		overflow-y: auto;
 	}
 
 	.article-input:focus {
@@ -417,78 +360,6 @@
 
 	.article-input::placeholder {
 		color: var(--text-secondary);
-	}
-
-	.fetch-link-btn {
-		background: transparent;
-		border: none;
-		color: var(--accent-brand);
-		font-size: 0.875rem;
-		font-weight: 500;
-		cursor: pointer;
-		padding: 0;
-		text-align: left;
-		text-decoration: underline;
-		text-underline-offset: 2px;
-	}
-
-	.fetch-link-btn:hover {
-		opacity: 0.8;
-	}
-
-	.fetch-row {
-		display: flex;
-		gap: var(--spacing-sm);
-	}
-
-	.fetch-input {
-		flex: 1;
-		padding: var(--spacing-sm) var(--spacing-md);
-		border: 1px solid var(--color-border);
-		border-radius: var(--radius);
-		background: var(--bg-main);
-		color: var(--text-primary);
-		font-size: var(--font-size-base);
-		font-family: var(--font-family);
-		box-sizing: border-box;
-		transition: border-color 0.15s;
-	}
-
-	.fetch-input:focus {
-		outline: none;
-		border-color: var(--accent-brand);
-	}
-
-	.fetch-input:disabled {
-		opacity: 0.6;
-	}
-
-	.fetch-btn {
-		padding: var(--spacing-sm) var(--spacing-md);
-		background: var(--accent-brand);
-		color: #fff;
-		border: none;
-		border-radius: var(--radius);
-		font-size: 0.875rem;
-		font-weight: 600;
-		cursor: pointer;
-		white-space: nowrap;
-		display: flex;
-		align-items: center;
-		min-width: 64px;
-		justify-content: center;
-		transition: opacity 0.15s;
-	}
-
-	.fetch-btn:disabled {
-		opacity: 0.45;
-		cursor: not-allowed;
-	}
-
-	.fetch-error {
-		color: var(--color-reject);
-		font-size: 0.875rem;
-		margin: 0;
 	}
 
 	.check-btn {
