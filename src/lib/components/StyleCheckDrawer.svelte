@@ -5,6 +5,8 @@
 		originalText = '',
 		suggestions = [],
 		language = 'British English',
+		initialAccepted = new Map(),
+		initialDismissed = new Set(),
 		onSave,
 		onClose
 	} = $props();
@@ -17,6 +19,12 @@
 	let rewrites = $state(new Map());       // id → array of rewrite strings
 	let rewriteLoading = $state(false);
 	let rewriteIndex = $state(new Map());   // id → current rewrite index shown
+
+	// Initialize state from props when drawer opens
+	$effect(() => {
+		dismissed = new Set(initialDismissed);
+		accepted = new Map(initialAccepted);
+	});
 
 	// Ordered list of navigable (non-dismissed) suggestions, respecting activeFilter
 	let navigableSuggestions = $derived(
@@ -283,7 +291,8 @@
 				result = result.slice(0, pos) + replacement + result.slice(pos + s.original.length);
 			}
 		}
-		onSave?.(result);
+		// Pass the result and the current state so it can be persisted
+		onSave?.(result, accepted, dismissed);
 		onClose?.();
 	}
 

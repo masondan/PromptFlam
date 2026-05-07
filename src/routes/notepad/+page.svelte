@@ -1,11 +1,12 @@
 <script>
 	import { onMount, onDestroy } from 'svelte';
 	import { Header, Icon } from '$lib/components';
-	import { 
-		currentNoteTitle, 
-		currentNoteContent, 
+	import {
+		currentNoteTitle,
+		currentNoteContent,
 		autoSaveNote,
-		startNewNote
+		startNewNote,
+		currentNoteSessionId
 	} from '$lib/stores';
 
 	let editorRef;
@@ -202,6 +203,11 @@
 		}
 		if (titleRef && title && title.trim()) {
 			titleRef.textContent = title;
+		}
+		
+		// Auto-save on mount if there's content and a title (e.g., from Style Check)
+		if (title.trim() && content.trim()) {
+			autoSaveNote();
 		}
 	});
 

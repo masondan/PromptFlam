@@ -9,6 +9,7 @@
 		styleCheckOriginalText,
 		styleCheckShowResults,
 		clearStyleCheckSession,
+		currentNoteTitle,
 		currentNoteContent,
 		startNewNote
 	} from '$lib/stores';
@@ -27,6 +28,8 @@
 	let errorMessage = $state('');
 	let expandedPanel = $state('edited'); // 'original' | 'edited'
 	let copyLabel = $state('Copy');
+	let drawerAcceptedState = $state(new Map());     // Persists accepted suggestions across drawer opens
+	let drawerDismissedState = $state(new Set());    // Persists dismissed suggestions across drawer opens
 
 	// Sync persistent stores to component state
 	styleCheckInputText.subscribe(val => inputText = val);
@@ -100,9 +103,12 @@
 		}
 	}
 
-	function handleSave(text) {
+	function handleSave(text, acceptedMap, dismissedSet) {
 		editedText = text;
 		styleCheckEditedText.set(text);
+		// Persist the drawer state so it can be restored when Edit is clicked
+		drawerAcceptedState = new Map(acceptedMap);
+		drawerDismissedState = new Set(dismissedSet);
 		showResults = true;
 		styleCheckShowResults.set(true);
 		showDrawer = false;
@@ -113,10 +119,36 @@
 		showDrawer = false;
 	}
 
+	function handleEdit() {
+		showDrawer = true;
+	}
+
 	function handleSaveToNotepad() {
 		startNewNote();
-		currentNoteContent.set(editedText);
+		currentNoteTitle.set('Untitled');
+		// Convert plain text with paragraph breaks (\n\n) to HTML with proper spacing
+		const htmlContent = convertPlainTextToHtml(editedText);
+		currentNoteContent.set(htmlContent);
 		goto('/notepad');
+	}
+
+	function convertPlainTextToHtml(text) {
+		if (!text) return '';
+		
+		// Split by double newlines (paragraph breaks)
+		const paragraphs = text.split(/\n\n+/);
+		
+		// Wrap each paragraph in a div to maintain spacing
+		// Use divs instead of <p> tags to be consistent with contenteditable behavior
+		const htmlParagraphs = paragraphs
+			.map(para => {
+				// Preserve single line breaks within a paragraph as <br>
+				const withLineBreaks = para.replace(/\n/g, '<br>');
+				return `<div style="margin-bottom: 1em;">${withLineBreaks}</div>`;
+			})
+			.join('');
+		
+		return htmlParagraphs;
 	}
 
 	async function handleCopy() {
@@ -172,7 +204,7 @@
 			<div class="panel-section">
 				<span class="panel-label">Original</span>
 				<div class="panel-card" class:panel-collapsed={expandedPanel !== 'original'}>
-					<p class="panel-text">{originalText}</p>
+					<div class="panel-text original-text">{originalText}</div>
 					<button
 						class="chevron-btn"
 						aria-label={expandedPanel === 'original' ? 'Collapse original' : 'Expand original'}
@@ -211,6 +243,10 @@
 
 				<!-- Bottom action bar -->
 				<div class="action-bar">
+					<button class="action-btn" onclick={handleEdit}>
+						<Icon name="edit" size={18} />
+						Edit
+					</button>
 					<button class="action-btn" onclick={handleSaveToNotepad}>
 						<Icon name="notepad" size={18} />
 						Save
@@ -308,6 +344,8 @@
 		{originalText}
 		{suggestions}
 		{language}
+		initialAccepted={drawerAcceptedState}
+		initialDismissed={drawerDismissedState}
 		onSave={handleSave}
 		onClose={handleDrawerClose}
 	/>
@@ -530,6 +568,11 @@
 		line-height: var(--line-height, 1.6);
 	}
 
+	.original-text {
+		white-space: pre-wrap;
+		word-wrap: break-word;
+	}
+
 	.edited-text {
 		white-space: pre-wrap;
 		outline: none;
@@ -577,6 +620,8 @@
 		gap: var(--spacing-sm);
 		margin-top: var(--spacing-sm);
 		justify-content: center;
+		align-items: center;
+		flex-wrap: wrap;
 	}
 
 	.action-btn {
