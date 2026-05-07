@@ -20,6 +20,34 @@
 	let rewriteLoading = $state(false);
 	let rewriteIndex = $state(new Map());   // id → current rewrite index shown
 
+	// Dynamic bottom padding to keep highlighted text visible above the modal
+	let modalSheetEl = $state(null);
+	let modalBottomPadding = $state(0);
+	let resizeObserver = null;
+
+	$effect(() => {
+		if (modalSheetEl) {
+			resizeObserver = new ResizeObserver(entries => {
+				for (const entry of entries) {
+					modalBottomPadding = entry.contentRect.height + 48; // 48px breathing room
+				}
+			});
+			resizeObserver.observe(modalSheetEl);
+		} else {
+			if (resizeObserver) {
+				resizeObserver.disconnect();
+				resizeObserver = null;
+			}
+			modalBottomPadding = 0;
+		}
+		return () => {
+			if (resizeObserver) {
+				resizeObserver.disconnect();
+				resizeObserver = null;
+			}
+		};
+	});
+
 	// Initialize state from props when drawer opens
 	$effect(() => {
 		dismissed = new Set(initialDismissed);
@@ -369,7 +397,7 @@
 	</div>
 
 	<!-- Scrollable article body -->
-	<div class="article-body">
+	<div class="article-body" style:padding-bottom="{modalBottomPadding}px">
 		{#each paragraphs as sentences, pi}
 			<p class="article-para">
 				{#each sentences as sentence}
@@ -427,7 +455,7 @@
 		onclick={handleModalBackdrop}
 		onkeydown={() => {}}
 	>
-		<div class="modal-sheet">
+		<div class="modal-sheet" bind:this={modalSheetEl}>
 			<!-- Modal header: [close button] -->
 			<div class="modal-header">
 				<button
