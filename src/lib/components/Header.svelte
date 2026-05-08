@@ -54,7 +54,6 @@
 	<div class="header-top">
 		<flam-nav current="promptflam"></flam-nav>
 		<img src="/logos/logo-promptflam.png" alt="PromptFlam" class="logo" />
-		<div class="logo-spacer"></div>
 	</div>
 
 	<nav class="nav" aria-label="Main navigation">
@@ -129,28 +128,31 @@
 		position: relative;
 	}
 
+	.header-top :global(flam-nav) {
+		position: absolute;
+		left: calc(-0.1 * var(--spacing-md));
+		top: 50%;
+		transform: translateY(-50%);
+	}
+
 	@media (min-width: 680px) {
 		.header-top {
 			gap: var(--spacing-sm);
 			width: auto;
+			justify-content: flex-start;
+		}
+
+		.header-top :global(flam-nav) {
+			position: static;
+			transform: none;
+			left: auto;
+			top: auto;
 		}
 	}
 
 	.logo {
 		height: 28px;
 		width: auto;
-	}
-
-	.logo-spacer {
-		width: 36px;
-		height: 36px;
-		flex-shrink: 0;
-	}
-
-	@media (min-width: 680px) {
-		.logo-spacer {
-			display: none;
-		}
 	}
 
 	.nav {
