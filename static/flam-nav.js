@@ -8,6 +8,8 @@ class FlamNav extends HTMLElement {
 		super();
 		this.attachShadow({ mode: 'open' });
 		this._open = false;
+		this._portalOverlay = null;
+		this._portalDrawer = null;
 	}
 
 	static get observedAttributes() {
@@ -21,95 +23,116 @@ class FlamNav extends HTMLElement {
 	connectedCallback() {
 		this.render();
 		this._onKeyDown = (e) => { if (e.key === 'Escape') this.close(); };
-		this._onReposition = () => { if (this._open) this._updatePosition(); };
 	}
 
 	disconnectedCallback() {
 		document.removeEventListener('keydown', this._onKeyDown);
-		window.removeEventListener('scroll', this._onReposition);
-		window.removeEventListener('resize', this._onReposition);
+		this._removePortal();
 	}
 
 	toggle() {
 		this._open ? this.close() : this.open();
 	}
 
-	_getAppContainer() {
-		// PromptFlam uses .app-shell; check for it first
-		let el = this.closest('.app-shell');
-		if (!el) {
-			el = this.closest('.app-container, .app, .page, [class*="max-w"]');
+	_createPortal() {
+		if (this._portalOverlay) return;
+
+		const style = `
+			<style id="flam-nav-portal-style">
+				.flam-nav-overlay {
+					position: fixed;
+					inset: 0;
+					background: rgba(0, 0, 0, 0.3);
+					z-index: 9998;
+					opacity: 0;
+					visibility: hidden;
+					transition: opacity 250ms ease, visibility 250ms ease;
+				}
+				.flam-nav-overlay.open {
+					opacity: 1;
+					visibility: visible;
+				}
+				.flam-nav-drawer {
+					position: fixed;
+					top: 0;
+					left: 0;
+					width: 180px;
+					height: 100vh;
+					background: #fff;
+					z-index: 9999;
+					opacity: 0;
+					visibility: hidden;
+					transition: opacity 250ms ease, visibility 250ms ease;
+					display: flex;
+					flex-direction: column;
+					box-shadow: 2px 0 12px rgba(0, 0, 0, 0.15);
+					overflow: hidden;
+					font-family: 'Saira', -apple-system, BlinkMacSystemFont, sans-serif;
+				}
+				.flam-nav-drawer.open {
+					opacity: 1;
+					visibility: visible;
+				}
+				.flam-nav-drawer-header {
+					padding: 20px 16px 12px;
+					border-bottom: 1px solid #e0e0e0;
+					flex-shrink: 0;
+				}
+				.flam-nav-drawer-header a {
+					display: flex;
+					align-items: center;
+					gap: 8px;
+					text-decoration: none;
+					color: #5422b0;
+					font-size: 15px;
+					font-weight: 750;
+				}
+				.flam-nav-drawer-header img {
+					width: 20px;
+					height: 20px;
+				}
+				.flam-nav-drawer-list {
+					list-style: none;
+					margin: 0;
+					padding: 8px 0;
+					flex: 1;
+					overflow-y: auto;
+				}
+				.flam-nav-drawer-list li a {
+					display: block;
+					padding: 10px 16px;
+					text-decoration: none;
+					font-size: 15px;
+					font-weight: 550;
+					color: #333;
+					transition: background-color 150ms ease;
+				}
+				.flam-nav-drawer-list li a:hover {
+					background-color: #f5f0fa;
+				}
+				.flam-nav-drawer-list li a.current {
+					color: #5422b0;
+					font-weight: 750;
+					background-color: #f0e6f7;
+				}
+				.flam-nav-drawer-list li a.training {
+					color: #777;
+				}
+				.flam-nav-drawer-list li a.training.current {
+					color: #5422b0;
+				}
+				.flam-nav-drawer-list li.separator {
+					height: 1px;
+					background: #eee;
+					margin: 6px 16px;
+				}
+			</style>
+		`;
+
+		if (!document.getElementById('flam-nav-portal-style')) {
+			document.head.insertAdjacentHTML('beforeend', style);
 		}
-		if (!el) {
-			el = this.closest('[style*="max-width"]');
-		}
-		if (!el) {
-			// Fallback to body if within a centered container
-			el = document.body;
-		}
-		return el;
-	}
 
-	_updatePosition() {
-		const drawer = this.shadowRoot.querySelector('.drawer');
-		const overlay = this.shadowRoot.querySelector('.overlay');
-		const container = this._getAppContainer();
-
-		if (container && container !== document.body) {
-			const rect = container.getBoundingClientRect();
-			drawer.style.left = rect.left + 'px';
-			drawer.style.top = rect.top + 'px';
-			drawer.style.height = rect.height + 'px';
-			overlay.style.left = rect.left + 'px';
-			overlay.style.width = rect.width + 'px';
-			overlay.style.top = rect.top + 'px';
-			overlay.style.height = rect.height + 'px';
-		} else {
-			drawer.style.left = '0';
-			drawer.style.top = '0';
-			drawer.style.height = '100vh';
-			overlay.style.left = '0';
-			overlay.style.width = '100%';
-			overlay.style.top = '0';
-			overlay.style.height = '100vh';
-		}
-	}
-
-	open() {
-		this._open = true;
-		this._updatePosition();
-
-		const drawer = this.shadowRoot.querySelector('.drawer');
-		const overlay = this.shadowRoot.querySelector('.overlay');
-		drawer.classList.add('open');
-		overlay.classList.add('open');
-		document.addEventListener('keydown', this._onKeyDown);
-		window.addEventListener('scroll', this._onReposition, { passive: true });
-		window.addEventListener('resize', this._onReposition, { passive: true });
-	}
-
-	close() {
-		this._open = false;
-		const drawer = this.shadowRoot.querySelector('.drawer');
-		const overlay = this.shadowRoot.querySelector('.overlay');
-		drawer.classList.remove('open');
-		overlay.classList.remove('open');
-		// Delay clearing inline styles until after fade transition completes
-		setTimeout(() => {
-			drawer.style.left = '';
-			drawer.style.top = '';
-			drawer.style.height = '';
-			overlay.style.left = '';
-			overlay.style.width = '';
-			overlay.style.top = '';
-			overlay.style.height = '';
-		}, 250);
-		document.removeEventListener('keydown', this._onKeyDown);
-		window.removeEventListener('scroll', this._onReposition);
-		window.removeEventListener('resize', this._onReposition);
-	}
-
-	render() {
 		const apps = [
 			{ id: 'promptflam', name: 'PromptFlam', url: 'https://promptflam.flamtools.com' },
 			{ id: 'picflam', name: 'PicFlam', url: 'https://picflam.flamtools.com' },
@@ -120,18 +143,71 @@ class FlamNav extends HTMLElement {
 			{ id: 'storyflam', name: 'StoryFlam', url: 'https://storyflam.flamtools.com', training: true },
 			{ id: 'flamit', name: 'FlamIt', url: 'https://flamit.flamtools.com', training: true }
 		];
-
 		const current = this.current;
 
+		const listItems = apps.map((app, i) => {
+			const isCurrent = app.id === current;
+			const classes = [isCurrent ? 'current' : '', app.training ? 'training' : ''].filter(Boolean).join(' ');
+			const separator = i === 6 ? '<li class="separator"></li>' : '';
+			return `${separator}<li><a href="${app.url}"${classes ? ` class="${classes}"` : ''}>${app.name}</a></li>`;
+		}).join('');
+
+		this._portalOverlay = document.createElement('div');
+		this._portalOverlay.className = 'flam-nav-overlay';
+		this._portalOverlay.addEventListener('click', () => this.close());
+
+		this._portalDrawer = document.createElement('div');
+		this._portalDrawer.className = 'flam-nav-drawer';
+		this._portalDrawer.setAttribute('role', 'navigation');
+		this._portalDrawer.setAttribute('aria-label', 'FlamTools navigation');
+		this._portalDrawer.innerHTML = `
+			<div class="flam-nav-drawer-header">
+				<a href="https://flamtools.com">
+					<img src="https://flamtools.com/logos/logo-flamtools-favicon.svg" alt="" />
+					FlamTools
+				</a>
+			</div>
+			<ul class="flam-nav-drawer-list">${listItems}</ul>
+		`;
+
+		document.body.appendChild(this._portalOverlay);
+		document.body.appendChild(this._portalDrawer);
+	}
+
+	_removePortal() {
+		if (this._portalOverlay) {
+			this._portalOverlay.remove();
+			this._portalOverlay = null;
+		}
+		if (this._portalDrawer) {
+			this._portalDrawer.remove();
+			this._portalDrawer = null;
+		}
+	}
+
+	open() {
+		this._open = true;
+		this._createPortal();
+		// Force reflow before adding open class for transition to work
+		this._portalOverlay.getBoundingClientRect();
+		this._portalOverlay.classList.add('open');
+		this._portalDrawer.classList.add('open');
+		document.addEventListener('keydown', this._onKeyDown);
+	}
+
+	close() {
+		this._open = false;
+		if (this._portalOverlay) this._portalOverlay.classList.remove('open');
+		if (this._portalDrawer) this._portalDrawer.classList.remove('open');
+		setTimeout(() => {
+			this._removePortal();
+		}, 250);
+		document.removeEventListener('keydown', this._onKeyDown);
+	}
+
+	render() {
 		this.shadowRoot.innerHTML = `
 			<style>
-				@font-face {
-					font-family: 'Saira';
-					src: url('/fonts/saira.ttf') format('truetype');
-					font-weight: 100 900;
-					font-display: swap;
-				}
-
 				:host {
 					display: flex;
 					align-items: center;
@@ -157,107 +233,6 @@ class FlamNav extends HTMLElement {
 					width: 22px;
 					height: 22px;
 				}
-
-				.overlay {
-					position: fixed;
-					inset: 0;
-					background: rgba(0, 0, 0, 0.3);
-					z-index: 9998;
-					opacity: 0;
-					visibility: hidden;
-					transition: opacity 250ms ease, visibility 250ms ease;
-				}
-
-				.overlay.open {
-					opacity: 1;
-					visibility: visible;
-				}
-
-				.drawer {
-					position: fixed;
-					top: 0;
-					left: 0;
-					width: 180px;
-					background: #fff;
-					z-index: 9999;
-					opacity: 0;
-					visibility: hidden;
-					transition: opacity 250ms ease, visibility 250ms ease;
-					display: flex;
-					flex-direction: column;
-					box-shadow: 2px 0 12px rgba(0, 0, 0, 0.15);
-					overflow: hidden;
-				}
-
-				.drawer.open {
-					opacity: 1;
-					visibility: visible;
-				}
-
-				.drawer-header {
-					padding: 20px 16px 12px;
-					border-bottom: 1px solid #e0e0e0;
-					flex-shrink: 0;
-				}
-
-				.drawer-header a {
-					display: flex;
-					align-items: center;
-					gap: 8px;
-					text-decoration: none;
-					color: #5422b0;
-					font-family: 'Saira', -apple-system, BlinkMacSystemFont, sans-serif;
-					font-size: 15px;
-					font-weight: 750;
-				}
-
-				.drawer-header img {
-					width: 20px;
-					height: 20px;
-				}
-
-				.drawer-list {
-					list-style: none;
-					margin: 0;
-					padding: 8px 0;
-					flex: 1;
-					overflow-y: auto;
-				}
-
-				.drawer-list li a {
-					display: block;
-					padding: 10px 16px;
-					text-decoration: none;
-					font-family: 'Saira', -apple-system, BlinkMacSystemFont, sans-serif;
-					font-size: 15px;
-					font-weight: 550;
-					color: #333;
-					transition: background-color 150ms ease;
-				}
-
-				.drawer-list li a:hover {
-					background-color: #f5f0fa;
-				}
-
-				.drawer-list li a.current {
-					color: #5422b0;
-					font-weight: 750;
-					background-color: #f0e6f7;
-				}
-
-				.drawer-list li a.training {
-					color: #777;
-				}
-
-				.drawer-list li a.training.current {
-					color: #5422b0;
-				}
-
-				.drawer-list li.separator {
-					height: 1px;
-					background: #eee;
-					margin: 6px 16px;
-				}
 			</style>
 
 			<button class="menu-btn" aria-label="Open navigation menu" type="button">
@@ -267,29 +242,9 @@ class FlamNav extends HTMLElement {
 					<path d="M7.95 35.95H39.95"/>
 				</svg>
 			</button>
-
-			<div class="overlay"></div>
-
-			<div class="drawer" role="navigation" aria-label="FlamTools navigation">
-				<div class="drawer-header">
-					<a href="https://flamtools.com">
-						<img src="https://flamtools.com/logos/logo-flamtools-favicon.svg" alt="" />
-						FlamTools
-					</a>
-				</div>
-				<ul class="drawer-list">
-					${apps.map((app, i) => {
-						const isCurrent = app.id === current;
-						const classes = [isCurrent ? 'current' : '', app.training ? 'training' : ''].filter(Boolean).join(' ');
-						const separator = i === 6 ? '<li class="separator"></li>' : '';
-						return `${separator}<li><a href="${app.url}"${classes ? ` class="${classes}"` : ''}>${app.name}</a></li>`;
-					}).join('')}
-				</ul>
-			</div>
 		`;
 
 		this.shadowRoot.querySelector('.menu-btn').addEventListener('click', () => this.toggle());
-		this.shadowRoot.querySelector('.overlay').addEventListener('click', () => this.close());
 	}
 }
 
