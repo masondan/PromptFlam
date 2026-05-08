@@ -18,14 +18,102 @@ Each item in the array represents one suggestion and must follow this schema exa
 {
   "id": string,          // unique id: "s1", "s2", "g1", "g2", "st1" etc
   "type": "spelling" | "grammar" | "style",
-  "original": string,    // the exact text from the article that needs changing
-  "suggested": string,   // the replacement text
-  "reason": string|null, // explanation of the rule (null for spelling)
+  "original": string,    // the exact text from the article that needs changing — for missing punctuation, include the full sentence without the punctuation
+  "suggested": string,   // the corrected replacement — for missing punctuation, the same sentence with punctuation added
+  "reason": string|null, // one sentence only. null for spelling corrections.
   "sentenceIndex": number // 0-based index of the sentence in the article
 }
 
+Category guidance:
+- "spelling": misspelled words only. reason must be null.
+- "grammar": subject-verb agreement, tense, punctuation errors, missing punctuation, sentence fragments, comma splices, quotation mark style violations.
+- "style": intro length, passive/active voice, attribution verb judgment, clichés, evaluative adjectives, redundancy, famous-name intro rule, unsupported claims, missing attribution.
+
 If there are no suggestions, return an empty array: []
 `;
+
+// Few-shot examples: two article/response pairs that demonstrate
+// the judgment calls most likely to be missed by general training.
+// These are passed as prior turns before the real article.
+
+const FEW_SHOT_MESSAGES = [
+	{
+		role: 'user',
+		content: `David Beckham has announced he is to retire from football at the end of the season, bringing the curtain down on a glittering 20-year career that took in stints at Manchester United, Real Madrid, LA Galaxy and Paris Saint-Germain, and during which he won numerous trophies and became one of the most recognisable sportsmen on the planet, with his wife Victoria, formerly of the Spice Girls, by his side throughout.`
+	},
+	{
+		role: 'assistant',
+		content: `[
+  {
+    "id": "st1",
+    "type": "style",
+    "original": "David Beckham has announced he is to retire from football at the end of the season, bringing the curtain down on a glittering 20-year career that took in stints at Manchester United, Real Madrid, LA Galaxy and Paris Saint-Germain, and during which he won numerous trophies and became one of the most recognisable sportsmen on the planet, with his wife Victoria, formerly of the Spice Girls, by his side throughout.",
+    "suggested": "David Beckham is to retire from football at the end of the season after a 20-year career spanning Manchester United, Real Madrid, LA Galaxy and Paris Saint-Germain. His wife Victoria, formerly of the Spice Girls, has been by his side throughout.",
+    "reason": "Intro exceeds 30 words and contains multiple subsidiary clauses. Split into two clean sentences: the first carries the news, the second the background detail.",
+    "sentenceIndex": 0
+  },
+  {
+    "id": "st2",
+    "type": "style",
+    "original": "glittering",
+    "suggested": null,
+    "reason": "Evaluative adjective — remove. Let the facts characterise the career.",
+    "sentenceIndex": 0
+  }
+]`
+	},
+	{
+		role: 'user',
+		content: `The city was thrown into chaos yesterday when a gunman opened fire in the central market, killing three people. There were no other injuries.
+'It was like something from a horror movie' exclaimed one witness, who claimed she saw crowds running to escape the shots.
+It is understood a man has been arrested.`
+	},
+	{
+		role: 'assistant',
+		content: `[
+  {
+    "id": "st1",
+    "type": "style",
+    "original": "The city was thrown into chaos yesterday when a gunman opened fire in the central market, killing three people.",
+    "suggested": "Three people died when a gunman opened fire in the central market yesterday.",
+    "reason": "Lead with the most important fact. 'Thrown into chaos' is editorialising.",
+    "sentenceIndex": 0
+  },
+  {
+    "id": "st2",
+    "type": "style",
+    "original": "There were no other injuries.",
+    "suggested": "There were no other injuries, according to emergency services.",
+    "reason": "Attribute facts to a source.",
+    "sentenceIndex": 1
+  },
+  {
+    "id": "g1",
+    "type": "grammar",
+    "original": "'It was like something from a horror movie'",
+    "suggested": "\"It was like something from a horror movie\"",
+    "reason": "Use double quotation marks for direct speech in both British and American English.",
+    "sentenceIndex": 2
+  },
+  {
+    "id": "st3",
+    "type": "style",
+    "original": "'It was like something from a horror movie' exclaimed one witness, who claimed she saw crowds running to escape the shots.",
+    "suggested": "One witness described the scene as \"like something from a horror movie\" as people fled the market.",
+    "reason": "'Exclaimed' sensationalises. 'Claimed' implies doubt without basis. Put subject first and simplify.",
+    "sentenceIndex": 2
+  },
+  {
+    "id": "st4",
+    "type": "style",
+    "original": "It is understood a man has been arrested.",
+    "suggested": null,
+    "reason": "Remove unattributed speculation. Use only if attributed — '[Organisation] understands' or named source.",
+    "sentenceIndex": 3
+  }
+]`
+	}
+];
 
 export async function POST({ request }) {
 	try {
@@ -64,6 +152,12 @@ export async function POST({ request }) {
 		const systemPrompt =
 			systemPromptRaw.replace('{{LANGUAGE}}', selectedLanguage) + OUTPUT_FORMAT_SUFFIX;
 
+		// Build messages: few-shot examples first, then the real article
+		const messages = [
+			...FEW_SHOT_MESSAGES,
+			{ role: 'user', content: text }
+		];
+
 		const response = await fetch('https://api.anthropic.com/v1/messages', {
 			method: 'POST',
 			headers: {
@@ -72,10 +166,11 @@ export async function POST({ request }) {
 				'content-type': 'application/json'
 			},
 			body: JSON.stringify({
-					model: 'claude-sonnet-4-6',
-					max_tokens: 8000,
+				model: 'claude-sonnet-4-6',
+				max_tokens: 4000,
+				temperature: 0.3,
 				system: systemPrompt,
-				messages: [{ role: 'user', content: text }]
+				messages
 			})
 		});
 

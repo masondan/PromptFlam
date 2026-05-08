@@ -55,13 +55,47 @@
 	});
 
 	// Ordered list of navigable (non-dismissed) suggestions, respecting activeFilter
+	// Inner (shorter original) suggestions are sorted before outer (longer) ones when they overlap
 	let navigableSuggestions = $derived(
-		suggestions.filter(s => {
-			if (dismissed.has(s.id) && !accepted.has(s.id)) return false;
-			if (activeFilter !== 'none' && s.type !== activeFilter) return false;
-			return true;
+		[...suggestions
+			.filter(s => {
+				if (dismissed.has(s.id) && !accepted.has(s.id)) return false;
+				if (activeFilter !== 'none' && s.type !== activeFilter) return false;
+				return true;
+			})
+		].sort((a, b) => {
+			// If one original is contained within the other, shorter (inner) comes first
+			const aInB = b.original.includes(a.original);
+			const bInA = a.original.includes(b.original);
+			if (aInB && !bInA) return -1; // a is inner, show first
+			if (bInA && !aInB) return 1;  // b is inner, show first
+			return 0; // preserve original order
 		})
 	);
+
+	// Helper: find suggestions whose original contains s.original (i.e. outer wrappers of s)
+	// Uses raw suggestions array so it works before Svelte reactivity re-runs
+	function findOuterSuggestions(s, dismissedSet) {
+		return suggestions.filter(candidate =>
+			candidate.id !== s.id &&
+			!dismissedSet.has(candidate.id) &&
+			(activeFilter === 'none' || candidate.type === activeFilter) &&
+			candidate.original.includes(s.original) &&
+			candidate.original !== s.original
+		);
+	}
+
+	// Helper: find suggestions whose original is contained within s.original (i.e. inner nested of s)
+	// Uses raw suggestions array so it works before Svelte reactivity re-runs
+	function findInnerSuggestions(s, dismissedSet) {
+		return suggestions.filter(candidate =>
+			candidate.id !== s.id &&
+			!dismissedSet.has(candidate.id) &&
+			(activeFilter === 'none' || candidate.type === activeFilter) &&
+			s.original.includes(candidate.original) &&
+			candidate.original !== s.original
+		);
+	}
 
 
 	// Normalise whitespace within a single line/sentence (not across paragraphs)
@@ -146,20 +180,34 @@
 			return [{ text: normSentence, suggestion: null }];
 		}
 
-		// Sort matches by start position
-		matches.sort((a, b) => a.start - b.start);
+		// Sort matches by start position, then by length descending (longest first for same start)
+		matches.sort((a, b) => a.start - b.start || (b.end - b.start) - (a.end - a.start));
+
+		// Remove matches fully contained within a longer match (keep outermost spans only)
+		const nonOverlapping = [];
+		for (const match of matches) {
+			const containedByExisting = nonOverlapping.some(
+				kept => match.start >= kept.start && match.end <= kept.end
+			);
+			if (!containedByExisting) {
+				nonOverlapping.push(match);
+			}
+		}
 
 		// Build segments by walking through the sentence
 		const segments = [];
 		let pos = 0;
-		for (const match of matches) {
+		for (const match of nonOverlapping) {
 			// Add text before this match
 			if (match.start > pos) {
 				segments.push({ text: normSentence.slice(pos, match.start), suggestion: null });
 			}
-			// Add the matched text (with replacement if accepted)
-			const displayText = accepted.has(match.suggestion.id) ? accepted.get(match.suggestion.id) : match.text;
-			segments.push({ text: displayText, suggestion: match.suggestion });
+			// Add the matched text (with replacement if accepted, or original if deleted)
+				const acceptedVal = accepted.get(match.suggestion.id);
+				const displayText = acceptedVal !== undefined
+					? (acceptedVal === DELETED_SENTINEL ? match.text : acceptedVal)
+					: match.text;
+				segments.push({ text: displayText, suggestion: match.suggestion });
 			pos = match.end;
 		}
 
@@ -180,12 +228,15 @@
 		}
 	}
 
+	// Sentinel value for deletion suggestions (suggested === null)
+	const DELETED_SENTINEL = '__deleted__';
+
 	// Accept a suggestion
 	function acceptSuggestion(s) {
-		// Use current rewrite if one is selected, otherwise use suggested
+		// Use current rewrite if one is selected, otherwise use suggested (or sentinel for null)
 		const rewriteArr = rewrites.get(s.id);
 		const idx = rewriteIndex.get(s.id) ?? 0;
-		const text = rewriteArr ? rewriteArr[idx] : s.suggested;
+		const text = rewriteArr ? rewriteArr[idx] : (s.suggested ?? DELETED_SENTINEL);
 
 		const newAccepted = new Map(accepted);
 		newAccepted.set(s.id, text);
@@ -193,23 +244,31 @@
 
 		const newDismissed = new Set(dismissed);
 		newDismissed.add(s.id);
+
+		// If accepting an outer suggestion, auto-dismiss any inner suggestions
+		// whose original text is now gone (replaced by the outer's accepted text)
+		const inners = findInnerSuggestions(s, newDismissed);
+		for (const inner of inners) {
+			newDismissed.add(inner.id);
+		}
+
 		dismissed = newDismissed;
 
-		// Find current suggestion's position in full suggestions array
-		const currentPos = suggestions.findIndex(sug => sug.id === s.id);
-		
-		// Find next navigable suggestion after current position
-		for (let i = currentPos + 1; i < suggestions.length; i++) {
-			const candidate = suggestions[i];
-			if (!newDismissed.has(candidate.id)) {
-				if (activeFilter === 'none' || candidate.type === activeFilter) {
-					activeSuggestion = candidate;
-					return;
-				}
-			}
+		// First: check for outer suggestions that wrap this one (show them next)
+		const outers = findOuterSuggestions(s, newDismissed);
+		if (outers.length > 0) {
+			activeSuggestion = outers[0];
+			return;
 		}
-		
-		// No next suggestion found, close modal
+
+		// Otherwise: advance through navigable suggestions in order
+		const navList = navigableSuggestions.filter(sug => !newDismissed.has(sug.id));
+		if (navList.length > 0) {
+			activeSuggestion = navList[0];
+			return;
+		}
+
+		// No suggestions left, close modal
 		activeSuggestion = null;
 	}
 
@@ -219,21 +278,21 @@
 		newDismissed.add(s.id);
 		dismissed = newDismissed;
 
-		// Find current suggestion's position in full suggestions array
-		const currentPos = suggestions.findIndex(sug => sug.id === s.id);
-		
-		// Find next navigable suggestion after current position
-		for (let i = currentPos + 1; i < suggestions.length; i++) {
-			const candidate = suggestions[i];
-			if (!newDismissed.has(candidate.id)) {
-				if (activeFilter === 'none' || candidate.type === activeFilter) {
-					activeSuggestion = candidate;
-					return;
-				}
-			}
+		// First: check for outer suggestions that wrap this one (show them next)
+		const outers = findOuterSuggestions(s, newDismissed);
+		if (outers.length > 0) {
+			activeSuggestion = outers[0];
+			return;
 		}
-		
-		// No next suggestion found, close modal
+
+		// Otherwise: advance through navigable suggestions in order
+		const navList = navigableSuggestions.filter(sug => !newDismissed.has(sug.id));
+		if (navList.length > 0) {
+			activeSuggestion = navList[0];
+			return;
+		}
+
+		// No suggestions left, close modal
 		activeSuggestion = null;
 	}
 
@@ -296,7 +355,7 @@
 		}
 	}
 
-	// Save: apply all accepted replacements
+	// Save: apply all accepted replacements and strip deleted text
 	function handleSave() {
 		let result = originalText;
 		// Apply in order of suggestions array to be deterministic
@@ -305,18 +364,25 @@
 			.filter(s => accepted.has(s.id))
 			.map(s => ({
 				...s,
-				// Find position of original text in result
 				pos: result.indexOf(s.original)
 			}))
 			.filter(s => s.pos !== -1)
 			.sort((a, b) => b.pos - a.pos); // Reverse order
-		
+
 		// Apply replacements from end to start to preserve positions
 		for (const s of acceptedSuggestions) {
 			const replacement = accepted.get(s.id);
 			const pos = result.indexOf(s.original);
 			if (pos !== -1) {
-				result = result.slice(0, pos) + replacement + result.slice(pos + s.original.length);
+				if (replacement === DELETED_SENTINEL) {
+					// Strip the deleted text entirely from the clean output
+					// Also trim any leading/trailing whitespace left behind
+					const before = result.slice(0, pos);
+					const after = result.slice(pos + s.original.length);
+					result = (before.trimEnd() + ' ' + after.trimStart()).trim();
+				} else {
+					result = result.slice(0, pos) + replacement + result.slice(pos + s.original.length);
+				}
 			}
 		}
 		// Pass the result and the current state so it can be persisted
@@ -338,9 +404,14 @@
 		return arr[rewriteIndex.get(s.id) ?? 0];
 	}
 
-	// Is suggestion accepted (green underline state)
+	// Is suggestion accepted (green underline state) — true for rewrites, false for deletions
 	function isAccepted(s) {
-		return accepted.has(s.id);
+		return accepted.has(s.id) && accepted.get(s.id) !== DELETED_SENTINEL;
+	}
+
+	// Is suggestion in deleted state (strikethrough)
+	function isDeleted(s) {
+		return accepted.get(s.id) === DELETED_SENTINEL;
 	}
 
 	// Close modal on backdrop click
@@ -404,32 +475,42 @@
 					<span class="sentence">
 							{#each annotate(sentence) as seg}
 								{#if seg.suggestion}
-									{@const s = seg.suggestion}
-									{@const colors = typeColors[s.type]}
-									{@const isActive = activeSuggestion?.id === s.id}
-									{#if isAccepted(s)}
-										<!-- Accepted: green underline -->
-										<mark
-											class="highlight accepted"
-											class:active-highlight={isActive}
-											onclick={() => (activeSuggestion = s)}
-											role="button"
-											tabindex="0"
-											onkeydown={(e) => e.key === 'Enter' && (activeSuggestion = s)}
-										>{seg.text}</mark>
-									{:else}
-										<!-- Pending highlight: outline only on active suggestion -->
-										<mark
-											class="highlight"
-											class:active-highlight={isActive}
-											style:background={colors.bg}
-											style:box-shadow={isActive ? `inset 0 0 0 1px ${colors.border}` : 'none'}
-											onclick={() => (activeSuggestion = s)}
-											role="button"
-											tabindex="0"
-											onkeydown={(e) => e.key === 'Enter' && (activeSuggestion = s)}
-										>{seg.text}</mark>
-									{/if}
+										{@const s = seg.suggestion}
+										{@const colors = typeColors[s.type]}
+										{@const isActive = activeSuggestion?.id === s.id}
+										{#if isDeleted(s)}
+											<!-- Deleted: strikethrough + grey, clickable to revert -->
+											<mark
+												class="highlight deleted"
+												class:active-highlight={isActive}
+												onclick={() => (activeSuggestion = s)}
+												role="button"
+												tabindex="0"
+												onkeydown={(e) => e.key === 'Enter' && (activeSuggestion = s)}
+											>{seg.text}</mark>
+										{:else if isAccepted(s)}
+											<!-- Accepted rewrite: green underline -->
+											<mark
+												class="highlight accepted"
+												class:active-highlight={isActive}
+												onclick={() => (activeSuggestion = s)}
+												role="button"
+												tabindex="0"
+												onkeydown={(e) => e.key === 'Enter' && (activeSuggestion = s)}
+											>{seg.text}</mark>
+										{:else}
+											<!-- Pending highlight: outline only on active suggestion -->
+											<mark
+												class="highlight"
+												class:active-highlight={isActive}
+												style:background={colors.bg}
+												style:box-shadow={isActive ? `inset 0 0 0 1px ${colors.border}` : 'none'}
+												onclick={() => (activeSuggestion = s)}
+												role="button"
+												tabindex="0"
+												onkeydown={(e) => e.key === 'Enter' && (activeSuggestion = s)}
+											>{seg.text}</mark>
+										{/if}
 								{:else}
 									{seg.text}
 								{/if}
@@ -447,6 +528,7 @@
 	{@const colors = typeColors[s.type]}
 	{@const rewriteArr = rewrites.get(s.id)}
 	{@const rIdx = rewriteIndex.get(s.id) ?? 0}
+	{@const isDeletedState = isDeleted(s)}
 	{@const isAcceptedState = isAccepted(s)}
 	<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
 	<div
@@ -467,7 +549,7 @@
 				</button>
 			</div>
 
-			<!-- Two-deck format for accepted suggestions -->
+			<!-- Two-deck format for accepted rewrites -->
 			{#if isAcceptedState}
 				<div class="modal-body">
 					<div class="two-deck">
@@ -480,6 +562,19 @@
 							<p class="deck-text">{accepted.get(s.id)}</p>
 						</div>
 					</div>
+				</div>
+			<!-- Deleted state: show original with strikethrough + reason -->
+			{:else if isDeletedState}
+				<div class="modal-body">
+					<div class="two-deck">
+						<div class="deck original-deck">
+							<p class="deck-label">Marked for deletion</p>
+							<p class="deck-text strikethrough">{s.original}</p>
+						</div>
+					</div>
+					{#if s.reason}
+						<p class="modal-reason"><strong>Why:</strong> {s.reason}</p>
+					{/if}
 				</div>
 			{:else}
 				<!-- Suggested text / rewrite for pending suggestions -->
@@ -506,20 +601,26 @@
 								>›</button>
 							</div>
 						{/if}
+					{:else if s.suggested === null}
+						<!-- Null suggestion: deletion intent — show original and prompt -->
+						<p class="modal-delete-prompt">This text will be removed.</p>
+						<p class="deck-text strikethrough modal-delete-preview">{s.original}</p>
 					{:else}
 						<p class="modal-suggested">{s.suggested}</p>
 					{/if}
-
-					{#if s.reason}
+	
+					{#if s.reason && !rewriteLoading && s.suggested !== null}
+						<p class="modal-reason"><strong>Why:</strong> {s.reason}</p>
+					{:else if s.reason && s.suggested === null}
 						<p class="modal-reason"><strong>Why:</strong> {s.reason}</p>
 					{/if}
 				</div>
 			{/if}
-
+	
 			<!-- Action row -->
 			<div class="modal-actions">
-				<!-- Revert button (only for accepted, left-aligned) or Rewrite button (style type only) -->
-				{#if isAcceptedState}
+				<!-- Revert button (accepted or deleted), Rewrite button (style type, pending only) -->
+				{#if isAcceptedState || isDeletedState}
 					<button
 						class="revert-btn"
 						onclick={() => revertSuggestion(s)}
@@ -531,7 +632,7 @@
 						</svg>
 						Revert
 					</button>
-				{:else if s.type === 'style'}
+				{:else if s.type === 'style' && s.suggested !== null}
 					<button
 						class="rewrite-btn"
 						onclick={() => fetchRewrites(s)}
@@ -541,21 +642,21 @@
 					<span></span>
 				{/if}
 	
-				<!-- Change / Ignore (disabled when accepted) -->
+				<!-- Change / Ignore (disabled when accepted or deleted) -->
 				<div class="action-btns">
 					<button
 						class="action-btn ignore-btn"
 						onclick={() => rejectSuggestion(s)}
-						disabled={isAcceptedState}
+						disabled={isAcceptedState || isDeletedState}
 						aria-label="Ignore this suggestion"
 					>Ignore</button>
 					<button
 						class="action-btn change-btn"
 						onclick={() => acceptSuggestion(s)}
-						disabled={isAcceptedState}
-						aria-label="Change and accept"
+						disabled={isAcceptedState || isDeletedState}
+						aria-label={s.suggested === null ? 'Delete this text' : 'Change and accept'}
 					>
-						Change
+						{s.suggested === null ? 'Delete' : 'Change'}
 						<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
 							<polyline points="20 6 9 17 4 12"></polyline>
 						</svg>
@@ -731,6 +832,21 @@
 		text-decoration-thickness: 2px;
 	}
 
+	/* Deleted state: strikethrough + muted grey */
+	.highlight.deleted {
+		background: transparent;
+		outline: none;
+		text-decoration: line-through;
+		text-decoration-color: var(--text-secondary);
+		text-decoration-thickness: 1.5px;
+		color: var(--text-secondary);
+		opacity: 0.6;
+	}
+
+	.highlight.deleted:hover {
+		opacity: 0.85;
+	}
+
 
 	/* Modal backdrop — no overlay so article text stays readable */
 	.modal-backdrop {
@@ -887,6 +1003,18 @@
 	.deck-text.strikethrough {
 		text-decoration: line-through;
 		text-decoration-color: var(--text-secondary);
+	}
+
+	/* Delete preview in pending modal */
+	.modal-delete-prompt {
+		font-size: var(--font-size-base);
+		color: var(--text-secondary);
+		margin: 0;
+		font-style: italic;
+	}
+
+	.modal-delete-preview {
+		margin-top: var(--spacing-xs);
 	}
 
 	/* Action row */

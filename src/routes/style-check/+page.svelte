@@ -185,6 +185,8 @@
 		errorMessage = '';
 		expandedPanel = 'edited';
 		copyLabel = 'Copy';
+		drawerAcceptedState = new Map();
+		drawerDismissedState = new Set();
 	}
 </script>
 

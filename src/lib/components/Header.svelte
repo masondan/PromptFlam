@@ -51,9 +51,10 @@
 </script>
 
 <header class="header" class:header-hidden={headerHidden}>
-	<div class="header-left">
+	<div class="header-top">
 		<flam-nav current="promptflam"></flam-nav>
 		<img src="/logos/logo-promptflam.png" alt="PromptFlam" class="logo" />
+		<div class="logo-spacer"></div>
 	</div>
 
 	<nav class="nav" aria-label="Main navigation">
@@ -76,18 +77,28 @@
 	.header {
 		position: sticky;
 		top: 0;
-		height: calc(var(--header-height) + var(--spacing-md));
 		background: var(--bg-main);
 		display: flex;
+		flex-direction: column;
 		align-items: center;
-		justify-content: space-between;
-		padding: var(--spacing-md) var(--spacing-md) var(--spacing-md);
+		gap: var(--spacing-md);
+		padding: var(--spacing-md);
 		z-index: 101;
 		transition: transform 0.3s ease;
 	}
 
 	.header-hidden {
 		transform: translateY(-100%);
+	}
+
+	@media (min-width: 680px) {
+		.header {
+			flex-direction: row;
+			align-items: center;
+			justify-content: space-between;
+			gap: var(--spacing-md);
+			height: calc(var(--header-height) + var(--spacing-md));
+		}
 	}
 
 	@media (min-width: 768px) {
@@ -109,12 +120,20 @@
 		pointer-events: none;
 	}
 
-
-	.header-left {
+	.header-top {
 		display: flex;
 		align-items: center;
+		justify-content: center;
 		gap: var(--spacing-sm);
-		flex-shrink: 0;
+		width: 100%;
+		position: relative;
+	}
+
+	@media (min-width: 680px) {
+		.header-top {
+			gap: var(--spacing-sm);
+			width: auto;
+		}
 	}
 
 	.logo {
@@ -122,10 +141,32 @@
 		width: auto;
 	}
 
+	.logo-spacer {
+		width: 36px;
+		height: 36px;
+		flex-shrink: 0;
+	}
+
+	@media (min-width: 680px) {
+		.logo-spacer {
+			display: none;
+		}
+	}
+
 	.nav {
 		display: flex;
 		align-items: center;
+		justify-content: center;
 		gap: var(--spacing-sm);
+		flex-wrap: wrap;
+		width: 100%;
+	}
+
+	@media (min-width: 680px) {
+		.nav {
+			width: auto;
+			flex-wrap: nowrap;
+		}
 	}
 
 	.nav-button {
