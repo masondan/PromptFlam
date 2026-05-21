@@ -34,6 +34,22 @@ class FlamNav extends HTMLElement {
 		this._open ? this.close() : this.open();
 	}
 
+	_getAppBounds() {
+		const body = document.body;
+		const rect = body.getBoundingClientRect();
+		return { left: rect.left, width: rect.width };
+	}
+
+	_applyPositioning() {
+		if (!this._portalOverlay || !this._portalDrawer) return;
+		const { left, width } = this._getAppBounds();
+		// Overlay: constrained to app container
+		this._portalOverlay.style.left = left + 'px';
+		this._portalOverlay.style.width = width + 'px';
+		// Drawer: starts at left edge of app container
+		this._portalDrawer.style.left = left + 'px';
+	}
+
 	_createPortal() {
 		if (this._portalOverlay) return;
 
@@ -41,7 +57,8 @@ class FlamNav extends HTMLElement {
 			<style id="flam-nav-portal-style">
 				.flam-nav-overlay {
 					position: fixed;
-					inset: 0;
+					top: 0;
+					height: 100vh;
 					background: rgba(0, 0, 0, 0.3);
 					z-index: 9998;
 					opacity: 0;
@@ -139,7 +156,7 @@ class FlamNav extends HTMLElement {
 			{ id: 'audioflam', name: 'AudioFlam', url: 'https://audioflam.flamtools.com' },
 			{ id: 'chartflam', name: 'ChartFlam', url: 'https://chartflam.flamtools.com' },
 			{ id: 'mapflam', name: 'MapFlam', url: 'https://mapflam.flamtools.com' },
-			{ id: 'subflam', name: 'SubFlam', url: 'https://subflam.flamtools.com' },
+			{ id: 'videoflam', name: 'VideoFlam', url: 'https://videoflam.flamtools.com' },
 			{ id: 'storyflam', name: 'StoryFlam', url: 'https://storyflam.flamtools.com', training: true },
 			{ id: 'flamit', name: 'FlamIt', url: 'https://flamit.flamtools.com', training: true }
 		];
@@ -188,6 +205,7 @@ class FlamNav extends HTMLElement {
 	open() {
 		this._open = true;
 		this._createPortal();
+		this._applyPositioning();
 		// Force reflow before adding open class for transition to work
 		this._portalOverlay.getBoundingClientRect();
 		this._portalOverlay.classList.add('open');
