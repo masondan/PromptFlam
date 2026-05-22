@@ -50,9 +50,19 @@
 	}
 </script>
 
+<!-- Mobile only: portal outside header so fixed drawer isn't clipped by header stacking context -->
+<div class="flam-nav-mobile" class:header-hidden={headerHidden}>
+	<flam-nav current="promptflam" class="mobile-nav"></flam-nav>
+</div>
+
 <header class="header" class:header-hidden={headerHidden}>
 	<div class="header-top">
-		<flam-nav current="promptflam"></flam-nav>
+		<!-- Desktop only: flam-nav inside header (single row, no stacking context issue) -->
+		<div class="flam-nav-desktop">
+			<flam-nav current="promptflam"></flam-nav>
+		</div>
+		<!-- Mobile: placeholder to keep logo centred -->
+		<div class="flam-nav-placeholder"></div>
 		<img src="/logos/logo-promptflam.png" alt="PromptFlam" class="logo" />
 	</div>
 
@@ -73,6 +83,54 @@
 </header>
 
 <style>
+	/*
+	 * MOBILE: flam-nav rendered outside <header> so its fixed drawer isn't clipped
+	 * by the header's stacking context (position:sticky + z-index creates one).
+	 */
+	.flam-nav-mobile {
+		position: fixed;
+		top: var(--spacing-md);
+		left: var(--spacing-md);
+		z-index: 200;
+		display: flex;
+		align-items: center;
+		transition: transform 0.3s ease;
+	}
+
+	.flam-nav-mobile.header-hidden {
+		transform: translateY(-200%);
+	}
+
+	/* Hide desktop version on mobile */
+	.flam-nav-desktop {
+		display: none;
+	}
+
+	/* Hide mobile placeholder on desktop */
+	.flam-nav-placeholder {
+		width: 22px;
+		height: 22px;
+		flex-shrink: 0;
+	}
+
+	@media (min-width: 680px) {
+		/* Hide mobile portal on desktop */
+		.flam-nav-mobile {
+			display: none;
+		}
+
+		/* Show desktop version inside header */
+		.flam-nav-desktop {
+			display: flex;
+			align-items: center;
+		}
+
+		/* Hide placeholder on desktop */
+		.flam-nav-placeholder {
+			display: none;
+		}
+	}
+
 	.header {
 		position: sticky;
 		top: 0;
@@ -125,14 +183,6 @@
 		justify-content: center;
 		gap: var(--spacing-sm);
 		width: 100%;
-		position: relative;
-	}
-
-	.header-top :global(flam-nav) {
-		position: absolute;
-		left: calc(-0.1 * var(--spacing-md));
-		top: 50%;
-		transform: translateY(-50%);
 	}
 
 	@media (min-width: 680px) {
@@ -140,13 +190,6 @@
 			gap: var(--spacing-sm);
 			width: auto;
 			justify-content: flex-start;
-		}
-
-		.header-top :global(flam-nav) {
-			position: static;
-			transform: none;
-			left: auto;
-			top: auto;
 		}
 	}
 
