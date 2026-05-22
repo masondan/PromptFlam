@@ -61,8 +61,6 @@
 		<div class="flam-nav-desktop">
 			<flam-nav current="promptflam"></flam-nav>
 		</div>
-		<!-- Mobile: placeholder to keep logo centred -->
-		<div class="flam-nav-placeholder"></div>
 		<img src="/logos/logo-promptflam.png" alt="PromptFlam" class="logo" />
 	</div>
 
@@ -106,13 +104,6 @@
 		display: none;
 	}
 
-	/* Hide mobile placeholder on desktop */
-	.flam-nav-placeholder {
-		width: 22px;
-		height: 22px;
-		flex-shrink: 0;
-	}
-
 	@media (min-width: 680px) {
 		/* Hide mobile portal on desktop */
 		.flam-nav-mobile {
@@ -123,11 +114,6 @@
 		.flam-nav-desktop {
 			display: flex;
 			align-items: center;
-		}
-
-		/* Hide placeholder on desktop */
-		.flam-nav-placeholder {
-			display: none;
 		}
 	}
 
@@ -178,24 +164,37 @@
 	}
 
 	.header-top {
+		position: relative;
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		gap: var(--spacing-sm);
 		width: 100%;
+		height: 28px; /* matches logo height so header-top doesn't collapse */
+	}
+
+	/* On mobile the logo is absolutely centred — unaffected by any flex siblings */
+	.logo {
+		height: 28px;
+		width: auto;
+		position: absolute;
+		left: 50%;
+		transform: translateX(-50%);
 	}
 
 	@media (min-width: 680px) {
 		.header-top {
+			position: static;
 			gap: var(--spacing-sm);
 			width: auto;
+			height: auto;
 			justify-content: flex-start;
 		}
-	}
 
-	.logo {
-		height: 28px;
-		width: auto;
+		/* On desktop logo flows normally in the flex row */
+		.logo {
+			position: static;
+			transform: none;
+		}
 	}
 
 	.nav {
