@@ -132,13 +132,13 @@
     "prompt": "Create an image of [subject - age/gender/attire/appearance/detail \u2026 doing what \u2026 where]<br >Framing: [close-up] [head-and-shoulders] [medium] [wide] [POV] [bird\u2019s-eye]<br >Style: [photorealistic] [photojournalism] [candid] [street photography] [analog film] [mid-century ad] [flat vector illustration] [pencil sketch] [cyberpunk neon] <br >Lighting: [natural] [golden hour] [studio] [harsh]<br >Mood: [optimistic] [gritty] [dramatic] [empowering] [stylish] [serious] [determined]<br >Background: [environment detail] [blurred] [No visible text]<br >Colours: [natural skin tones] [subdued] [vibrant] [soft pastels] [warm tones] [cold tones] [duotone x-colour + y-colour]",
     "styleGuideIncluded": false
   },
-  {
-    "id": 20,
-    "category": "Image",
-    "subCategory": "Logo design",
-    "styleGuideIncluded": false,
-    "prompt": "Act as brand graphic designer. Design a minimalist, text-free logo in a single colour: [colour] on [colour] background.<br >The logo must be unique, creative and reflect the mission: [Brand/service/organisation] [does what] for [who, where]<br >Use a flat vector style with clean lines, high contrast and no gradients; no shading and no text. Use one strong visual element to ensure maximum clarity at tiny sizes that will fit neatly into a square or round format."
-  },
+{
+  "id": 20,
+  "category": "Image",
+  "subCategory": "Logo design",
+  "styleGuideIncluded": false,
+  "prompt": "Act as a brand graphic designer. Design a minimalist, text-free logo in a single colour: [colour] logo on a [colour], [round] [square] background.<br >The logo must be simple, unique, creative and reflect the brand mission: [Name … does what] for [who, where].<br >The tone should feel: [authoritative] [strong] [innovative] [friendly] [calm] [urgent] [creative] [sophisticated] [fancy] [vintage] [active] [happy] [futuristic]<br >[If using a round background, ensure the circle extends almost to the edges of the canvas. Any visible canvas should be white].<br >Use a flat vector style with clean lines, high contrast and no gradients; no shading and no text. <br >Use one simple, strong visual element to ensure the design is instantly legible and distinctive at tiny sizes (16x16 pixels) while also looking strong at larger sizes (512x512). The logo must be perfectly centred with minimal padding on all sides.<br >Output as a high-resolution 512x512 PNG ready for upload to social media, website builder or favicon generator."
+},
   {
     "id": 21,
     "category": "AI Co-pilot",
