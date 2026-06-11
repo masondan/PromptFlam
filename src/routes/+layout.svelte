@@ -14,6 +14,11 @@
 		}
 		sessionStorage.setItem('promptflam_session_active', 'true');
 		
+		// Suppress PWA install prompt (we want standalone behavior without the prompt)
+		window.addEventListener('beforeinstallprompt', (e) => {
+			e.preventDefault();
+		});
+		
 		// Save any unsaved work before leaving (handles accidental close)
 		const handleBeforeUnload = () => {
 			autoSaveChat();
