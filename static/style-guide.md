@@ -30,7 +30,6 @@
 ### Text
 * Use **short paragraphs** (1 or 2 sentences).
 * Ensure **strong introductions and summaries** that clearly prioritise the most engaging and significant facts.
-* Use **descriptive subheadings and bulleted lists** to improve readability in longer pieces.
 * **Headlines:** Use sentence case and active verbs in the present tense. Avoid puns. Optimise for SEO and social media but do not mislead or promote clickbait.
 
 ### Style Conventions
