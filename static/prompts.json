@@ -4,7 +4,7 @@
     "category": "Ideas",
     "subCategory": "Stories",
     "styleGuideIncluded": true,
-    "prompt": "Act as a [role]. Suggest [x] explainer story ideas that will engage an online audience of [who, where]<br >Base the ideas on: [recent news] [hot trending topics] [specific topic/question] [URL]<br >Present the ideas as a numbered list, following this format:<br >- Idea number + suggested headline based on a question (eg who, why, where, when, what, how) that balances impact with professional credibility. <br >- A one-sentence outline.<br >- Ideas for images/visuals/graphics.<br >Research widely to include ideas with unusual, fresh angles for digital stories, based on verified facts and credible sources."
+    "prompt": "Act as a [role]. Suggest [x] explainer story ideas that will engage an online audience of [who, where]<br >Base the ideas on: [recent news] [hot trending topics] [specific topic/question] [URL]<br >Present the ideas as a numbered list, following this format:<br >- Idea number + suggested headline based on a question (eg who, why, where, when, what, how) that balances impact with professional credibility. <br >- A one-sentence outline highlighting why it matters to the target audience right now.<br >Research widely to include ideas with unusual, fresh angles for digital stories, based on verified facts and trusted sources."
   },
   {
     "id": 2,
