@@ -72,21 +72,21 @@
   {
     "id": 11,
     "category": "Audio",
-    "subCategory": "Solo pod",
+    "subCategory": "Solo pod script",
     "styleGuideIncluded": true,
     "prompt": "Act as a podcast scriptwriter. Draft a script for an [x] [second] [minute] podcast episode with one host that will engage an audience of [who, where]<br >Base the script on: [idea] [topic/question] [URL]<br >Follow this structure: <br >- Open with a direct question (eg who, what, why, where, when, how).<br >- Then directly answer the question using verified facts from attributed sources.<br >- No podcast intro. No outro. No banter. Just question and answer.<br >- Keep the tone natural and professional.<br >- Keep the style fast-paced and audience\u2011focused."
   },
   {
     "id": 12,
     "category": "Audio",
-    "subCategory": "Q&A pod",
+    "subCategory": "Q&A pod script",
     "styleGuideIncluded": true,
     "prompt": "Act as a podcast scriptwriter. Draft a script for a [x] [second] [minute] podcast episode with two speakers (a host and an expert) that will engage an audience of [who, where].<br >Base the script on: [idea number] [topic/question] [URL]<br >Follow this structure: <br >- The host opens with a punchy first question that grabs attention<br >- The expert replies with an informed, insightful answer.<br >- No podcast  intro. No outro. No banter. Just quick-fire questions and answers.<br >- Pack in as many questions and answers as possible. Vary question and answer length.<br >- Keep the tone natural and professional.<br >- Keep the style fast-paced and audience\u2011focused.<br >Output format:<br >Host: Question<br >Expert: Answer<br >Host: Follow-up<br >Expert: Answer"
   },
 {
     "id": 14,
     "category": "Video",
-    "subCategory": "Voiceover",
+    "subCategory": "Voiceover script",
     "styleGuideIncluded": true,
     "prompt": "Act as a social media video script writer. Draft a voiceover script for a [30-second] [60-second] [90-second] news explainer video that will engage an audience of [who, where].<br >Optimise for [LinkedIn] [Reels/TikTok/Shorts]<br >Base the script on: [idea number] [topic/question] [URL]<br >The video will comprise a slideshow of images or clips lasting around five seconds each, with accompanying voiceover.<br ><br >Follow this structure:<br >- Hook: Open with a direct question. Make it impossible to scroll past.<br >- Body: Directly answer and explain the hook in short, fact-based sentences.<br >- Close: End with a strong takeaway sentence.<br ><br >Follow these rules:<br >- Write five short sentences (~15 words each) per 30 seconds of video<br >- Use simple language optimised for speaking aloud<br >- Keep the style fast-paced and audience-focused<br >- Maintain impartiality - present facts, not opinions. No editorialising.<br >- Tone should be authoritative and explanatory.<br >- Base the script on the source or topic specified. Research and include relevant details from reliable, verified sources.<br >- Flag any attributed facts with a brief source reference woven naturally into the script (eg \"according to [source]\").<br >- Present the script in sentences preceded by a number.<br >- After the script, suggest the number of still images needed (one per five seconds), each described in a numbered single line, available through stock image sources (such as Pixabay), freely available sources or AI image generation."
   },
