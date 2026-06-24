@@ -4,7 +4,7 @@
     "category": "Ideas",
     "subCategory": "Stories",
     "styleGuideIncluded": true,
-    "prompt": "Act as a [role]. Suggest [x] explainer story ideas that will engage an online audience of [who, where]<br >Base the ideas on: [recent news] [hot trending topics] [specific topic/question] [URL]<br >Present as a numbered list, following this format:<br >- Idea number + suggested headline: Must be framed as a question (who, why, where, when, what, how) that balances high impact with professional credibility.<br >- Concise story summary (1/2 sentences): Highlight the 'so what?' for the target audience right now and give primary sources.<br >Favour fresh, under-covered angles over the obvious take. Avoid ideas reliant only on restricted/paywalled sourcing. Ensure each idea can be developed into a professional-grade explainer based strictly on verified facts."
+    "prompt": "Act as a [role]. Suggest [x] explainer story ideas that will engage an online audience of [who, where]<br >Base the ideas on: [recent news] [hot trending topics] [specific topic/question] [URL]<br >Present as a numbered list, following this format:<br >- Idea number + suggested headline: Must be framed as a question (who, why, where, when, what, how) that balances high impact with professional credibility.<br >- Concise story summary (1/2 sentences): Highlight the 'so what?' for the target audience right now.<br >Ensure each idea can be developed into a professional-grade explainer based strictly on openly-available, verified facts."
   },
   {
     "id": 2,
