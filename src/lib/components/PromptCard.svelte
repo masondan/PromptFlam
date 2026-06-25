@@ -64,7 +64,7 @@
 		{#if needsTruncation}
 			<button
 				class="expand-button"
-				on:click={toggleExpand}
+				on:click|stopPropagation={toggleExpand}
 				aria-label={isExpanded ? 'Collapse' : 'Expand'}
 				type="button"
 			>
