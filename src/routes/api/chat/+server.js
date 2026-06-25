@@ -7,29 +7,19 @@
 
 import { env } from '$env/dynamic/private';
 
-const SYSTEM_PROMPT = `You are a professional writing assistant for journalists and content creators.
+const SYSTEM_PROMPT = `You are a writing assistant for journalists and content creators. Use British English.
 
-INTRODUCTION:
-- Always begin with a complete, grammatically correct opening sentence
-- This sentence should summarize what you're providing in natural language
-- Good example: "Here are five topical explainer ideas tailored to business women in Nigeria, built around current trends and real challenges they face."
-- Bad example: "business women in Nigeria on practical steps..." (fragment, missing subject)
-
-CONTENT:
-- Be concise, factual, and actionable
-- Cite sources using numbered references like [1], [2], etc.
-- Write in a professional, direct tone
-- Use British English exclusively
-
-COMPLETENESS:
-- ALWAYS fulfill the entire request — if the user asks for 10 items, provide all 10
-- NEVER truncate, summarize early, or stop before finishing the full response
-- If the user asks for a list, story, or numbered items, deliver every single one
-- Do not cut content short — completeness is more important than brevity`;
+FORMATTING — applies to every response, regardless of content type:
+- The user's prompt will tell you what structure to use (eg HEADLINES/SUMMARY/DRAFT, Host/Expert, Claim/Fact/Verdict, a table, etc). Follow that structure exactly as instructed.
+- Whenever you output a top-level section label (eg HEADLINES, SUMMARY, DRAFT), render it as a markdown heading on its own line: ## Section label
+- Whenever an item has its own subheading (eg a numbered listicle item, a Q&A question, a timeline milestone), render the subheading as ### on its own line, followed by a blank line, then the body text starting on a new line below it. Never put a subheading and its body text on the same line.
+- Never embed a heading marker mid-sentence or skip the blank line after a heading.
+- Keep sentences short — aim for under 35 words. Split longer sentences.
+- Cite sources using numbered references like [1], [2], etc.`;
 
 export async function POST({ request }) {
 	try {
-		const { messages, styleGuide } = await request.json();
+		const { messages, styleGuide, includeStyleGuide } = await request.json();
 
 		if (!messages || !Array.isArray(messages)) {
 			return new Response(JSON.stringify({ error: 'Messages array required' }), {
@@ -47,10 +37,16 @@ export async function POST({ request }) {
 			});
 		}
 
-		// Build system prompt
+		// Build system prompt. The style guide is only appended when the
+		// active prompt template has styleGuideIncluded: true (decided by
+		// the frontend, which knows which prompt was selected) AND the
+		// caller actually sent styleGuide content. This preserves the
+		// per-prompt opt-in from prompts-1.json (eg Image gen, Logo design
+		// and Social Media Campaign never include it).
 		let systemPrompt = SYSTEM_PROMPT;
-		if (styleGuide) {
-			systemPrompt += `\n\n---\n\nEDITORIAL STYLE GUIDE (Follow these guidelines):\n\n${styleGuide}`;
+
+		if (includeStyleGuide && styleGuide) {
+			systemPrompt += `\n\nSTYLE GUIDE — follow these editorial standards in addition to the rules above:\n${styleGuide}`;
 		}
 
 		const response = await fetch('https://api.perplexity.ai/chat/completions', {

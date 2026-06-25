@@ -57,7 +57,7 @@
 	}
 
 	function renderContentWithCitations(text, citationSources) {
-		// First parse markdown to HTML
+		// Parse markdown to HTML
 		let result = marked.parse(text || '');
 		
 		// Then replace citation markers with clickable buttons
@@ -72,7 +72,9 @@
 		return result;
 	}
 
-	$: renderedContent = renderContentWithCitations(content, sources);
+	$: renderedContent = isStreaming
+		? ''
+		: renderContentWithCitations(content, sources);
 
 	function handleContentClick(e) {
 		if (e.target.classList.contains('citation')) {
@@ -97,15 +99,17 @@
 	{/if}
 	
 	<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
-	<div 
+	<div
 		class="message-content"
 		on:click={handleContentClick}
 		on:keydown={(e) => e.key === 'Enter' && handleContentClick(e)}
 		role="article"
 	>
-		{@html renderedContent}
 		{#if isStreaming}
+			<div class="streaming-text">{content}</div>
 			<span class="cursor">|</span>
+		{:else}
+			{@html renderedContent}
 		{/if}
 	</div>
 	
@@ -212,19 +216,24 @@
 		color: var(--text-primary);
 	}
 
+	.streaming-text {
+		white-space: pre-wrap;
+	}
+
 	.message-content :global(h1),
 	.message-content :global(h2),
 	.message-content :global(h3) {
 		font-weight: 700;
 		font-size: var(--font-size-h3);
-		margin-top: var(--spacing-lg);
-		margin-bottom: var(--spacing-sm);
+		margin-top: 0.75rem;
+		margin-bottom: 0.5rem;
 		color: var(--text-primary);
 		line-height: 1.3;
 	}
 
 	.message-content :global(p) {
-		margin-bottom: var(--spacing-sm);
+		margin-bottom: 0.5rem;
+		margin-top: 0;
 	}
 
 	.message-content :global(p:first-child) {
@@ -238,12 +247,14 @@
 
 	.message-content :global(ul),
 	.message-content :global(ol) {
-		margin-bottom: var(--spacing-md);
+		margin-bottom: 0.5rem;
+		margin-top: 0;
 		padding-left: var(--spacing-lg);
 	}
 
 	.message-content :global(li) {
-		margin-bottom: var(--spacing-sm);
+		margin-bottom: 0.25rem;
+		margin-top: 0;
 	}
 
 	.message-content :global(li > p) {

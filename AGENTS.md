@@ -6,7 +6,7 @@
 
 ## Quick Start (Read This First)
 
-PromptFlam is a **SvelteKit-based AI writing assistant** for journalists and content creators. Users chat with Perplexity AI, manage prompt templates, and save work locally.
+PromptFlam is a **SvelteKit-based AI writing assistant** for journalists and content creators. Users chat with Perplexity AI, run style checks via Claude, manage prompt templates, and save work locally.
 
 **Key facts:**
 - **Tech**: SvelteKit + Svelte 5, vanilla JavaScript (no TypeScript)
@@ -25,16 +25,17 @@ PromptFlam is a **SvelteKit-based AI writing assistant** for journalists and con
 | **UI** | Svelte 5 (runes mode) | Reactive components, no TypeScript |
 | **Styling** | Vanilla CSS + design tokens | No Tailwind/SCSS |
 | **State** | Svelte stores + localStorage | Auto-persisted, offline-capable |
-| **API** | Perplexity AI (sonar-pro) | Server-side proxy for security |
+| **AI (chat)** | Perplexity AI (sonar-pro) | Server-side proxy for security |
+| **AI (style)** | Anthropic Claude (claude-sonnet-4-6) | Server-side proxy for security |
 | **Hosting** | Cloudflare Pages | Auto-deploy on `main` push |
 | **Build** | Vite 6 + SvelteKit adapter | ~70KB gzipped bundle |
 
 **Dependencies**:
-- `@sveltejs/kit` (2.0.0)
-- `@sveltejs/adapter-cloudflare` (4.0.0)
-- `svelte` (5.0.0)
-- `marked` (17.0.1) — Markdown parsing
-- `vite` (6.0.0)
+- `@sveltejs/kit` (^2.0.0)
+- `@sveltejs/adapter-cloudflare` (^4.0.0)
+- `svelte` (^5.0.0)
+- `marked` (^17.0.1) — Markdown parsing
+- `vite` (^6.0.0)
 
 ---
 
@@ -48,6 +49,7 @@ PromptFlam is a **SvelteKit-based AI writing assistant** for journalists and con
 Create `.env.local` (not committed):
 ```
 PERPLEXITY_API_KEY=pplx-your-key-here
+ANTHROPIC_API_KEY=sk-ant-your-key-here
 ```
 
 Copy from `.env.example` if needed.
@@ -92,6 +94,7 @@ git push origin feature/your-name
 PromptFlam is a **SvelteKit-based AI writing assistant** designed for journalists and content creators. It provides:
 
 - **Real-time chat** with Perplexity AI (sonar-pro model)
+- **Style checking** via Claude AI — spelling, grammar, and editorial style suggestions
 - **Prompt library** with 100+ categorized templates
 - **Full-featured notepad** with formatting and export
 - **Local-first storage** via localStorage (offline-capable)
@@ -123,10 +126,18 @@ All stores use `createPersistentStore(key, initialValue)` for auto-sync with loc
 - `archiveChats` — `[{id, messages[], timestamp}]`
 - `archiveNotes` — `[{id, title, content, timestamp}]`
 
+#### Style Check Session
+- `styleCheckInputText` — Article text being checked
+- `styleCheckLanguage` — Language preference (default: `'British English'`)
+- `styleCheckSuggestions` — `[{id, type, original, suggested, reason, sentenceIndex}]`
+- `styleCheckEditedText` — Text after accepting suggestions
+- `styleCheckOriginalText` — Original text before editing
+- `styleCheckShowResults` — Whether results view is active
+
 #### UI State
 - `currentPrompts` — Bracket content for chat input chips: `[{bracketContent}]`
 - `favorites` — Favorited prompt subcategories: `['Category-SubCategory', ...]`
-- `pendingChatInput` — Pre-filled text from prompt library (transient)
+- `pendingChatInput` — Pre-filled text from prompt library (transient, not persisted)
 - `promptLibraryCategory`, `promptLibrarySubcategory`, `promptLibraryExpandedId`, `promptLibraryScrollY` — Library navigation state
 - `personaRole`, `personaAudience` — User persona settings (replaces [role] and [who, where] tags)
 
@@ -149,6 +160,11 @@ autoSaveNote()                            // Update archive entry
 startNewNote()                            // Reset title + content
 restoreNote(archivedNote)                 // Load from archive
 archiveNote(title, content)               // Save & reset
+```
+
+**Style Check operations:**
+```javascript
+clearStyleCheckSession()                  // Reset all style check state
 ```
 
 **Utilities:**
@@ -191,20 +207,32 @@ Simple localStorage wrapper. Currently minimal; stores handle persistence direct
 
 ## API Routes
 
-### POST `/api/chat` (Secure Proxy)
+### POST `/api/chat` (Perplexity Proxy)
 **File**: `src/routes/api/chat/+server.js`
 
-**Key features:**
 - Reads `PERPLEXITY_API_KEY` from server env (never exposed to browser)
 - Injects `SYSTEM_PROMPT` to guide AI formatting and tone
 - Converts streaming to `text/event-stream` for real-time display
 - Extracts citations from Perplexity response
 
-**Config:**
-- **Model**: `sonar-pro` (Perplexity pro model)
-- **Temperature**: 0.7
-- **Max tokens**: 8000
-- **Search recency**: month
+**Config:** Model `sonar-pro`, temperature 0.7, max tokens 8000, search recency: month
+
+### POST `/api/style-check` (Claude Style Check)
+**File**: `src/routes/api/style-check/+server.js`
+
+- Reads `ANTHROPIC_API_KEY` from server env
+- Accepts `{ text: string, language: string }`
+- Loads system prompt from `static/style-check-system-prompt.md`
+- Uses few-shot examples to guide Claude's judgment
+- Returns JSON array of suggestion objects: `[{id, type, original, suggested, reason, sentenceIndex}]`
+
+**Config:** Model `claude-sonnet-4-6`, temperature 0.3, max tokens 4000
+
+### POST `/api/style-rewrite` (Claude Style Rewrite)
+**File**: `src/routes/api/style-rewrite/+server.js`
+
+- Reads `ANTHROPIC_API_KEY` from server env
+- Rewrites selected text based on style check suggestions
 
 ### POST `/api/metadata`
 **File**: `src/routes/api/metadata/+server.js`
@@ -213,12 +241,12 @@ Fetches Open Graph title/description from citation URLs (5s timeout, 50KB limit)
 
 ---
 
-## Components (`src/lib/components/`, 17 total)
+## Components (`src/lib/components/`, 18 total)
 
 Organized by feature:
 
 **Page-wide:**
-- [`Header.svelte`](src/lib/components/Header.svelte) — Fixed nav with 4 page buttons + logo
+- [`Header.svelte`](src/lib/components/Header.svelte) — Fixed nav with page buttons + logo
 
 **Chat (Create page):**
 - [`ChatInput.svelte`](src/lib/components/ChatInput.svelte) — Message input + bracket-chip system
@@ -235,7 +263,10 @@ Organized by feature:
 
 **Notepad:**
 - [`NotepadSelectionMenu.svelte`](src/lib/components/NotepadSelectionMenu.svelte) — Inline menu for text selection in notepad
-- [`NotepadToolbar.svelte`](src/lib/components/NotepadToolbar.svelte) — Sub-component for formatting buttons (bold, italic, list, font size, undo/redo)
+- [`NotepadToolbar.svelte`](src/lib/components/NotepadToolbar.svelte) — Formatting buttons (bold, italic, list, font size, undo/redo)
+
+**Style Check:**
+- [`StyleCheckDrawer.svelte`](src/lib/components/StyleCheckDrawer.svelte) — Drawer showing style suggestions with accept/dismiss controls
 
 **Archive:**
 - [`ArchiveItem.svelte`](src/lib/components/ArchiveItem.svelte) — Chat/note card with menu (restore, download, share, delete)
@@ -261,8 +292,6 @@ Browse and search prompt library from `static/prompts.json`.
 - **Tap edit icon on prompt** → Opens `PromptEditDrawer` (overlay modal)
 - Insert prompt into chat (via drawer)
 - Persona settings button (upper right)
-
-**Note on PromptEditDrawer**: When you tap the edit icon on a prompt card, `PromptEditDrawer.svelte` opens as an inline overlay. This is different from the Notepad page.
 
 ### Create (`src/routes/create/+page.svelte`)
 Main chat interface with Perplexity AI.
@@ -290,11 +319,24 @@ Full-page text editor with formatting toolbar.
 
 **Features:**
 - Contenteditable divs (title + content)
-- Formatting toolbar (bold, italic, list, font size, undo, redo, more)
+- Formatting toolbar (bold, italic, list, font size, undo, redo)
 - Auto-save on input change (debounced 2s)
 - Download as `.txt` file
 - Share via system API
 - "Start Over" archives and resets
+
+### Style Check (`src/routes/style-check/+page.svelte`)
+AI-powered editorial style checker using Claude.
+
+**Features:**
+- Paste or type article text
+- Select language (British English / American English)
+- Sends to `/api/style-check` → Claude returns JSON suggestions
+- `StyleCheckDrawer` shows suggestions grouped by type (spelling, grammar, style)
+- Accept or dismiss individual suggestions
+- Accepted suggestions applied to edited text
+- Copy or send edited text to Notepad
+- Session state persists across page refreshes
 
 ### Archive (`src/routes/archive/+page.svelte`)
 Saved chats and notes.
@@ -324,16 +366,16 @@ Editorial style guide reference page (static content from `static/style-guide.md
 
 **Usage:**
 ```javascript
-// In src/lib/icons.js (export as strings):
-import IconCreate from '../../static/icons/icon-create.svg?raw';
+// In src/lib/icons.js — import as raw string and add to iconMap:
+import IconMyicon from '../../static/icons/icon-myicon.svg?raw';
 export const iconMap = {
-  create: IconCreate,
+  myicon: IconMyicon,
   // ...
 };
 
 // In component:
 import Icon from '$lib/components/Icon.svelte';
-<Icon name="create" size={24} />
+<Icon name="myicon" size={24} />
 ```
 
 The `Icon.svelte` component renders the SVG string inline and applies styling via props.
@@ -379,8 +421,9 @@ import { myStore } from '$lib/stores.js';
 ### Adding a New Icon
 ```javascript
 // 1. Place SVG in static/icons/icon-myicon.svg
-// 2. Export in src/lib/icons.js
-export { default as IconMyicon } from '../../static/icons/icon-myicon.svg?component';
+// 2. Import and add to iconMap in src/lib/icons.js:
+import IconMyicon from '../../static/icons/icon-myicon.svg?raw';
+export const iconMap = { myicon: IconMyicon, ... };
 
 // 3. Use in component
 <Icon name="myicon" size={24} />
@@ -402,152 +445,6 @@ const res = await fetch('/api/myroute', {
   body: JSON.stringify({ data: 'value' })
 });
 ```
-
----
-
-## Performance Notes
-
-- **Bundle size**: ~70KB gzipped (SvelteKit + marked + dependencies)
-- **Streaming**: Token-by-token animation prevents UI freeze
-- **localStorage**: Synchronous but fast; ~5MB typical max
-- **Icons**: Imported as components; tree-shaken by Vite
-- **Code splitting**: Page components split by route (automatic)
-
----
-
-## Browser Support
-
-- Chrome/Edge 90+
-- Firefox 88+
-- Safari 14+ (desktop & iOS)
-- Android Chrome 90+
-
-**Not supported**: IE 11, older mobile browsers
-
----
-
-## Debugging
-
-### Check localStorage
-```javascript
-// Browser console
-JSON.parse(localStorage.getItem('promptflam_chatMessages'))
-localStorage.clear() // Nuclear option
-```
-
-### Watch API calls
-**DevTools → Network tab:**
-- Look for `POST /api/chat` (not direct Perplexity call)
-- Response type: `text/event-stream`
-
-### Watch stores in real-time
-```javascript
-// In .svelte component
-import { chatMessages } from '$lib/stores.js';
-$: console.log('Messages updated:', $chatMessages);
-```
-
----
-
-## Cost
-
-- **Perplexity API**: $0.50–2/month (light usage)
-- **Cloudflare Pages**: Free
-- **Domain**: Free (`.pages.dev` subdomain)
-- **Total**: ~$1–2/month
-
----
-
-## Testing
-
-Manual testing is primary. Vitest/Playwright are available as dependencies but not yet integrated into the CI/testing pipeline.
-
-1. `npm run dev`
-2. Open http://localhost:5173
-3. Send message → watch streaming
-4. Open DevTools Network → see `/api/chat` stream
-5. Switch pages (Prompts, Notepad, Archive)
-6. Refresh → check localStorage persistence
-7. Test on mobile
-
----
-
-## File Structure
-
-```
-src/
-├── routes/
-│   ├── +page.svelte              (Prompts library page)
-│   ├── +layout.svelte            (Root layout + header)
-│   ├── create/+page.svelte       (Create/Chat page)
-│   ├── prompts/+page.svelte      (Prompt library)
-│   ├── notepad/+page.svelte      (Text editor)
-│   ├── archive/+page.svelte      (Saved items)
-│   └── api/
-│       ├── chat/+server.js       (Perplexity proxy)
-│       └── metadata/+server.js   (URL metadata fetcher)
-│
-├── lib/
-│   ├── stores.js                 (All state management)
-│   ├── services/
-│   │   ├── perplexity.js         (AI client)
-│   │   └── storage.js            (localStorage wrapper)
-│   ├── components/
-│   │   ├── Header.svelte
-│   │   ├── ChatInput.svelte
-│   │   ├── ChatMessage.svelte
-│   │   ├── PromptLibrary.svelte
-│   │   ├── SourcesDrawer.svelte
-│   │   ├── TextSelectionMenu.svelte
-│   │   ├── NotepadToolbar.svelte
-│   │   ├── ArchiveItem.svelte
-│   │   └── ... (8 more)
-│   ├── icons.js                  (Icon barrel export)
-│   ├── utils.js                  (Shared utilities)
-│   └── utils/
-│       └── formatTime.js         (Timestamp formatter)
-│
-├── app.svelte                    (Root component)
-└── app.css                       (Global styles + tokens)
-
-static/
-├── prompts.json                  (Prompt library data)
-├── icons/                        (40+ SVG icons)
-├── manifest.json                 (PWA metadata)
-└── *.png                         (Logo & app icons)
-```
-
----
-
-## File Structure Details
-
-### src/routes/
-- **`+page.svelte`** — Prompts library page (home)
-- **`+layout.svelte`** — Root layout with Header component
-- **`create/+page.svelte`** — Main chat interface with Perplexity AI
-- **`notepad/+page.svelte`** — Full-page text editor with formatting
-- **`archive/+page.svelte`** — Saved chats and notes with restore/delete
-- **`style-guide/+page.svelte`** — Editorial guidelines reference
-- **`api/chat/+server.js`** — Perplexity API proxy (server-side)
-- **`api/metadata/+server.js`** — URL metadata fetcher (infrastructure ready)
-
-### src/lib/
-- **`stores.js`** — Centralized state management (15+ stores, all auto-persisted)
-- **`utils.js`** — Shared utility functions
-- **`icons.js`** — Icon barrel export (raw SVG strings)
-- **`services/perplexity.js`** — AI client with streaming support
-- **`services/storage.js`** — localStorage wrapper
-- **`utils/formatTime.js`** — Timestamp formatter
-- **`components/`** — 17 reusable Svelte components
-
-### static/
-- **`prompts.json`** — Prompt library data (100+ templates)
-- **`style-guide.md`** — Editorial guidelines (markdown)
-- **`flam-nav.js`** — Navigation configuration
-- **`icons/`** — 40+ SVG icons (24×24px, 2px stroke)
-- **`fonts/`** — Saira and Inter variable fonts
-- **`logos/`** — App icons, favicons, OG images
-- **`manifest.json`** — PWA metadata
 
 ---
 
@@ -573,16 +470,82 @@ static/
 
 ---
 
-## Development Workflow
+## File Structure
 
-### Build & Deploy
-```bash
-npm run build              # Production build → .svelte-kit/cloudflare
-npm run preview           # Test production build locally
+```
+src/
+├── routes/
+│   ├── +page.svelte              (Prompts library — home page)
+│   ├── +layout.svelte            (Root layout + header)
+│   ├── create/+page.svelte       (Create/Chat page)
+│   ├── notepad/+page.svelte      (Text editor)
+│   ├── archive/+page.svelte      (Saved items)
+│   ├── style-check/+page.svelte  (Style checker)
+│   ├── style-guide/+page.svelte  (Editorial style guide)
+│   └── api/
+│       ├── chat/+server.js       (Perplexity proxy)
+│       ├── style-check/+server.js (Claude style check)
+│       ├── style-rewrite/+server.js (Claude style rewrite)
+│       └── metadata/+server.js   (URL metadata fetcher)
+│
+├── lib/
+│   ├── stores.js                 (All state management)
+│   ├── services/
+│   │   ├── perplexity.js         (AI client)
+│   │   └── storage.js            (localStorage wrapper)
+│   ├── components/
+│   │   ├── Header.svelte
+│   │   ├── ChatInput.svelte
+│   │   ├── ChatMessage.svelte
+│   │   ├── PromptLibrary.svelte
+│   │   ├── SourcesDrawer.svelte
+│   │   ├── TextSelectionMenu.svelte
+│   │   ├── NotepadToolbar.svelte
+│   │   ├── StyleCheckDrawer.svelte
+│   │   ├── ArchiveItem.svelte
+│   │   └── ... (9 more)
+│   ├── icons.js                  (Icon map — raw SVG strings)
+│   ├── utils.js                  (Shared utilities)
+│   └── utils/
+│       └── formatTime.js         (Timestamp formatter)
+│
+├── app.html                      (HTML shell)
+├── app.css                       (Global styles + tokens)
+└── service-worker.js             (PWA service worker)
+
+static/
+├── prompts.json                  (Prompt library data — 100+ templates)
+├── style-guide.md                (Editorial guidelines — markdown)
+├── style-check-system-prompt.md  (Claude system prompt for style check)
+├── flam-nav.js                   (Navigation configuration)
+├── icons/                        (40+ SVG icons)
+├── fonts/                        (Saira and Inter variable fonts)
+├── logos/                        (App icons, favicons, OG images)
+└── manifest.json                 (PWA metadata)
 ```
 
-**Auto-Deploy**: Push to `main` → Cloudflare Pages builds & deploys in ~2 min
-**Rollback**: `git revert HEAD && git push origin main`
+---
+
+## Debugging
+
+### Check localStorage
+```javascript
+// Browser console
+JSON.parse(localStorage.getItem('promptflam_chatMessages'))
+localStorage.clear() // Nuclear option
+```
+
+### Watch API calls
+**DevTools → Network tab:**
+- Chat: `POST /api/chat` — response type `text/event-stream`
+- Style check: `POST /api/style-check` — response type `application/json`
+
+### Watch stores in real-time
+```javascript
+// In .svelte component
+import { chatMessages } from '$lib/stores.js';
+$: console.log('Messages updated:', $chatMessages);
+```
 
 ---
 
@@ -609,25 +572,26 @@ npm run preview           # Test production build locally
 
 ## Testing
 
-Manual testing is primary. Vitest/Playwright are available as dependencies but not yet integrated into the CI/testing pipeline.
+Manual testing is primary. Vitest/Playwright are available as dependencies but not yet integrated.
 
 **Test Checklist**:
 1. `npm run dev`
 2. Open http://localhost:5173
 3. Send message → watch streaming
 4. Open DevTools Network → see `/api/chat` stream
-5. Switch pages (Prompts, Notepad, Archive)
-6. Refresh → check localStorage persistence
-7. Test on mobile
+5. Switch pages (Prompts, Notepad, Archive, Style Check)
+6. Paste article into Style Check → verify suggestions load
+7. Refresh → check localStorage persistence
+8. Test on mobile
 
 ---
 
 ## Cost
 
 - **Perplexity API**: $0.50–2/month (light usage)
+- **Anthropic API**: Variable (Claude style check calls)
 - **Cloudflare Pages**: Free
 - **Domain**: Free (`.pages.dev` subdomain)
-- **Total**: ~$1–2/month
 
 ---
 
@@ -636,6 +600,7 @@ Manual testing is primary. Vitest/Playwright are available as dependencies but n
 - **Live app**: https://promptflam.pages.dev
 - **GitHub repo**: https://github.com/masondan/PromptFlam
 - **Perplexity docs**: https://docs.perplexity.ai/
+- **Anthropic docs**: https://docs.anthropic.com/
 - **SvelteKit docs**: https://kit.svelte.dev/
 - **Svelte 5 docs**: https://svelte.dev/docs/svelte/5-migration-guide
 
@@ -643,4 +608,4 @@ Manual testing is primary. Vitest/Playwright are available as dependencies but n
 
 **Maintained by**: Dan Mason
 **License**: ISC
-**Last Updated**: May 5, 2026
+**Last Updated**: June 2026
