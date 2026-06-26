@@ -82,7 +82,8 @@ export async function callPerplexity(messages, onChunk = null, signal = null) {
 		// Handle abort gracefully
 		if (error.name === 'AbortError') {
 			const sources = formatCitations(citations);
-			const normalizedContent = normalizeCitationPlacement(fullContent);
+			let normalizedContent = ensureHeadingNewlines(fullContent);
+			normalizedContent = normalizeCitationPlacement(normalizedContent);
 			return {
 				content: normalizedContent,
 				sources,
@@ -96,8 +97,9 @@ export async function callPerplexity(messages, onChunk = null, signal = null) {
 	// Transform citations to our source format
 	const sources = formatCitations(citations);
 	
-	// Normalize citation placement: move citations after punctuation
-	const normalizedContent = normalizeCitationPlacement(fullContent);
+	// Ensure heading markers have proper newlines, then normalize citations
+	let normalizedContent = ensureHeadingNewlines(fullContent);
+	normalizedContent = normalizeCitationPlacement(normalizedContent);
 
 	return {
 		content: normalizedContent,
@@ -152,9 +154,22 @@ function extractDomain(url) {
 }
 
 /**
+ * Ensure heading markers (## or ###) that follow text have a newline before them
+ * Safely fixes cases like "Section### Subsection" → "Section\n### Subsection"
+ * Only matches headings with a space after the markers (e.g., "## ", "### ")
+ * @param {string} content
+ * @returns {string}
+ */
+function ensureHeadingNewlines(content) {
+	// Insert newline before heading markers preceded by non-whitespace
+	// Matches ## or ### or # etc., but only if followed by a space
+	return content.replace(/([^\n])(#{1,6} )/g, '$1\n$2');
+}
+
+/**
  * Normalize citation placement so citations appear after punctuation
  * Converts "text[1]." to "text.[1]" and "text[1][2]." to "text.[1][2]"
- * @param {string} content 
+ * @param {string} content
  * @returns {string}
  */
 function normalizeCitationPlacement(content) {

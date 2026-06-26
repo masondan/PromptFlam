@@ -222,7 +222,10 @@
 
 	.message-content :global(h1),
 	.message-content :global(h2),
-	.message-content :global(h3) {
+	.message-content :global(h3),
+	.message-content :global(h4),
+	.message-content :global(h5),
+	.message-content :global(h6) {
 		font-weight: 700;
 		font-size: var(--font-size-h3);
 		margin-top: 0.75rem;
