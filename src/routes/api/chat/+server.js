@@ -7,8 +7,9 @@
 
 import { env } from '$env/dynamic/private';
 
-const SYSTEM_PROMPT = `You are a writing assistant. Follow the user's prompt exactly.
-Cite sources as [1], [2], etc.`;
+const SYSTEM_PROMPT = `You are a writing assistant.
+- Start each sentence on a new line.
+- Cite sources as [1], [2], etc.`;
 
 export async function POST({ request }) {
 	try {
@@ -49,7 +50,7 @@ export async function POST({ request }) {
 				'Content-Type': 'application/json'
 			},
 			body: JSON.stringify({
-				model: 'sonar-pro',
+				model: 'sonar',
 				messages: [
 					{ role: 'system', content: systemPrompt },
 					...messages.map(m => ({ role: m.role, content: m.content }))

@@ -4,7 +4,7 @@
     "category": "Ideas",
     "subCategory": "Stories",
     "styleGuideIncluded": true,
-    "prompt": "Act as a [role]. Suggest [x] explainer story ideas that will engage an online audience of [who, where]\nBase the ideas on: [current headline news and trending topics] [specific topic/question] [URL]\nPresent ideas with a suggested headline framed as a question (who, why, where, when, what, how), followed by a ~40-word story outline.\nEnsure each idea can be developed into an explainer article based strictly on openly-available, verified facts."
+    "prompt": "Act as a [role]. Suggest [x] explainer story ideas that will engage an online audience of [who, where]\nBase the ideas on: [current headline news and trending topics] [specific topic/question] [URL]\nFollow this structure for each idea:\n- Suggested headline in bold, framed as a question (who, why, where, when, what, how).\n- A story outline of ~40 words.\n- Working, clickable link to a primary news or trusted source.\nEnsure each idea can be developed into an explainer article based strictly on openly-available, verified facts."
   },
   {
     "id": 2,
@@ -74,14 +74,14 @@
     "category": "Audio",
     "subCategory": "Solo pod script",
     "styleGuideIncluded": true,
-    "prompt": "Act as a podcast scriptwriter. Draft a script for an [x] [second] [minute] podcast episode with one host that will engage an audience of [who, where]\nBase the script on: [idea] [topic/question] [URL]\nFollow this structure:\n- Open with a direct question (eg who, what, why, where, when, how).\n- Then directly answer the question using verified facts from attributed sources.\n- No podcast intro. No outro. No banter. Just question and answer.\n- Keep the tone natural and professional.\n- Keep the style fast-paced and audience\u2011focused."
+    "prompt": "Act as a podcast scriptwriter. Draft a script for an [x] [second] [minute] podcast episode with one host that will engage an audience of [who, where]\nBase the script on: [idea] [topic/question] [URL]\nFollow this structure:\n- Open with a direct question (eg who, what, why, where, when, how).\n- Then directly answer the question using verified facts from attributed sources.\n- No podcast intro. No outro. No banter. Just question and answer.\n- Start each sentence on a new line\n- Optimise for spoken voice. Keep the tone natural and professional.\n- Keep the style fast-paced and audience\u2011focused."
   },
   {
     "id": 12,
     "category": "Audio",
     "subCategory": "Q&A pod script",
     "styleGuideIncluded": true,
-    "prompt": "Act as a podcast scriptwriter. Draft a script for a [x] [second] [minute] podcast episode with two speakers (a host and an expert) that will engage an audience of [who, where].\nBase the script on: [idea number] [topic/question] [URL]\nFollow this structure:\n- The host opens with a punchy first question that grabs attention\n- The expert replies with an informed, insightful answer.\n- No podcast  intro. No outro. No banter. Just quick-fire questions and answers.\n- Pack in as many questions and answers as possible. Vary question and answer length.\n- Keep the tone natural and professional.\n- Keep the style fast-paced and audience\u2011focused.\nOutput format:\nHost: Question\nExpert: Answer\nHost: Follow-up\nExpert: Answer"
+    "prompt": "Act as a podcast scriptwriter. Draft a script for a [x] [second] [minute] podcast episode with two speakers (a host and an expert) that will engage an audience of [who, where].\nBase the script on: [idea number] [topic/question] [URL]\nFollow this structure:\n- The host opens with a punchy first question that grabs attention\n- The expert replies with an informed, insightful answer.\n- No podcast  intro. No outro. No banter. Just quick-fire questions and answers.\n- Pack in as many questions and answers as possible. Vary question and answer length.\n- Optimise for spoken voice. Keep the tone natural and professional.\n- Keep the style fast-paced and audience\u2011focused.\nOutput format:\nHost: Question\nExpert: Answer\nHost: Follow-up\nExpert: Answer"
   },
 {
     "id": 14,

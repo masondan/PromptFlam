@@ -169,15 +169,17 @@ function ensureHeadingNewlines(content) {
 /**
  * Normalize citation placement so citations appear after punctuation
  * Converts "text[1]." to "text.[1]" and "text[1][2]." to "text.[1][2]"
+ * Preserves or adds a space after citations to prevent word runoff
  * @param {string} content
  * @returns {string}
  */
 function normalizeCitationPlacement(content) {
-	// Match one or more citations followed by punctuation
-	// e.g., "[1]." or "[1][2]." or "[1][2][3],"
-	return content.replace(/(\[[\d]+\])+([.!?,;:])/g, (match, citations, punct) => {
+	// Match one or more citations followed by punctuation, optionally followed by space(s)
+	// e.g., "[1]." or "[1][2]." or "[1][2][3]," with or without spaces
+	return content.replace(/(\[[\d]+\])+([.!?,;:]) */g, (match, citations, punct) => {
 		// Extract all citation markers
 		const citationMarkers = match.match(/\[\d+\]/g) || [];
-		return punct + citationMarkers.join('');
+		// Return punctuation, then citations, then a space to separate from next word
+		return punct + citationMarkers.join('') + ' ';
 	});
 }
