@@ -4,7 +4,7 @@
     "category": "Ideas",
     "subCategory": "Stories",
     "styleGuideIncluded": true,
-    "prompt": "Act as a [role]. Suggest [x] explainer story ideas that will engage an online audience of [who, where]\nBase the ideas on: [current headline news and trending topics] [specific topic/question] [URL]\nPresent ideas with a suggested headline framed as a question (who, why, where, when, what, how), followed by a short ~50-word story outline.\nEnsure each idea can be developed into an explainer article based strictly on openly-available, verified facts."
+    "prompt": "Act as a [role]. Suggest [x] explainer story ideas that will engage an online audience of [who, where]\nBase the ideas on: [current headline news and trending topics] [specific topic/question] [URL]\nPresent ideas with a suggested headline framed as a question (who, why, where, when, what, how), followed by a ~40-word story outline.\nEnsure each idea can be developed into an explainer article based strictly on openly-available, verified facts."
   },
   {
     "id": 2,
