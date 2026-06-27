@@ -117,9 +117,6 @@
 	function generateExportText(text) {
 		let result = text;
 		
-		if (prompt?.styleGuideIncluded) {
-			result += '\n\nBefore responding, read and apply the editorial style guide at: ' + window.location.origin + '/style-guide';
-		}
 		
 		return result;
 	}

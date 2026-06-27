@@ -125,9 +125,6 @@
 		const text = applyPersonaSubstitutions(stripHtml(prompt.prompt));
 		
 		let textToCopy = text;
-		if (prompt.styleGuideIncluded) {
-			textToCopy += '\n\nBefore responding, read and apply the editorial style guide at: ' + window.location.origin + '/style-guide';
-		}
 		
 		navigator.clipboard.writeText(textToCopy);
 		dispatch('copy', { prompt, text });
