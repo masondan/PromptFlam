@@ -11,7 +11,7 @@
     "category": "Ideas",
     "subCategory": "Events",
     "styleGuideIncluded": true,
-    "prompt": "Act as a [role] with a target audience of [who, where]\nAct as a journalist with a target audience of Carers in Wales\nProvide a diary list of events, anniversaries, awareness days and observances, launches, birthdays and premieres, relevant to the target audience, for the next [month] [year]\nCap the total number of items at [x]\nPresent list items in this format:\nNumber + Event name\nWhen/where: (date, location)\nSummary: (one-sentence explanation)\nLink: (clickable, working link to source)"
+    "prompt": "Act as a [role] with a target audience of [who, where]\nProvide a diary list of events, important anniversaries, national/international awareness days, famous birthdays and premieres that provide topical hooks for news stories and explainers, directly relevant to the target audience.\nRestrict results to [week, month, year]\nCap the total number of items at [x]\nPresent as a numbered list, following this format:\nNumber + Event name\nWhen/Where: (date and location).\nInfo: (one-sentence summary)\nLink: (clickable, working link to source)"
   },
   {
     "id": 3,
