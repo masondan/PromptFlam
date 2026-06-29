@@ -4,7 +4,7 @@
     "category": "Ideas",
     "subCategory": "Stories",
     "styleGuideIncluded": true,
-    "prompt": "Act as a [role]. Suggest [x] explainer story ideas that will engage an online audience of [who, where]\nBase the ideas on: [current headline news and trending topics] [specific topic/question] [URL]\nFollow this structure for each idea:\n- Suggested headline in bold, framed as a question (who, why, where, when, what, how).\n- A story outline of ~40 words.\n- Working, clickable link to a primary news or trusted source.\nEnsure each idea can be developed into an explainer article based strictly on openly-available, verified facts."
+    "prompt": "Act as a [role]. Suggest [x] explainer story ideas that will engage an online audience of [who, where]\nBase the ideas on: [current headline news and trending topics] [specific topic/question] [URL]\nFollow this structure for each idea:\n- Suggested headline in bold, framed as a question (who, why, where, when, what, how).\n- Story outline of ~40 words.\n- Working, clickable link to a primary news or trusted source.\nEnsure each idea can be developed into an explainer article based strictly on openly-available, verified facts."
   },
   {
     "id": 2,
@@ -25,7 +25,7 @@
     "category": "Text",
     "subCategory": "Q&A",
     "styleGuideIncluded": true,
-    "prompt": "Act as a [role]. Draft a Q&A article that will engage an online audience of [who, where].\nBase the draft on: [topic/question] [URL]\nProvide [x] questions and answers.\nAdditionally, provide [x] headline options.\nFollow this structure:\nHEADLINES — Insert the specified number of creative headline options. The headlines must be accurate, optimised for search and social media, and balance impact with professional journalistic credibility. The headlines must contain Q&A.\nSUMMARY — A news-style introduction of 50 words.\nDRAFT — The specified number of Q&A items. Questions should be displayed as sub-headings, followed by concise answers (~100 words) that deliver fact-based explanation and context from trusted sources."
+    "prompt": "Act as a [role]. Draft a Q&A article that will engage an online audience of [who, where].\nBase the draft on: [topic/question] [URL]\nProvide [x] questions and answers.\nAdditionally, provide [x] headline options.\nFollow this structure:\nHEADLINES - The specified number of creative headline options. The headlines must be accurate, optimised for search and social media, and balance impact with professional journalistic credibility. The headlines must contain Q&A.\nSUMMARY — A news-style introduction of 50 words.\nDRAFT — The specified number of Q&A items. Questions should be displayed as sub-headings, followed by concise answers (~100 words) that deliver fact-based explanation and context from trusted sources."
   },
   {
     "id": 5,
