@@ -131,7 +131,7 @@
     "subCategory": "Image gen",
     "styleSelector": true,
     "styleGuideIncluded": false,
-    "prompt": "Act as an art director. Create an image that will engage an online audience of [who, where].\nSubject: [who or what – age, gender, attire, expression, doing what]\nSetting: [where – environment, time of day, weather]\nStyle: [type – photo, illustration, sketch] [framing – close-up, medium, wide] [mood – optimistic, gritty, dramatic] [lighting – natural, golden hour, studio]\nNo visible text."
+    "prompt": "Act as an art director. Create an image that will engage an online audience of [who, where].\nSubject: [who or what – age, gender, attire, expression, doing what]\nSetting: [Background, environment]\nShot: [close-up] [head-and-shoulders] [medium] [wide] [bird's-eye] [tight crop]\nStyle: [mood, lighting]"
   },
   {
     "id": 20,
