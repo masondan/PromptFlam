@@ -129,8 +129,9 @@
     "id": 19,
     "category": "Image",
     "subCategory": "Image gen",
-    "prompt": "Create an image of [subject - age/gender/attire/appearance/detail … doing what … where]\nFraming: [close-up] [head-and-shoulders] [medium] [wide] [POV] [bird's-eye]\nStyle: [photorealistic] [photojournalism] [candid] [street photography] [analog film] [mid-century ad] [flat vector illustration] [pencil sketch] [cyberpunk neon]\nLighting: [natural] [golden hour] [studio] [harsh]\nMood: [optimistic] [gritty] [dramatic] [empowering] [stylish] [serious] [determined]\nBackground: [environment detail] [blurred] [No visible text]\nColours: [natural skin tones] [subdued] [vibrant] [soft pastels] [warm tones] [cold tones] [duotone x-colour + y-colour]",
-    "styleGuideIncluded": false
+    "styleSelector": true,
+    "styleGuideIncluded": false,
+    "prompt": "Act as an art director. Create an image that will engage an online audience of [who, where].\nSubject: [who or what – age, gender, attire, expression, doing what]\nSetting: [where – environment, time of day, weather]\nStyle: [type – photo, illustration, sketch] [framing – close-up, medium, wide] [mood – optimistic, gritty, dramatic] [lighting – natural, golden hour, studio]\nNo visible text."
   },
   {
     "id": 20,

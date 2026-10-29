@@ -1,0 +1,62 @@
+[
+  {
+    "id": "magazine",
+    "label": "Magazine",
+    "thumb": "/style-thumbs/magazine.webp",
+    "prompt": "professional high-end magazine feature photography, expert studio-quality lighting, vibrant and creative color palette, beautiful quality, sharp subject with soft blurred background, highly-polished aesthetic"
+  },
+  {
+    "id": "photojourn",
+    "label": "Photojourn",
+    "thumb": "/style-thumbs/photojourn.webp",
+    "prompt": "authentic documentary photography, candid, informal and unposed, professional journalistic framing, subject is the hero, no foreground obstructions, critically sharp and natural lighting, detailed and clear, realistic skin textures, genuine human emotion"
+  },
+  {
+    "id": "urban",
+    "label": "Urban",
+    "thumb": "/style-thumbs/urban.webp",
+    "prompt": "authentic urban photojournalism, wide-angle 24mm lens, slight low angle for subject dominance, subject placed prominently on a third, strong leading lines from the environment pointing to the subject, deep focus with critical sharpness on both subject and surroundings, high detail, natural ambient daylight, environmental storytelling, grounded realism"
+  },
+  {
+    "id": "private-eye",
+    "label": "Private Eye",
+    "thumb": "/style-thumbs/private-eye.webp",
+    "prompt": "sophisticated directional lighting, refined chiaroscuro effect with soft-fill, deep ink-line shadows with readable detail, increased ambient brightness for complete legible detail, sophisticated and desaturated muted color palette, subtle pulp graphic novel influence, high contrast composition, grounded gritty realism"
+  },
+  {
+    "id": "cyberpunk",
+    "label": "Cyberpunk",
+    "thumb": "/style-thumbs/cyberpunk.webp",
+    "prompt": "futuristic cyberpunk city, high-luminance neon color palette, cyan, magenta, and electric blue ambient lighting, dramatic yet clear high-contrast lighting, glowing architectural accents, sharp detail, reflective surfaces, optimized for vibrant pop on small screens, immersive, dystopian yet highly legible"
+  },
+  {
+    "id": "sketch",
+    "label": "Sketch",
+    "thumb": "/style-thumbs/sketch.webp",
+    "prompt": "detailed hand-drawn graphite sketch, monochromatic charcoal texture, fine artistic cross-hatching, courtroom sketch aesthetic, expressive line work"
+  },
+  {
+    "id": "retro",
+    "label": "Retro",
+    "thumb": "/style-thumbs/retro.webp",
+    "prompt": "1950s commercial illustration style, no text, vibrant and over-saturated colors, optimistic consumer aesthetic, halftone texture, clean magazine graphic composition, bold line work, stylized characters, nostalgic"
+  },
+  {
+    "id": "sharp",
+    "label": "Sharp",
+    "thumb": "/style-thumbs/sharp.webp",
+    "prompt": "2.5D isometric flat vector illustration, modern tech corporate editorial art style, sharp geometric perspective angles, dramatic directional volumetric lighting with warm glowing beams, deep dark drop shadows, muted retro color palette of warm ochre navy blue slate grey and glowing amber, subtle grain texture, clean vector aesthetic"
+  },
+  {
+    "id": "infographic",
+    "label": "Infographic",
+    "thumb": "/style-thumbs/infographic.webp",
+    "prompt": "clean flat vector illustration, minimalist design, solid bold colors, geometric shapes, professional explainer graphic, editorial infographic style, no gradients, white background"
+  },
+  {
+    "id": "logo",
+    "label": "Logo",
+    "thumb": "/style-thumbs/logo.webp",
+    "prompt": "ultra-minimalist graphic icon style, thick clean lines, limited color palette, symbolic representation, professional digital branding aesthetic"
+  }
+]

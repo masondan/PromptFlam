@@ -260,6 +260,7 @@ Organized by feature:
 **Prompts Library:**
 - [`PromptLibrary.svelte`](src/lib/components/PromptLibrary.svelte) — Main library UI (filter, search, favorites)
 - [`PromptEditDrawer.svelte`](src/lib/components/PromptEditDrawer.svelte) — Drawer version of library (for inserting)
+- [`StyleStrip.svelte`](src/lib/components/StyleStrip.svelte) — Horizontal style thumbnail strip for image gen prompt
 
 **Notepad:**
 - [`NotepadSelectionMenu.svelte`](src/lib/components/NotepadSelectionMenu.svelte) — Inline menu for text selection in notepad
@@ -467,6 +468,7 @@ const res = await fetch('/api/myroute', {
 - **Streaming**: Use `onChunk` callback for real-time updates
 - **Errors**: Display in UI; log to console; never expose API keys
 - **Cleanup**: 30-day archive auto-cleanup; max 10 items per type
+- **Image Style Selector**: When a prompt has `"styleSelector": true`, `PromptEditDrawer` displays `StyleStrip.svelte`. The line starting with `Style:` is the replacement slot dynamically swapped with the selected style prompt from `image-styles.json`. Choosing "None" restores the default bracketed prompt. Style selections are transient and never persisted.
 
 ---
 
@@ -498,6 +500,8 @@ src/
 │   │   ├── ChatInput.svelte
 │   │   ├── ChatMessage.svelte
 │   │   ├── PromptLibrary.svelte
+│   │   ├── PromptEditDrawer.svelte
+│   │   ├── StyleStrip.svelte
 │   │   ├── SourcesDrawer.svelte
 │   │   ├── TextSelectionMenu.svelte
 │   │   ├── NotepadToolbar.svelte
@@ -515,6 +519,8 @@ src/
 
 static/
 ├── prompts.json                  (Prompt library data — 100+ templates)
+├── image-styles.json             (10 styles definitions for Image gen)
+├── style-thumbs/                 (10 WebP style thumbnails)
 ├── style-guide.md                (Editorial guidelines — markdown)
 ├── style-check-system-prompt.md  (Claude system prompt for style check)
 ├── flam-nav.js                   (Navigation configuration)

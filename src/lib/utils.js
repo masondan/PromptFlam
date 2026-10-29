@@ -123,3 +123,21 @@ export function extractSelectionText(selection) {
 	
 	return result;
 }
+
+/**
+ * Replace the line starting "Style:" in a prompt with the chosen style's text.
+ * @param {string} promptText - The default (None) prompt text.
+ * @param {{prompt: string} | null} style - Selected style, or null for None.
+ * @returns {string}
+ */
+export function applyImageStyle(promptText, style) {
+	if (!style) return promptText;
+	const lines = promptText.split('\n');
+	const i = lines.findIndex((l) => l.startsWith('Style:'));
+	if (i === -1) {
+		console.warn('applyImageStyle: no "Style:" line found');
+		return promptText;
+	}
+	lines[i] = `Style: ${style.prompt}`;
+	return lines.join('\n');
+}

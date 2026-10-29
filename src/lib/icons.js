@@ -39,6 +39,7 @@ import IconMic from '../../static/icons/icon-mic.svg?raw';
 import IconMicFill from '../../static/icons/icon-mic-fill.svg?raw';
 import IconUser from '../../static/icons/icon-user.svg?raw';
 import IconStylecheck from '../../static/icons/icon-stylecheck.svg?raw';
+import IconAi from '../../static/icons/icon-ai.svg?raw';
 
 // Icon map - maps icon names to their SVG strings
 export const iconMap = {
@@ -80,7 +81,10 @@ export const iconMap = {
 	'mic-fill': IconMicFill,
 	
 	// Settings icons
-	user: IconUser
+	user: IconUser,
+
+	// AI / Style icons
+	ai: IconAi
 };
 
 // List of all available icon names

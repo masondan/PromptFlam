@@ -1,10 +1,11 @@
 <script>
-	import { createEventDispatcher } from 'svelte';
+	import { createEventDispatcher, onMount } from 'svelte';
 	import { goto } from '$app/navigation';
-	import { Icon } from '$lib/components';
+	import { Icon, StyleStrip } from '$lib/components';
 	import { fade, fly } from 'svelte/transition';
 	import { marked } from 'marked';
 	import { pendingChatInput, favorites, toggleFavorite, isFavorite } from '$lib/stores.js';
+	import { applyImageStyle } from '$lib/utils.js';
 
 	export let isOpen = false;
 	export let text = '';
@@ -14,12 +15,32 @@
 
 	let editorEl;
 	let editedText = '';
+	let basePromptText = '';
 	let copied = false;
 	let initialized = false;
 	let showStyleGuideDrawer = false;
 	let styleGuideContent = '';
 	let showToast = false;
 	let toastMessage = '';
+
+	let imageStyles = [];
+	let selectedStyleId = null;
+
+	async function loadImageStyles() {
+		if (imageStyles.length > 0) return;
+		try {
+			const res = await fetch('/image-styles.json');
+			if (res.ok) {
+				imageStyles = await res.json();
+			}
+		} catch (err) {
+			console.error('Failed to load image styles:', err);
+		}
+	}
+
+	onMount(() => {
+		loadImageStyles();
+	});
 
 	function textToHtml(text) {
 		return text.split('\n')
@@ -41,6 +62,8 @@
 	}
 
 	$: if (isOpen && text && !initialized) {
+		basePromptText = text;
+		selectedStyleId = null;
 		editedText = text;
 		initialized = true;
 		
@@ -54,7 +77,17 @@
 
 	$: if (!isOpen) {
 		initialized = false;
+		selectedStyleId = null;
 		showStyleGuideDrawer = false;
+	}
+
+	function handleSelectStyle(e) {
+		selectedStyleId = e.detail.styleId;
+		const styleObj = selectedStyleId ? imageStyles.find(s => s.id === selectedStyleId) : null;
+		editedText = applyImageStyle(basePromptText, styleObj);
+		if (editorEl) {
+			editorEl.innerHTML = textToHtml(editedText);
+		}
 	}
 
 	$: isFavorited = prompt ? isFavorite(prompt.category, prompt.subCategory, $favorites) : false;
@@ -216,6 +249,16 @@
 				</button>
 			</div>
 			
+			{#if prompt?.styleSelector && imageStyles.length > 0}
+				<div class="style-strip-wrapper">
+					<StyleStrip
+						styles={imageStyles}
+						selected={selectedStyleId}
+						on:select={handleSelectStyle}
+					/>
+				</div>
+			{/if}
+
 			<!-- svelte-ignore a11y_click_events_have_key_events -->
 			<div class="content-area">
 				<div
@@ -335,6 +378,11 @@
 	.close-btn:hover {
 		color: var(--color-icon-active);
 		transform: scale(1.1);
+	}
+
+	.style-strip-wrapper {
+		flex-shrink: 0;
+		padding-top: var(--spacing-sm);
 	}
 
 	.content-area {
