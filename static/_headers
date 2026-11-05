@@ -1,0 +1,18 @@
+/*
+  X-Content-Type-Options: nosniff
+
+# Hashed, content-addressed build assets — safe to cache forever
+/_app/immutable/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Service worker itself must always be re-checked, or updates never get picked up
+/service-worker.js
+  Cache-Control: no-cache, must-revalidate
+
+# HTML / app shell — always revalidate so new deploys show up promptly
+/
+  Cache-Control: public, max-age=0, must-revalidate
+
+# API routes — never cache
+/api/*
+  Cache-Control: no-store
