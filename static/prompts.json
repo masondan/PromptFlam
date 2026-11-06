@@ -78,16 +78,16 @@
   {
     "id": 12,
     "category": "Audio",
-    "subCategory": "Solo pod script",
+    "subCategory": "Solo script",
     "styleGuideIncluded": true,
-    "prompt": "Act as a podcast scriptwriter. Draft a script for an [x] [second] [minute] podcast episode with one host that will engage an audience of [who, where]\nBase the script on: [topic/question] [URL]\nFollow this structure:\n- Open with a direct question (eg who, what, why, where, when, how).\n- Then directly answer the question using verified facts from attributed sources.\n- No podcast intro. No outro. No banter. Just question and answer.\n- Start each sentence on a new line\n- Optimise for spoken voice. Keep the tone natural and professional.\n- Keep the style fast-paced and audience‑focused."
+    "prompt": "Act as a scriptwriter for radio and podcasts. Draft a script for an [x] [second] [minute] audio explainer with one speaker that will engage an audience of [who, where]\nBase the script on: [topic/question] [URL]\n\nFollow this structure:\n- Hook: Open with an insightful question (eg what, why, how).\n- Body: Answer the question posed in the hook, using fact-based explanation and context from credible sources.\n\nFollow these rules:\n- Write a minimum of 150 words per 60 seconds of audio.\n- Use simple language optimised for natural speech. Keep the style fast-paced and audience-focused.\n- Present facts, not opinions. No editorialising. No jargon.\n- Flag key facts from experts, reports, or authoritative organisations with a brief reference woven naturally into the script (e.g., according to [source]). Do not cite media sources.\n- Output: Add a single blank line below each sentence. Do not add timestamps. Add a word count."
   },
   {
     "id": 13,
     "category": "Audio",
-    "subCategory": "Q&A pod script",
+    "subCategory": "Q&A script",
     "styleGuideIncluded": true,
-    "prompt": "Act as a podcast scriptwriter. Draft a script for a [x] [second] [minute] Q&A podcast episode with two speakers (a host and an expert) that will engage an audience of [who, where].\nBase the script on: [topic/question] [URL]\nFollow this structure:\n- The host opens with a punchy first question that grabs attention.\n- The expert replies with a factual, informative answer.\n- No podcast intro. No outro. No banter. Just quick-fire questions and answers.\n- Pack in as many questions and answers as possible. Vary question and answer length.\n- Optimise for spoken voice. Keep the tone natural and professional.\n- Keep the style fast-paced and audience‑focused.\nOutput format:\nHost: Question\nExpert: Answer\nHost: Follow-up\nExpert: Answer"
+    "prompt": "Act as a scriptwriter for radio and podcasts. Draft a script for a [x] [second] [minute] Q&A podcast episode with two speakers (a host and an expert) that will engage an audience of [who, where].\nBase the script on: [topic/question] [URL]\n\nFollow this structure:\n- The host begins by asking an insightful, punchy first question. The expert replies with a factual, informative answer. The script continues with a series of questions and answers that explore the topic.\n\nFollow these rules:\n- Write a minimum 150 words per 60 seconds of audio.\n- Use simple language optimised for natural speech.\nVary question and answer length.\n- Present facts, not opinions. No editorialising. No jargon.\n\nOutput format:\nHost: [Question]\nExpert: [Answer]\nHost: [Question]\nExpert: [Answer]\n...\n- Add a single blank line below each sentence. Do not add timestamps. Add a word count. Do not include 'Host:' and 'Expert:' in the word count."
   },
   {
     "id": 14,
