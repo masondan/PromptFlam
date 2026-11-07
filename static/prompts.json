@@ -101,7 +101,7 @@
     "category": "Social media",
     "subCategory": "Carousel",
     "styleGuideIncluded": false,
-    "prompt": "Act as a social media content expert. Break down the following topic into an Instagram explainer carousel that will engage an audience of [who, where]\nBase the carousel on: [topic/question] [URL]\nTotal number of slides: [x]\nTone: [professional] [informative] [empowering] [motivational] [entertaining] [urgent] [action-oriented] [empathetic]\nFollow this structure:\n- For the first slide, pose a direct question (eg who, what, why, where, when, how).\n- For the following slides, write fact-based captions of ~15 words to explain the topic in concise, narrative language.\nSuggest images or visuals for each caption."
+    "prompt": "Act as an expert social media copywriter. Write an eye-catching, high-converting Instagram explainer carousel for an audience of [who, where]\nBase the carousel on [Topic/Question] [URL]\nNumber of slides: [x]\n(**Do not create visuals - only text**)\n\nOutput structure\n\n### Slide 1:\n- **Hook:** An unusual, scroll-stopping title based on a punchy, audience-focused question (maximum 10 words). No additional text on the slide.\n- **Visual:** One image/graphic suggestion.\n\n### Slide 2 [to x]: (Logical narrative answer split across slides)\n- **Short Caption:** A fact-based caption of ~15 words.\n- **Long Caption:** An alternative version of the Short Caption, expanded to ~30 words.\n- **Did You Know?:** A short, surprising 'did-you-know?' stat/fact.\n- **Visual:** One image/graphic suggestion."
   },
   {
     "id": 16,
