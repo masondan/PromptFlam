@@ -129,7 +129,7 @@
     "category": "Social media",
     "subCategory": "(Meta AI) Topic Search",
     "styleGuideIncluded": false,
-    "prompt": "Search for the highest-engagement public Instagram, Facebook and Threads posts from the last [x] days about [topic].\nSearch posts [where, in any/specify language/s]. Provide the top [x] posts with: Working URLs; likes and comment counts; platform and post type (video, images etc); post location, language and author; one sentence in English on what each post, video or carousel shows."
+   "prompt": "Search for the highest-engagement public Instagram, Facebook and Threads posts from the last 20 days about the Azerbaijan schools hijab ban. Search only posts outside Azerbaijan, in any language. \nList the top ten posts with: Post location, language and author. Platform and post type (video, image etc). Likes and comment counts. Working URLs. One sentence in English on what each post, video or carousel shows."  
   },
   {
     "id": 20,
